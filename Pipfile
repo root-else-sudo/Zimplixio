@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
+pillow = "*"
+django-environ = "*"
+whitenoise = "*"
+django-ratelimit = "*"
 
 [dev-packages]
 

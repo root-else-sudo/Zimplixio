@@ -1,0 +1,30 @@
+from django.views.generic import ListView, DetailView
+from .models import ShowcaseProject
+
+
+class ShowcaseGalleryView(ListView):
+    model = ShowcaseProject
+    template_name = 'showcase/gallery.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        qs = ShowcaseProject.objects.filter(is_published=True).prefetch_related('tech_tags')
+        industry = self.request.GET.get('industry')
+        if industry and industry in dict(ShowcaseProject.INDUSTRY_CHOICES):
+            qs = qs.filter(industry=industry)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['industry_choices'] = ShowcaseProject.INDUSTRY_CHOICES
+        context['current_industry'] = self.request.GET.get('industry', '')
+        return context
+
+
+class ShowcaseDetailView(DetailView):
+    model = ShowcaseProject
+    template_name = 'showcase/detail.html'
+    context_object_name = 'project'
+
+    def get_queryset(self):
+        return ShowcaseProject.objects.filter(is_published=True).prefetch_related('tech_tags', 'screenshots')

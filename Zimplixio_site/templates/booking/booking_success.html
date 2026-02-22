@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Received — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="py-20">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+      <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Booking Request Received!</h1>
+    <p class="text-lg text-gray-600 mb-4">
+      Thank you for booking a discovery call. We'll review your request and send a confirmation email shortly.
+    </p>
+    <p class="text-gray-500 mb-8">
+      If the requested time isn't available, we'll suggest an alternative that works.
+    </p>
+    <a href="{% url 'pages:home' %}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+      Back to Home
+    </a>
+  </div>
+</section>
+{% endblock %}

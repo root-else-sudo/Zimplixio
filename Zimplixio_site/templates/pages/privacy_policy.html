@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="py-16">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
+    <p class="text-sm text-gray-500 mb-8">Last updated: February 2026</p>
+
+    <div class="prose prose-gray max-w-none space-y-8">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">1. Information We Collect</h2>
+        <p class="text-gray-600">When you use our contact form or booking system, we collect the information you provide: your name, email address, company name, and message content. We also collect standard web analytics data such as pages visited, browser type, and IP address.</p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">2. How We Use Your Information</h2>
+        <p class="text-gray-600">We use the information you provide to respond to your inquiries, schedule consultations, and improve our services. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">3. Data Storage & Security</h2>
+        <p class="text-gray-600">Your data is stored securely and we implement appropriate technical and organizational measures to protect it against unauthorized access, alteration, or destruction.</p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">4. Cookies</h2>
+        <p class="text-gray-600">We use cookies to remember your preferences (such as cookie consent). For more details, see our <a href="{% url 'pages:cookie_policy' %}" class="text-indigo-600 hover:text-indigo-800">Cookie Policy</a>.</p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">5. Your Rights</h2>
+        <p class="text-gray-600">You have the right to access, correct, or delete the personal information we hold about you. To exercise these rights, please <a href="{% url 'pages:contact' %}" class="text-indigo-600 hover:text-indigo-800">contact us</a>.</p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">6. Changes to This Policy</h2>
+        <p class="text-gray-600">We may update this policy from time to time. We will notify you of significant changes by posting a notice on our website.</p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">7. Contact</h2>
+        <p class="text-gray-600">If you have questions about this privacy policy, please <a href="{% url 'pages:contact' %}" class="text-indigo-600 hover:text-indigo-800">contact us</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

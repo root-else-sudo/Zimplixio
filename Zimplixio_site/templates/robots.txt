@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /zm-admin/
+
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml

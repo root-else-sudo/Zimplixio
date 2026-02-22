@@ -1,0 +1,9 @@
+{
+  "name": "Zimplixio",
+  "short_name": "Zimplixio",
+  "description": "Enterprise-grade technology solutions for growing businesses",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4338ca"
+}

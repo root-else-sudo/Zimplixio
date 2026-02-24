@@ -1,120 +1,448 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}About — {{ site_name }}{% endblock %}
 
+{% block extra_head %}
+<style>
+  .timeline-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .timeline-details:not(.hidden) {
+    max-height: 600px;
+  }
+  .timeline-node {
+    transition: all 0.3s ease;
+  }
+  .timeline-chevron {
+    transition: transform 0.3s ease;
+  }
+  .timeline-line {
+    background: linear-gradient(to bottom, #4f46e5, #818cf8, #c7d2fe);
+  }
+  .stat-number {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Hero -->
-<section class="bg-gradient-to-br from-indigo-600 to-indigo-800 py-16 md:py-20">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">About Zimplixio</h1>
-    <p class="text-xl text-indigo-100 max-w-2xl mx-auto">
-      Enterprise experience, startup agility. We bring Fortune 500 expertise to businesses that are ready to scale.
+<section class="relative bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900 py-20 md:py-28 overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl"></div>
+  </div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <p class="text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down" data-aos-duration="600">Our Story</p>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6" data-aos="fade-up" data-aos-duration="800">
+      Built Different.<br class="hidden sm:block"> On Purpose.
+    </h1>
+    <p class="text-xl text-indigo-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+      17 years inside the world's largest technology companies taught us one thing: growing businesses deserve the same caliber of expertise — without the overhead.
     </p>
   </div>
 </section>
 
-<!-- Credentials -->
-<section class="py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
-      <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Background</h2>
-      <p class="text-gray-600 text-lg mb-6">
-        Our team brings deep technical leadership experience from some of the world's most demanding technology environments — including <strong class="text-gray-900">IBM</strong>, <strong class="text-gray-900">Hewlett Packard Enterprise</strong>, <strong class="text-gray-900">PayPal</strong>, and <strong class="text-gray-900">Intel</strong>.
-      </p>
-      <p class="text-gray-600 text-lg mb-6">
-        We've architected systems that serve millions of users, led cross-functional engineering teams, and delivered mission-critical solutions across automotive, healthcare, e-commerce, and more.
-      </p>
-      <p class="text-gray-600 text-lg">
-        Now, we channel that experience into helping growing businesses access the same caliber of technology strategy and implementation — without the enterprise price tag or bureaucracy.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- Lean Team -->
-<section class="py-16 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
-      <h2 class="text-3xl font-bold text-gray-900 mb-6">The Lean Team Advantage</h2>
-      <p class="text-gray-600 text-lg mb-6">
-        We intentionally operate as a small, senior team. Every engagement is led by experienced architects and engineers — not junior consultants learning on your dime.
-      </p>
-      <div class="grid md:grid-cols-3 gap-6 mt-10">
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          </div>
-          <h3 class="font-semibold text-gray-900 mb-2">Direct Access</h3>
-          <p class="text-gray-600 text-sm">Work directly with senior consultants. No account managers, no layers of abstraction.</p>
+<!-- Origin Story -->
+<section class="py-20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-6" data-aos="fade-right" data-aos-duration="700">
+          The gap we saw
+        </h2>
+        <div class="space-y-4 text-gray-600 text-lg leading-relaxed">
+          <p data-aos="fade-right" data-aos-duration="700" data-aos-delay="100">
+            After nearly two decades leading engineering teams, shipping products, and solving complex problems at <strong class="text-gray-900">Hewlett Packard Enterprise</strong> and <strong class="text-gray-900">IBM</strong>, a pattern became impossible to ignore.
+          </p>
+          <p data-aos="fade-right" data-aos-duration="700" data-aos-delay="200">
+            The companies that needed the most help — growing SMBs hitting technology walls — were the ones least served. Enterprise consultancies priced them out. Freelancers couldn't deliver the architectural rigor. Agencies sold them cookie-cutter solutions.
+          </p>
+          <p data-aos="fade-right" data-aos-duration="700" data-aos-delay="300">
+            <strong class="text-gray-900">Zimplixio was founded to close that gap.</strong> Enterprise-grade thinking, right-sized for businesses that are ready to scale but refuse to overpay for it.
+          </p>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          </div>
-          <h3 class="font-semibold text-gray-900 mb-2">Proven Track Record</h3>
-          <p class="text-gray-600 text-sm">Solutions battle-tested in the most demanding environments in technology.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+        <div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 text-center">
+          <p class="stat-number text-4xl font-bold">17+</p>
+          <p class="text-gray-600 text-sm mt-1">Years of Experience</p>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <h3 class="font-semibold text-gray-900 mb-2">Right-Sized Pricing</h3>
-          <p class="text-gray-600 text-sm">Enterprise-grade quality at rates that make sense for growing businesses.</p>
+        <div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 text-center">
+          <p class="stat-number text-4xl font-bold">20+</p>
+          <p class="text-gray-600 text-sm mt-1">Apps Shipped</p>
+        </div>
+        <div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 text-center">
+          <p class="stat-number text-4xl font-bold">150K+</p>
+          <p class="text-gray-600 text-sm mt-1">Hours Saved via Automation</p>
+        </div>
+        <div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 text-center">
+          <p class="stat-number text-4xl font-bold">5</p>
+          <p class="text-gray-600 text-sm mt-1">Continents Served</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Industry Verticals -->
-<section class="py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
-      <h2 class="text-3xl font-bold text-gray-900 mb-6">Industries We Serve</h2>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-          <span class="text-2xl">🏥</span>
-          <span class="font-medium text-gray-900">Healthcare & Life Sciences</span>
+<!-- Meet the Team -->
+<section class="py-20 bg-gray-50">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">Meet the Team</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up" data-aos-delay="100">The people behind Zimplixio</h2>
+    </div>
+
+    <!-- Joseph Ugalde -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-aos="fade-up" data-aos-duration="800">
+      <!-- Bio Header -->
+      <div class="md:flex">
+        <!-- Photo placeholder -->
+        <div class="md:w-1/3 bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 md:p-12 flex flex-col items-center justify-center text-center">
+          <div class="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mb-6 ring-4 ring-white/30">
+            <span class="text-5xl font-bold text-white">JU</span>
+          </div>
+          <h3 class="text-2xl font-bold text-white">Joseph Ugalde</h3>
+          <p class="text-indigo-200 font-medium mt-1">Founder & Principal Consultant</p>
+          <div class="flex flex-wrap justify-center gap-2 mt-4">
+            <span class="px-2 py-1 bg-white/10 text-indigo-100 text-xs rounded-full">PMP</span>
+            <span class="px-2 py-1 bg-white/10 text-indigo-100 text-xs rounded-full">CSM/CSPO</span>
+            <span class="px-2 py-1 bg-white/10 text-indigo-100 text-xs rounded-full">Pentest+</span>
+            <span class="px-2 py-1 bg-white/10 text-indigo-100 text-xs rounded-full">Azure</span>
+            <span class="px-2 py-1 bg-white/10 text-indigo-100 text-xs rounded-full">RPA</span>
+          </div>
+          <a href="https://www.linkedin.com/in/josephugaldeberrocal" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            Connect on LinkedIn
+          </a>
         </div>
-        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-          <span class="text-2xl">🚗</span>
-          <span class="font-medium text-gray-900">Automotive & Manufacturing</span>
-        </div>
-        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-          <span class="text-2xl">🛒</span>
-          <span class="font-medium text-gray-900">E-Commerce & Retail</span>
-        </div>
-        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-          <span class="text-2xl">🏢</span>
-          <span class="font-medium text-gray-900">Cross-Industry Solutions</span>
+
+        <!-- Bio Content -->
+        <div class="md:w-2/3 p-8 md:p-12">
+          <p class="text-gray-600 text-lg leading-relaxed mb-6">
+            A natural problem solver and technology orchestrator, Joseph has spent 17 years transforming complexity and ambiguity into secure, scalable, and user-focused solutions. He leads at the intersection of engineering and business — bridging strategic vision with operational execution to drive clarity, alignment, and results.
+          </p>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            From founding and scaling a 20-member analytics department at IBM to shipping 20+ full-stack applications that saved 150,000+ labor hours annually, Joseph brings the rare combination of hands-on technical depth and executive-level strategic thinking. His experience spans cloud architecture, cybersecurity, data engineering, and agile product management across teams on five continents.
+          </p>
+
+          <!-- Expertise Areas -->
+          <h4 class="font-semibold text-gray-900 mb-3">Core Expertise</h4>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Cloud Architecture</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Product Strategy</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Cybersecurity</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Data Engineering</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Agile / Scrum</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Team Leadership</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Process Automation</span>
+            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">Full-Stack Development</span>
+          </div>
+
+          <!-- Education -->
+          <h4 class="font-semibold text-gray-900 mb-3">Education</h4>
+          <div class="space-y-2 text-sm text-gray-600">
+            <div class="flex justify-between"><span>MBA, Cybersecurity &mdash; Penetration Testing</span><span class="text-gray-400 shrink-0 ml-4">2019 &ndash; 2023</span></div>
+            <div class="flex justify-between"><span>MBA, Project Management</span><span class="text-gray-400 shrink-0 ml-4">2015 &ndash; 2018</span></div>
+            <div class="flex justify-between"><span>Full-Stack Certificate (Python, Django, HTML/CSS)</span><span class="text-gray-400 shrink-0 ml-4">2018 &ndash; 2019</span></div>
+            <div class="flex justify-between"><span>Bachelor of Business Administration</span><span class="text-gray-400 shrink-0 ml-4">2008 &ndash; 2013</span></div>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Interactive Career Timeline -->
+<section class="py-20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">The Journey</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up" data-aos-delay="100">17 Years in the Making</h2>
+      <p class="text-gray-500 mt-3" data-aos="fade-up" data-aos-delay="200">Click any milestone to explore the details.</p>
+    </div>
+
+    <div class="relative">
+      <!-- Vertical line -->
+      <div class="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 timeline-line"></div>
+
+      <!-- HPE -->
+      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600">
+        <div class="md:flex md:items-start">
+          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
+            <span class="text-sm font-semibold text-indigo-600">Feb 2011 &ndash; Jul 2014</span>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+              <span class="text-white font-bold text-xs">HPE</span>
+            </div>
+          </div>
+          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
+            <span class="md:hidden text-sm font-semibold text-indigo-600">Feb 2011 &ndash; Jul 2014</span>
+            <button class="timeline-toggle w-full text-left group">
+              <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                Project Manager
+                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </h3>
+              <p class="text-gray-500 text-sm">Hewlett Packard Enterprise</p>
+            </button>
+            <div class="timeline-details hidden mt-4">
+              <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600">
+                <p>Led end-to-end delivery of high-visibility programs &mdash; chartering, scoping, planning, executing, monitoring, and closing &mdash; while consistently beating schedule, budget, and quality targets.</p>
+                <p>Orchestrated cross-functional teams through WBS-driven Gantt schedules and MS Project critical-path tracking, <strong class="text-gray-900">boosting on-time delivery rate by 20%</strong>.</p>
+                <p>Translated complex data into executive-ready insights using Power BI dashboards and executive briefings that accelerated decision cycles.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IBM Analytics -->
+      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+        <div class="md:flex md:items-start">
+          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
+            <button class="timeline-toggle w-full text-right group">
+              <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors inline-flex items-center gap-2 justify-end">
+                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                Automation & Analytics Manager
+              </h3>
+              <p class="text-gray-500 text-sm">IBM</p>
+            </button>
+            <div class="timeline-details hidden mt-4">
+              <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600 text-left">
+                <p><strong class="text-gray-900">Founded and scaled a 20-member cross-functional analytics department</strong> from the ground up, hiring data, software, and industrial engineers to support consulting practices across North America.</p>
+                <p>Acted as the analytics partner for multiple IBM Services leaders, developing advanced data models and Power BI dashboards to detect anomalies, forecast performance, and drive data-informed decisions.</p>
+                <p>Spearheaded department-wide automation using SQL, VBA, and RPA &mdash; implementing ETL pipelines, OLAP cubes, and data warehouses. <strong class="text-gray-900">Saved thousands of work hours annually</strong> through Value Stream Mapping and robotic process automation.</p>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+              <span class="text-white font-bold text-xs">IBM</span>
+            </div>
+          </div>
+          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
+            <span class="text-sm font-semibold text-indigo-600">Aug 2014 &ndash; Jan 2018</span>
+            <!-- Mobile-only duplicate -->
+            <div class="md:hidden">
+              <button class="timeline-toggle w-full text-left group">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                  Automation & Analytics Manager
+                  <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </h3>
+                <p class="text-gray-500 text-sm">IBM</p>
+              </button>
+              <div class="timeline-details hidden mt-4">
+                <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600">
+                  <p><strong class="text-gray-900">Founded and scaled a 20-member cross-functional analytics department</strong> from the ground up, hiring data, software, and industrial engineers to support consulting practices across North America.</p>
+                  <p>Acted as the analytics partner for multiple IBM Services leaders, developing advanced data models and Power BI dashboards to detect anomalies, forecast performance, and drive data-informed decisions.</p>
+                  <p>Spearheaded department-wide automation using SQL, VBA, and RPA &mdash; implementing ETL pipelines, OLAP cubes, and data warehouses. <strong class="text-gray-900">Saved thousands of work hours annually</strong>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IBM Engineering -->
+      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+        <div class="md:flex md:items-start">
+          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
+            <span class="text-sm font-semibold text-indigo-600">Feb 2018 &ndash; Aug 2021</span>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+              <span class="text-white font-bold text-xs">IBM</span>
+            </div>
+          </div>
+          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
+            <span class="md:hidden text-sm font-semibold text-indigo-600">Feb 2018 &ndash; Aug 2021</span>
+            <button class="timeline-toggle w-full text-left group">
+              <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                Software Engineer
+                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </h3>
+              <p class="text-gray-500 text-sm">IBM &mdash; Custom Development & Automation</p>
+            </button>
+            <div class="timeline-details hidden mt-4">
+              <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600">
+                <p>Kaizen-driven automation engineer supporting IBM Global Consulting &mdash; partnered with consultants on <strong class="text-gray-900">5 continents</strong> to surface workflow bottlenecks and ship high-impact software solutions.</p>
+                <p><strong class="text-gray-900">Shipped 20+ full-stack applications</strong> using Python, Django, and Bootstrap, enabling multi-user collaboration and cutting process cycle time up to 75%.</p>
+                <p>Replaced spreadsheet workflows with data-driven web apps and interactive dashboards, <strong class="text-gray-900">reclaiming 150,000+ labor hours annually</strong>.</p>
+                <p>Built cloud-native applications and RESTful services on IBM Cloud with GitHub Actions CI/CD for zero-downtime deployments.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MICIT Cybersecurity -->
+      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
+        <div class="md:flex md:items-start">
+          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
+            <button class="timeline-toggle w-full text-right group">
+              <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors inline-flex items-center gap-2 justify-end">
+                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                Cybersecurity Engineer
+              </h3>
+              <p class="text-gray-500 text-sm">MICIT &mdash; Penetration Testing</p>
+            </button>
+            <div class="timeline-details hidden mt-4">
+              <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600 text-left">
+                <p>Drafted SOW, Rules of Engagement, and NDAs in line with NIST SP 800-115 for web, API, and hybrid-cloud penetration tests.</p>
+                <p>Combined passive OSINT reconnaissance with active enumeration, prioritizing assets by CVSS scores and business impact.</p>
+                <p>Exploited OWASP Top 10 vulnerabilities using Python/Metasploit payloads. Produced executive and technical reports mapped to <strong class="text-gray-900">MITRE ATT&CK framework</strong> with actionable remediation playbooks.</p>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+          </div>
+          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
+            <span class="text-sm font-semibold text-indigo-600">Sep 2021 &ndash; Feb 2022</span>
+            <div class="md:hidden">
+              <button class="timeline-toggle w-full text-left group">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                  Cybersecurity Engineer
+                  <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </h3>
+                <p class="text-gray-500 text-sm">MICIT &mdash; Penetration Testing</p>
+              </button>
+              <div class="timeline-details hidden mt-4">
+                <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600">
+                  <p>Drafted SOW, Rules of Engagement, and NDAs in line with NIST SP 800-115 for web, API, and hybrid-cloud penetration tests.</p>
+                  <p>Combined passive OSINT reconnaissance with active enumeration, prioritizing assets by CVSS scores and business impact.</p>
+                  <p>Exploited OWASP Top 10 vulnerabilities using Python/Metasploit payloads. Produced reports mapped to <strong class="text-gray-900">MITRE ATT&CK framework</strong>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Systems X -->
+      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
+        <div class="md:flex md:items-start">
+          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
+            <span class="text-sm font-semibold text-indigo-600">Feb 2022 &ndash; Present</span>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+              <span class="text-white font-bold text-xs">SX</span>
+            </div>
+          </div>
+          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
+            <span class="md:hidden text-sm font-semibold text-indigo-600">Feb 2022 &ndash; Present</span>
+            <button class="timeline-toggle w-full text-left group">
+              <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                Software Solution Manager
+                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </h3>
+              <p class="text-gray-500 text-sm">Systems X</p>
+            </button>
+            <div class="timeline-details hidden mt-4">
+              <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600">
+                <p>Defined product vision and multi-year roadmaps for multi-tenant, cloud-native SaaS solutions. Led a <strong class="text-gray-900">cross-functional distributed Agile team across North America, LATAM, Europe, and Asia</strong>.</p>
+                <p>Built CI/CD pipelines using GitHub Actions, designed bidirectional ERP integration APIs, and directed cloud solution architecture on Azure Stack.</p>
+                <p>Managed project P&L, led SaaS cost modeling, and <strong class="text-gray-900">reduced new-client onboarding time by 15%</strong> through velocity tracking and process optimization.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zimplixio -->
+      <div class="timeline-item relative" data-aos="fade-up" data-aos-duration="600" data-aos-delay="500">
+        <div class="md:flex md:items-start">
+          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
+            <button class="timeline-toggle w-full text-right group">
+              <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors inline-flex items-center gap-2 justify-end">
+                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                Founder & Principal Consultant
+              </h3>
+              <p class="text-gray-500 text-sm">Zimplixio</p>
+            </button>
+            <div class="timeline-details hidden mt-4">
+              <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600 text-left">
+                <p>Founded Zimplixio to bring enterprise-grade technology consulting to growing businesses &mdash; combining 17 years of experience across engineering, cybersecurity, data, and product leadership into a focused consultancy.</p>
+                <p>Delivering strategy, architecture, and hands-on implementation for SMBs that need senior expertise without enterprise overhead.</p>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+            <div class="timeline-node w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center shadow-lg ring-4 ring-indigo-200 cursor-pointer">
+              <span class="text-white font-bold text-sm">Z</span>
+            </div>
+          </div>
+          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
+            <span class="text-sm font-semibold text-indigo-600">Present</span>
+            <div class="md:hidden">
+              <button class="timeline-toggle w-full text-left group">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                  Founder & Principal Consultant
+                  <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </h3>
+                <p class="text-gray-500 text-sm">Zimplixio</p>
+              </button>
+              <div class="timeline-details hidden mt-4">
+                <div class="bg-gray-50 rounded-xl p-5 space-y-3 text-sm text-gray-600">
+                  <p>Founded Zimplixio to bring enterprise-grade consulting to growing businesses &mdash; combining 17 years of experience into a focused, senior-only consultancy.</p>
+                  <p>Delivering strategy, architecture, and hands-on implementation for SMBs that need senior expertise without enterprise overhead.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <!-- Values -->
-<section class="py-16 bg-gray-50">
+<section class="py-20 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8">Our Values</h2>
-      <div class="space-y-6">
-        <div>
-          <h3 class="font-semibold text-gray-900 text-lg">Radical Transparency</h3>
-          <p class="text-gray-600 mt-1">We tell you what you need to hear, not what you want to hear. Honest assessments lead to better outcomes.</p>
+    <div class="text-center mb-12">
+      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">How We Operate</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up" data-aos-delay="100">Our Values</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
         </div>
-        <div>
-          <h3 class="font-semibold text-gray-900 text-lg">Outcome Over Output</h3>
-          <p class="text-gray-600 mt-1">We measure success by business impact, not hours billed or lines of code written.</p>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Radical Transparency</h3>
+        <p class="text-gray-600">We tell you what you need to hear, not what you want to hear. Honest assessments lead to better outcomes.</p>
+      </div>
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
         </div>
-        <div>
-          <h3 class="font-semibold text-gray-900 text-lg">Simplicity First</h3>
-          <p class="text-gray-600 mt-1">The best solution is often the simplest one. We fight complexity, not create it.</p>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Outcome Over Output</h3>
+        <p class="text-gray-600">We measure success by business impact, not hours billed or lines of code written.</p>
+      </div>
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="300">
+        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"/></svg>
         </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Simplicity First</h3>
+        <p class="text-gray-600">The best solution is often the simplest one. We fight complexity, not create it.</p>
       </div>
     </div>
   </div>
 </section>
 
 {% include "partials/_cta_section.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/timeline.js' %}"></script>
 {% endblock %}

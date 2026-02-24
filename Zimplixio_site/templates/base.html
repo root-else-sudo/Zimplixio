@@ -26,6 +26,9 @@
     }
   </script>
 
+  <!-- AOS - Animate On Scroll -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
   <link rel="manifest" href="{% static 'manifest.json' %}">
   <meta name="theme-color" content="#4338ca">
@@ -54,6 +57,8 @@
 
   <script src="{% static 'js/mobile-nav.js' %}"></script>
   <script src="{% static 'js/cookie-consent.js' %}"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' });</script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

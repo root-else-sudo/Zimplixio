@@ -5,10 +5,15 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="bg-gradient-to-br from-indigo-600 to-indigo-800 py-16 md:py-20">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Solution Showcase</h1>
-    <p class="text-xl text-indigo-100">Real problems. Real solutions. Real results.</p>
+<section class="relative bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900 py-20 md:py-24 overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl"></div>
+  </div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <p class="text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down" data-aos-duration="600">Our Work</p>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6" data-aos="fade-up" data-aos-duration="800">Solution Showcase</h1>
+    <p class="text-xl text-indigo-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">Real problems. Real solutions. Real results.</p>
   </div>
 </section>
 
@@ -22,14 +27,14 @@
 <!-- Filter -->
 <section class="py-8 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-wrap gap-2 justify-center">
+    <div class="flex flex-wrap gap-2 justify-center" data-aos="fade-up">
       <a href="{% url 'showcase:gallery' %}"
-         class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if not current_industry %}bg-indigo-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+         class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if not current_industry %}bg-indigo-600 text-white shadow-lg shadow-indigo-600/20{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
         All Industries
       </a>
       {% for value, label in industry_choices %}
       <a href="{% url 'showcase:gallery' %}?industry={{ value }}"
-         class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if current_industry == value %}bg-indigo-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+         class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if current_industry == value %}bg-indigo-600 text-white shadow-lg shadow-indigo-600/20{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
         {{ label }}
       </a>
       {% endfor %}
@@ -38,12 +43,12 @@
 </section>
 
 <!-- Gallery Grid -->
-<section class="py-16">
+<section class="py-20">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {% if projects %}
     <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
       {% for project in projects %}
-      <a href="{% url 'showcase:detail' project.slug %}" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+      <a href="{% url 'showcase:detail' project.slug %}" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
         {% if project.thumbnail %}
         <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="w-full h-48 object-cover" loading="lazy" width="400" height="192">
         {% else %}
@@ -65,10 +70,13 @@
       {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-12">
+    <div class="text-center py-12" data-aos="fade-up">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      </div>
       <p class="text-gray-500 text-lg mb-4">No case studies found{% if current_industry %} for this industry{% endif %}.</p>
       {% if current_industry %}
-      <a href="{% url 'showcase:gallery' %}" class="text-indigo-600 font-medium hover:text-indigo-800">View all case studies</a>
+      <a href="{% url 'showcase:gallery' %}" class="text-indigo-600 font-semibold hover:text-indigo-800">View all case studies</a>
       {% endif %}
     </div>
     {% endif %}

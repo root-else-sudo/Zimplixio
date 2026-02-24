@@ -1,25 +1,31 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Services — {{ site_name }}{% endblock %}
 
 {% block content %}
 <!-- Hero -->
-<section class="bg-gradient-to-br from-indigo-600 to-indigo-800 py-16 md:py-20">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Our Services</h1>
-    <p class="text-xl text-indigo-100 max-w-2xl mx-auto">
+<section class="relative bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900 py-20 md:py-24 overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl"></div>
+  </div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <p class="text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down" data-aos-duration="600">What We Do</p>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4" data-aos="fade-up" data-aos-duration="800">Our Services</h1>
+    <p class="text-xl text-indigo-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
       Enterprise-grade technology consulting, right-sized for growing businesses. From strategy to implementation, we've got you covered.
     </p>
   </div>
 </section>
 
 <!-- Service Tiers -->
-<section class="py-16">
+<section class="py-20">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid md:grid-cols-2 gap-8">
       <!-- Tier 1 -->
-      <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+      <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="100">
+        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
         </div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">Technology Strategy & Advisory</h3>
@@ -35,9 +41,9 @@
       </div>
 
       <!-- Tier 2 -->
-      <div class="bg-white border-2 border-indigo-500 rounded-2xl p-8 relative hover:shadow-lg transition-shadow">
+      <div class="bg-white border-2 border-indigo-500 rounded-2xl p-8 relative hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="200">
         <span class="absolute top-0 right-6 -translate-y-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>
-        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
         </div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">Solution Architecture & Implementation</h3>
@@ -53,8 +59,8 @@
       </div>
 
       <!-- Tier 3 -->
-      <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+      <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="300">
+        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         </div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">Process Optimization & Automation</h3>
@@ -70,8 +76,8 @@
       </div>
 
       <!-- Tier 4 -->
-      <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+      <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="400">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         </div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">Ongoing Technical Partnership</h3>
@@ -90,27 +96,30 @@
 </section>
 
 <!-- Engagement Process -->
-<section class="py-16 bg-gray-50">
+<section class="py-20 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">How We Work</h2>
+    <div class="text-center mb-14">
+      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">From First Call to Delivery</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up" data-aos-delay="100">How We Work</h2>
+    </div>
     <div class="grid md:grid-cols-4 gap-8">
-      <div class="text-center">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">1</div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">1</div>
         <h3 class="font-semibold text-gray-900 mb-2">Discovery Call</h3>
         <p class="text-sm text-gray-600">Free 30-minute conversation to understand your challenges and goals.</p>
       </div>
-      <div class="text-center">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">2</div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">2</div>
         <h3 class="font-semibold text-gray-900 mb-2">Assessment</h3>
         <p class="text-sm text-gray-600">We evaluate your current state and define a clear scope of work.</p>
       </div>
-      <div class="text-center">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">3</div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">3</div>
         <h3 class="font-semibold text-gray-900 mb-2">Execution</h3>
         <p class="text-sm text-gray-600">We deliver the work in focused sprints with regular check-ins.</p>
       </div>
-      <div class="text-center">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">4</div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">4</div>
         <h3 class="font-semibold text-gray-900 mb-2">Handoff</h3>
         <p class="text-sm text-gray-600">Full documentation, knowledge transfer, and ongoing support as needed.</p>
       </div>
@@ -119,20 +128,23 @@
 </section>
 
 <!-- FAQ -->
-<section class="py-16">
+<section class="py-20">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-10">Frequently Asked Questions</h2>
+    <div class="text-center mb-12">
+      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">Common Questions</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up" data-aos-delay="100">Frequently Asked Questions</h2>
+    </div>
     <div class="space-y-4" id="faq-accordion">
-      <div class="border border-gray-200 rounded-xl overflow-hidden">
+      <div class="border border-gray-200 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="100">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900">How is Zimplixio different from a typical consulting firm?</span>
           <svg class="faq-chevron w-5 h-5 text-gray-500 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="faq-content hidden px-5 pb-5 text-gray-600">
-          We're a small team of senior engineers and architects — not a staffing agency. Every engagement is led by someone with 15+ years of experience at companies like IBM, HPE, PayPal, and Intel. You get enterprise expertise without the enterprise overhead.
+          We're a small team of senior engineers and architects — not a staffing agency. Every engagement is led by someone with 15+ years of experience at companies like IBM, HPE, and Systems X. You get enterprise expertise without the enterprise overhead.
         </div>
       </div>
-      <div class="border border-gray-200 rounded-xl overflow-hidden">
+      <div class="border border-gray-200 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="150">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900">What size companies do you work with?</span>
           <svg class="faq-chevron w-5 h-5 text-gray-500 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -141,7 +153,7 @@
           We primarily work with small-to-medium businesses that are ready to level up their technology — typically companies with 10 to 500 employees. If you've outgrown ad-hoc solutions but aren't ready for a full internal engineering team, we're a great fit.
         </div>
       </div>
-      <div class="border border-gray-200 rounded-xl overflow-hidden">
+      <div class="border border-gray-200 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="200">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900">How long does a typical engagement last?</span>
           <svg class="faq-chevron w-5 h-5 text-gray-500 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -150,7 +162,7 @@
           It varies by scope. A strategy assessment might take 2-3 weeks. A full implementation project could be 2-6 months. Our ongoing partnership retainers are open-ended. We'll scope everything clearly during the discovery call.
         </div>
       </div>
-      <div class="border border-gray-200 rounded-xl overflow-hidden">
+      <div class="border border-gray-200 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="250">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900">Do you work with specific technologies?</span>
           <svg class="faq-chevron w-5 h-5 text-gray-500 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>

@@ -27,6 +27,6 @@ class ShowcaseProjectAdmin(admin.ModelAdmin):
         }),
         ('Case Study Content', {
             'classes': ('collapse',),
-            'fields': ('business_problem', 'approach', 'solution_description', 'architecture_diagram', 'outcomes', 'demo_url'),
+            'fields': ('business_problem', 'approach', 'solution_description', 'architecture_diagram', 'outcomes', 'demo_url', 'live_demo_url', 'system_design_url'),
         }),
     ]

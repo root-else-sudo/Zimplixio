@@ -4,7 +4,9 @@
       "Bash(python:*)",
       "Bash(pip install:*)",
       "Bash(pipenv install:*)",
-      "Bash(pipenv run python:*)"
+      "Bash(pipenv run python:*)",
+      "WebFetch(domain:recomares.com)",
+      "Bash(C:/Users/josephugalde/Documents/Zimplixio/.venv/Scripts/python.exe:*)"
     ]
   }
 }

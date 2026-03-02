@@ -28,6 +28,8 @@ class ShowcaseProject(models.Model):
     architecture_diagram = models.ImageField(upload_to='showcase/diagrams/', blank=True)
     outcomes = models.TextField(help_text="The Outcome — measurable results.")
     demo_url = models.URLField(blank=True)
+    live_demo_url = models.URLField(blank=True, help_text="URL to embed in an interactive iframe demo.")
+    system_design_url = models.URLField(blank=True, help_text="URL for the system-design view toggle.")
     thumbnail = models.ImageField(upload_to='showcase/thumbnails/', blank=True)
     industry = models.CharField(max_length=20, choices=INDUSTRY_CHOICES, default='cross-industry')
     tech_tags = models.ManyToManyField(TechTag, blank=True, related_name='projects')

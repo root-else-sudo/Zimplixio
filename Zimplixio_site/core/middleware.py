@@ -11,6 +11,7 @@ class ContentSecurityPolicyMiddleware:
             "img-src 'self' data:; "
             "font-src 'self'; "
             "connect-src 'self'; "
+            "frame-src https:; "
             "frame-ancestors 'none';"
         )
         return response

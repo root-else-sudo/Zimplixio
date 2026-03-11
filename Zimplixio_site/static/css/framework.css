@@ -1,0 +1,345 @@
+/* ==========================================================================
+   Framework-specific styles
+   ========================================================================== */
+
+/* --- Ghost Stage Numbers --- */
+.stage-ghost-number {
+  font-family: 'DM Serif Display', serif;
+  font-size: 7rem;
+  line-height: 1;
+  color: rgba(99, 102, 241, 0.06);
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .stage-ghost-number {
+    font-size: 8rem;
+    left: 1.5rem;
+  }
+}
+
+/* --- Callout Boxes --- */
+.framework-callout {
+  border-left: 3px solid #F59E0B;
+  background: rgba(245, 158, 11, 0.06);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 1.5rem 0;
+}
+
+.framework-callout-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #D97706;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Accordion Transitions --- */
+.stage-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+
+.stage-content.open {
+  opacity: 1;
+}
+
+.stage-chevron {
+  transition: transform 0.3s ease;
+}
+
+.stage-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* --- DM Serif Display headings --- */
+.font-display {
+  font-family: 'DM Serif Display', serif;
+}
+
+.font-body {
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* --- Comparison Tables --- */
+.framework-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.framework-table th {
+  background: #F9FAFB;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  color: #374151;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.framework-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #4B5563;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: top;
+}
+
+.framework-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* --- Question Slide Transitions --- */
+.question-slide {
+  animation: questionIn 0.3s ease-out;
+}
+
+@keyframes questionIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.question-slide-back {
+  animation: questionInBack 0.3s ease-out;
+}
+
+@keyframes questionInBack {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- Report Block Stagger Reveal --- */
+.report-block {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.report-block.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Readiness Badges --- */
+.badge-early {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-developing {
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563EB;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.badge-ready {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* --- Loading Animation --- */
+.loading-stage {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.loading-stage.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Verdict Pull Quote --- */
+.verdict-quote {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  border-left: 3px solid #F59E0B;
+  padding-left: 1.5rem;
+}
+
+/* --- Progress Bar --- */
+.progress-bar-fill {
+  transition: width 0.3s ease-out;
+}
+
+/* --- Assessment Option Buttons --- */
+.assessment-option {
+  transition: all 0.15s ease;
+}
+
+.assessment-option:hover {
+  border-color: #818CF8;
+  background: #F5F3FF;
+}
+
+.assessment-option.selected {
+  border-color: #6366F1;
+  background: #EEF2FF;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* ==========================================================================
+   Radial Hub-and-Spoke Diagram
+   ========================================================================== */
+
+/* --- Spoke draw-on animation --- */
+.spoke-line {
+  stroke-dasharray: var(--spoke-len);
+  stroke-dashoffset: var(--spoke-len);
+  animation: spokeDrawOn 0.6s ease-out forwards;
+}
+
+@keyframes spokeDrawOn {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.spoke-line.active {
+  stroke: #4F46E5;
+  filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.4));
+}
+
+/* --- Hub pulse ring --- */
+.hub-pulse-ring {
+  transform-origin: center;
+  animation: hubPulse 2.5s ease-out infinite;
+}
+
+.hub-pulse-ring.paused {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+@keyframes hubPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* --- Node styles --- */
+.spoke-node {
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.spoke-node:hover .node-circle,
+.spoke-node:focus-visible .node-circle {
+  stroke: #818CF8;
+}
+
+.spoke-node:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.spoke-node.active {
+  transform: scale(1.12);
+  filter: url(#glow);
+}
+
+.node-circle {
+  transition: stroke 0.3s ease, fill 0.3s ease;
+}
+
+.node-circle.ongoing {
+  stroke-dasharray: 6 4;
+}
+
+.node-circle.ongoing.active {
+  stroke-dasharray: none;
+}
+
+.node-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  fill: #6B7280;
+  transition: fill 0.3s ease;
+}
+
+.node-label.active {
+  fill: #4F46E5;
+  font-weight: 600;
+}
+
+.node-number {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  fill: #6B7280;
+  transition: fill 0.3s ease;
+}
+
+.node-number.active {
+  fill: white;
+}
+
+/* --- Mobile adjustments --- */
+@media (max-width: 639px) {
+  .node-label {
+    font-size: 9px;
+  }
+  .node-number {
+    font-size: 13px;
+  }
+}
+
+/* --- Print Styles --- */
+@media print {
+  header, footer, nav,
+  #framework-section,
+  #assessment-form,
+  #assessment-cta,
+  .no-print {
+    display: none !important;
+  }
+
+  #report-output {
+    display: block !important;
+  }
+
+  .report-block {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+}

@@ -9,6 +9,7 @@ pillow = "*"
 django-environ = "*"
 whitenoise = "*"
 django-ratelimit = "*"
+anthropic = "*"
 
 [dev-packages]
 

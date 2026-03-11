@@ -30,3 +30,7 @@ Thumbs.db
 
 # Pipenv
 Pipfile.lock
+
+# Frontend
+frontend/node_modules/
+Zimplixio_site/static/dist/

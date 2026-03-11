@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'showcase',
     'metrics',
     'booking',
+    'framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -100,6 +101,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Anthropic API
+ANTHROPIC_API_KEY = env('ANTHROPIC_API_KEY', default='')
 
 # Security (production only)
 if not DEBUG:

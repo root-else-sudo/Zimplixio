@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.title }} — {{ site_name }}{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/framework.css' %}">
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900 py-24 md:py-32 overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl"></div>
+  </div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-[12rem] md:text-[16rem] text-white opacity-[0.04] pointer-events-none select-none leading-none">AI</div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <a href="{% url 'showcase:gallery' %}" class="inline-flex items-center text-indigo-200 hover:text-white mb-6 transition-colors text-sm" data-aos="fade-right" data-aos-duration="600">
+      <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Back to Showcase
+    </a>
+    <span class="inline-block px-3 py-1 bg-white/20 text-white text-sm font-semibold rounded mb-4" data-aos="fade-up" data-aos-duration="600">{{ project.get_industry_display }}</span>
+    <p class="text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down" data-aos-duration="600">A Practitioner Framework</p>
+    <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-4" data-aos="fade-up" data-aos-duration="800">
+      Responsible AI Adoption
+    </h1>
+    <p class="text-xl md:text-2xl text-indigo-200 mb-4 font-body font-medium" data-aos="fade-up" data-aos-delay="100">
+      For Small & Mid-Sized Businesses
+    </p>
+    {% if project.tech_tags.all %}
+    <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+      <p class="text-indigo-300 font-medium tracking-wider uppercase text-xs mb-2">Demo Tech Stack</p>
+      <div class="flex flex-wrap gap-2">
+        {% for tag in project.tech_tags.all %}
+        <span class="px-3 py-1 bg-white/10 text-indigo-100 text-sm rounded-full">{{ tag.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Core Philosophy -->
+<section class="py-16 bg-gray-50" data-aos="fade-up">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">Core Philosophy</p>
+    <p class="text-lg text-gray-700 leading-relaxed">
+      AI adoption is not a technology challenge — it is an organizational change challenge.
+      Most SMBs approach AI as a tooling decision. This framing almost always leads to underperformance.
+      The real work is organizational: aligning people, processes, and governance around a new way of working.
+    </p>
+  </div>
+</section>
+
+<!-- Framework Accordion Section -->
+<section id="framework-section" class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14" data-aos="fade-up">
+      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">The 6-Stage Framework</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900">From Assessment to Measurable ROI</h2>
+    </div>
+
+    <div id="framework-root"></div>
+  </div>
+</section>
+
+<!-- Closing Philosophy -->
+<section class="py-16 bg-gray-50" data-aos="fade-up">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-lg text-gray-700 leading-relaxed italic font-display">
+      "The SMBs that will win with AI are not the ones who move fastest — they are the ones who build
+      durable internal capability, protect their clients and their data, and create measurable business
+      value rather than impressive demos."
+    </p>
+  </div>
+</section>
+
+<!-- CTA Transition Panel -->
+<section id="assessment-cta" class="py-20 bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-900 relative overflow-hidden" data-aos="fade-up">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+  </div>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 font-display">See Where Your Company Stands</h2>
+    <p class="text-indigo-200 text-lg mb-8">
+      Answer 8 questions and receive a personalized AI readiness report for your organization — powered by the framework above.
+    </p>
+    <button id="start-assessment-btn" class="px-8 py-4 bg-white text-indigo-700 font-bold rounded-lg hover:bg-indigo-50 transition-colors text-lg shadow-lg shadow-indigo-900/30 cursor-pointer">
+      Start Assessment
+      <svg class="inline-block w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    </button>
+    {% if not api_available %}
+    <p class="text-indigo-300 text-sm mt-4">Assessment requires API configuration. <a href="{% url 'pages:contact' %}" class="underline hover:text-white">Contact us</a> for a live demo.</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Assessment Section -->
+<section id="assessment" class="py-20 bg-white">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Assessment Form -->
+    <div id="assessment-form" class="hidden">
+      <div class="text-center mb-8">
+        <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">AI Readiness Assessment</p>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Your Organization Profile</h2>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mb-8">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span id="progress-label">Question 1 of 8</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="progress-bar" class="progress-bar-fill bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Question Container -->
+      <div id="question-container" class="min-h-[300px]">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between mt-8">
+        <button id="btn-back" class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer" disabled>
+          <svg class="inline-block w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button id="btn-next" class="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/20 cursor-pointer" disabled>
+          Next
+          <svg class="inline-block w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button id="btn-submit" class="hidden px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/20 cursor-pointer" disabled>
+          Generate My Assessment
+          <svg class="inline-block w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="assessment-loading" class="hidden text-center py-16">
+      <div class="mb-8">
+        <div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-6"></div>
+        <p class="text-lg text-gray-700 font-medium mb-6">Analyzing your profile...</p>
+      </div>
+      <div id="loading-stages" class="space-y-2 max-w-xs mx-auto text-left">
+        <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>AI Readiness Assessment</div>
+        <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>Workflows</div>
+        <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>Guardians: Governance</div>
+        <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>Data Protection</div>
+        <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>People & Change</div>
+        <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>Measurement & ROI</div>
+      </div>
+    </div>
+
+    <!-- Report Output -->
+    <div id="report-output" class="hidden">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Error State -->
+    <div id="assessment-error" class="hidden text-center py-16">
+      <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+      </div>
+      <p id="error-message" class="text-gray-700 text-lg mb-4"></p>
+      <button id="btn-retry" class="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer">
+        Try Again
+      </button>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'dist/framework-accordion.js' %}"></script>
+<script src="{% static 'js/framework-assessment.js' %}"></script>
+{% endblock %}

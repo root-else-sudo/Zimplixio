@@ -6,7 +6,7 @@ from .models import TechTag, ShowcaseProject
 class ShowcaseTestMixin:
     @classmethod
     def setUpTestData(cls):
-        cls.tag = TechTag.objects.create(name='Python')
+        cls.tag, _ = TechTag.objects.get_or_create(name='Python')
         cls.published = ShowcaseProject.objects.create(
             title='Published Project',
             slug='published-project',

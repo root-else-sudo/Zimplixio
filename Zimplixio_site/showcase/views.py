@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.views.generic import ListView, DetailView
 from .models import ShowcaseProject
 
@@ -28,3 +29,14 @@ class ShowcaseDetailView(DetailView):
 
     def get_queryset(self):
         return ShowcaseProject.objects.filter(is_published=True).prefetch_related('tech_tags', 'screenshots')
+
+    def get_template_names(self):
+        if self.object.slug == 'ai-adoption-framework':
+            return ['showcase/detail-framework.html']
+        return [self.template_name]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.object.slug == 'ai-adoption-framework':
+            context['api_available'] = bool(getattr(settings, 'ANTHROPIC_API_KEY', ''))
+        return context

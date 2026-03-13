@@ -33,16 +33,16 @@ CRITICAL RULES:
 
 REQUIRED JSON SCHEMA:
 {
-  "readiness_level": "Early" | "Developing" | "Ready",
+  "readiness_level": "early" | "developing" | "ready",
   "readiness_summary": "One sentence diagnosis specific to their profile",
   "priority_stage": {
     "name": "Stage name from the framework",
     "reason": "2-3 sentences specific to their inputs explaining why this stage first"
   },
   "top_risks": [
-    { "risk": "Short risk title", "detail": "One sentence specific to their context" },
-    { "risk": "...", "detail": "..." },
-    { "risk": "...", "detail": "..." }
+    { "title": "Short risk title", "detail": "One sentence specific to their context" },
+    { "title": "...", "detail": "..." },
+    { "title": "...", "detail": "..." }
   ],
   "first_30_days": [
     "Specific action 1 tailored to their profile",
@@ -59,15 +59,19 @@ def build_user_prompt(answers):
     if isinstance(concerns, list):
         concerns = ', '.join(concerns)
 
+    goals = answers.get('goals', 'Not specified')
+    if isinstance(goals, list):
+        goals = ', '.join(goals)
+
     return f"""A company has submitted the following AI readiness profile:
 
 - Industry: {answers.get('industry', 'Not specified')}
 - Company size: {answers.get('size', 'Not specified')}
-- Current AI usage: {answers.get('current_usage', 'Not specified')}
-- Where they want AI to create value first: {answers.get('value_target', 'Not specified')}
-- Workflow documentation level: {answers.get('workflow_docs', 'Not specified')}
-- Team AI literacy: {answers.get('ai_literacy', 'Not specified')}
+- Current AI usage: {answers.get('ai_usage', 'Not specified')}
+- Data readiness: {answers.get('data_readiness', 'Not specified')}
+- Leadership stance on AI adoption: {answers.get('leadership', 'Not specified')}
+- Primary goals for AI adoption: {goals}
 - Biggest concerns about AI adoption: {concerns}
-- Primary goal in the next 90 days: {answers.get('goal_90_days', 'Not specified')}
+- Expected timeline for meaningful AI adoption: {answers.get('timeline', 'Not specified')}
 
 Generate their AI Readiness Assessment. Return only the JSON object."""

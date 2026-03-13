@@ -12,14 +12,14 @@ class AssessmentAPITests(TestCase):
     def setUp(self):
         self.url = reverse('framework:assessment')
         self.valid_answers = {
-            'industry': 'Technology',
-            'size': '11–50 employees',
-            'current_usage': 'Experimenting informally',
-            'value_target': 'Internal / Engineering productivity',
-            'workflow_docs': 'Partially documented',
-            'ai_literacy': 'Mixed — varies by role',
-            'concerns': ['Cost overruns & runaway spend', 'Data security & IP exposure'],
-            'goal_90_days': 'Launch a focused pilot',
+            'industry': 'Technology or Software',
+            'size': '11–50 (small)',
+            'ai_usage': 'Experimenting informally (staff using ChatGPT, etc.)',
+            'data_readiness': 'Mostly centralised but not consistently structured',
+            'leadership': 'Supportive — actively asking for a plan',
+            'goals': ['Speed up internal processes', 'Reduce manual or repetitive work'],
+            'concerns': ['Cost and ROI uncertainty', 'Lack of internal AI skills'],
+            'timeline': 'Short term — 3 to 6 months',
         }
 
     def test_get_returns_405(self):
@@ -58,16 +58,16 @@ class AssessmentAPITests(TestCase):
     @override_settings(ANTHROPIC_API_KEY='test-key')
     def test_post_with_valid_answers_returns_report(self):
         mock_report = {
-            'readiness_level': 'Developing',
+            'readiness_level': 'developing',
             'readiness_summary': 'Your organization is experimenting but lacks governance.',
             'priority_stage': {
                 'name': 'Guardians: Governance & Cost Control',
                 'reason': 'Without governance, informal experiments risk becoming costly.'
             },
             'top_risks': [
-                {'risk': 'Token cost overruns', 'detail': 'Unmonitored experimentation can escalate costs.'},
-                {'risk': 'IP exposure', 'detail': 'Ungoverned usage risks sending proprietary data to LLMs.'},
-                {'risk': 'Shadow AI', 'detail': 'Teams may adopt tools without IT visibility.'},
+                {'title': 'Token cost overruns', 'detail': 'Unmonitored experimentation can escalate costs.'},
+                {'title': 'IP exposure', 'detail': 'Ungoverned usage risks sending proprietary data to LLMs.'},
+                {'title': 'Shadow AI', 'detail': 'Teams may adopt tools without IT visibility.'},
             ],
             'first_30_days': [
                 'Audit current AI tool usage across all teams.',
@@ -95,7 +95,7 @@ class AssessmentAPITests(TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertTrue(data['success'])
-        self.assertEqual(data['report']['readiness_level'], 'Developing')
+        self.assertEqual(data['report']['readiness_level'], 'developing')
         self.assertEqual(len(data['report']['top_risks']), 3)
 
     @override_settings(ANTHROPIC_API_KEY='test-key')
@@ -175,21 +175,21 @@ class PromptTests(TestCase):
 
     def test_user_prompt_interpolates_answers(self):
         answers = {
-            'industry': 'Healthcare',
-            'size': '51–200 employees',
-            'current_usage': 'One tool in production',
-            'value_target': 'Both equally',
-            'workflow_docs': 'Well documented',
-            'ai_literacy': 'Moderate — comfortable with basic tools',
-            'concerns': ['Regulatory & compliance risk', 'Data security & IP exposure'],
-            'goal_90_days': 'Scale something already working',
+            'industry': 'Healthcare or Life Sciences',
+            'size': '51–200 (mid-size)',
+            'ai_usage': 'A few approved tools in limited departments',
+            'data_readiness': 'Clean and structured in one or more core systems',
+            'leadership': 'Fully committed with budget allocated',
+            'goals': ['Improve customer experience', 'Reduce operational costs'],
+            'concerns': ['Regulatory or compliance risk', 'Data privacy and security'],
+            'timeline': 'Medium term — 6 to 12 months',
         }
         prompt = build_user_prompt(answers)
-        self.assertIn('Healthcare', prompt)
-        self.assertIn('51–200 employees', prompt)
-        self.assertIn('One tool in production', prompt)
-        self.assertIn('Scale something already working', prompt)
-        self.assertIn('Regulatory & compliance risk', prompt)
+        self.assertIn('Healthcare or Life Sciences', prompt)
+        self.assertIn('51–200 (mid-size)', prompt)
+        self.assertIn('A few approved tools in limited departments', prompt)
+        self.assertIn('Medium term — 6 to 12 months', prompt)
+        self.assertIn('Regulatory or compliance risk', prompt)
 
     def test_user_prompt_handles_missing_keys(self):
         prompt = build_user_prompt({})

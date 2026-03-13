@@ -119,6 +119,7 @@ export function FlowHub({ activeStage, onToggle }: FlowHubProps) {
         zoomOnScroll={false}
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
+        preventScrolling={false}
         proOptions={{ hideAttribution: true }}
         nodeOrigin={[0.5, 0.5]}
         style={{ background: 'transparent' }}

@@ -1,9 +1,10 @@
+{% load static %}
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200" x-data="{ mobileOpen: false }">
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
-      <a href="{% url 'pages:home' %}" class="text-2xl font-bold text-indigo-700 tracking-tight">
-        Zimplixio
+      <a href="{% url 'pages:home' %}" class="flex items-center">
+        <img src="{% static 'images/logo.svg' %}" alt="Zimplixio" class="h-14 w-auto">
       </a>
 
       <!-- Desktop nav -->

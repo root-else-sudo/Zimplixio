@@ -6,12 +6,10 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
 from django_ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-from .content import STAGES
 from .models import AssessmentLead
 from .prompts import build_system_prompt, build_user_prompt
 
@@ -104,19 +102,9 @@ def _send_lead_notification(name, email, readiness_level, answers):
         logger.exception('Failed to send lead notification email')
 
 
-class FrameworkPageView(TemplateView):
-    template_name = 'framework/index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['stages'] = STAGES
-        context['api_available'] = bool(getattr(settings, 'ANTHROPIC_API_KEY', ''))
-        return context
-
-
 REQUIRED_ANSWER_KEYS = {
-    'industry', 'size', 'current_usage', 'value_target',
-    'workflow_docs', 'ai_literacy', 'concerns', 'goal_90_days',
+    'industry', 'size', 'ai_usage', 'data_readiness',
+    'leadership', 'goals', 'concerns', 'timeline',
 }
 
 

@@ -2,28 +2,6 @@
    Framework-specific styles
    ========================================================================== */
 
-/* --- Ghost Stage Numbers --- */
-.stage-ghost-number {
-  font-family: 'DM Serif Display', serif;
-  font-size: 7rem;
-  line-height: 1;
-  color: rgba(99, 102, 241, 0.06);
-  position: absolute;
-  top: 50%;
-  left: 1rem;
-  transform: translateY(-50%);
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
-
-@media (min-width: 768px) {
-  .stage-ghost-number {
-    font-size: 8rem;
-    left: 1.5rem;
-  }
-}
-
 /* --- Callout Boxes --- */
 .framework-callout {
   border-left: 3px solid #F59E0B;
@@ -40,26 +18,6 @@
   text-transform: uppercase;
   color: #D97706;
   margin-bottom: 0.5rem;
-}
-
-/* --- Accordion Transitions --- */
-.stage-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
-  opacity: 0;
-}
-
-.stage-content.open {
-  opacity: 1;
-}
-
-.stage-chevron {
-  transition: transform 0.3s ease;
-}
-
-.stage-chevron.rotated {
-  transform: rotate(180deg);
 }
 
 /* --- DM Serif Display headings --- */
@@ -207,26 +165,8 @@
 }
 
 /* ==========================================================================
-   Radial Hub-and-Spoke Diagram
+   React Flow Hub-and-Spoke Diagram
    ========================================================================== */
-
-/* --- Spoke draw-on animation --- */
-.spoke-line {
-  stroke-dasharray: var(--spoke-len);
-  stroke-dashoffset: var(--spoke-len);
-  animation: spokeDrawOn 0.6s ease-out forwards;
-}
-
-@keyframes spokeDrawOn {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.spoke-line.active {
-  stroke: #4F46E5;
-  filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.4));
-}
 
 /* --- Hub/node entrance animations --- */
 @keyframes nodeEnter {
@@ -309,75 +249,6 @@
   }
 }
 
-/* --- Node styles --- */
-.spoke-node {
-  cursor: pointer;
-  outline: none;
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.spoke-node:hover .node-circle,
-.spoke-node:focus-visible .node-circle {
-  stroke: #818CF8;
-}
-
-.spoke-node:focus-visible {
-  outline: 2px solid #6366F1;
-  outline-offset: 4px;
-  border-radius: 50%;
-}
-
-.spoke-node.active {
-  transform: scale(1.12);
-  filter: url(#glow);
-}
-
-.node-circle {
-  transition: stroke 0.3s ease, fill 0.3s ease;
-}
-
-.node-circle.ongoing {
-  stroke-dasharray: 6 4;
-}
-
-.node-circle.ongoing.active {
-  stroke-dasharray: none;
-}
-
-.node-label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  fill: #6B7280;
-  transition: fill 0.3s ease;
-}
-
-.node-label.active {
-  fill: #4F46E5;
-  font-weight: 600;
-}
-
-.node-number {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  fill: #6B7280;
-  transition: fill 0.3s ease;
-}
-
-.node-number.active {
-  fill: white;
-}
-
-/* --- Mobile adjustments --- */
-@media (max-width: 639px) {
-  .node-label {
-    font-size: 9px;
-  }
-  .node-number {
-    font-size: 13px;
-  }
-}
-
 /* ==========================================================================
    Stage Modal — enter/exit animations
    ========================================================================== */
@@ -399,6 +270,111 @@
 .modal-card.hidden {
   opacity: 0;
   transform: scale(0.95);
+}
+
+/* --- Loading Container & Spinner --- */
+.loading-container {
+  padding: 3rem 0;
+}
+
+.loading-spinner {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 4px solid #E0E7FF;
+  border-top-color: #6366F1;
+  border-radius: 50%;
+  animation: spinnerRotate 0.8s linear infinite;
+}
+
+@keyframes spinnerRotate {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Readiness Badge --- */
+.readiness-badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* --- Report Section Title --- */
+.report-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin-bottom: 0.75rem;
+}
+
+/* --- Report Block Spacing --- */
+#report-output .report-block {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.07);
+}
+
+/* --- Risk Grid --- */
+.risk-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .risk-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.risk-card {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+}
+
+/* --- First 30 Days List --- */
+.first-30-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.first-30-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #374151;
+}
+
+.first-30-number {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: #EEF2FF;
+  color: #4338CA;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.125rem;
+}
+
+/* --- Contact Capture --- */
+.contact-capture {
+  padding: 2rem 0;
 }
 
 /* --- Print Styles --- */

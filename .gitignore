@@ -24,6 +24,18 @@ media/
 *.swp
 *.swo
 
+# Claude Code local settings
+.claude/settings.local.json
+
+# Source/working design assets in repo root (copied to static/ where needed)
+Favicon.svg
+Favicon3.png
+Icon.png
+favicon-32x32.png
+cropped_circle_image.png
+"Zimplixio Banner.png"
+"Zimplixio Banner.svg"
+
 # OS
 .DS_Store
 Thumbs.db

@@ -9,7 +9,8 @@
       "Bash(C:/Users/josephugalde/Documents/Zimplixio/.venv/Scripts/python.exe:*)",
       "Bash(python3:*)",
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(find /c/Users/josephugalde/Documents/Zimplixio/Zimplixio_site/framework -name \"models.py\" -o -name \"__init__.py\" | xargs ls -la)"
     ]
   }
 }

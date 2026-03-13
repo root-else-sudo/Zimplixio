@@ -1,3 +1,4 @@
+import '@xyflow/react/dist/style.css';
 import { createRoot } from 'react-dom/client';
 import { FrameworkAccordion } from './components/FrameworkAccordion';
 

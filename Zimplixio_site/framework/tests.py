@@ -119,6 +119,49 @@ class AssessmentAPITests(TestCase):
         self.assertFalse(data['success'])
 
 
+@override_settings(RATELIMIT_ENABLE=False)
+class SaveLeadAPITests(TestCase):
+    def setUp(self):
+        self.url = reverse('framework:save_lead')
+
+    def test_get_returns_405(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_missing_name_returns_400(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'email': 'jane@company.com'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()['success'])
+
+    def test_fake_email_returns_400(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'name': 'Jane', 'email': 'test@test.com'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()['success'])
+
+    def test_valid_lead_saved(self):
+        from .models import AssessmentLead
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'name': 'Jane Smith', 'email': 'jane@company.com', 'readiness_level': 'Developing'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['success'])
+        self.assertEqual(AssessmentLead.objects.count(), 1)
+        lead = AssessmentLead.objects.first()
+        self.assertEqual(lead.name, 'Jane Smith')
+        self.assertEqual(lead.email, 'jane@company.com')
+        self.assertEqual(lead.readiness_level, 'Developing')
+
+
 class PromptTests(TestCase):
     def test_system_prompt_contains_stages(self):
         prompt = build_system_prompt()

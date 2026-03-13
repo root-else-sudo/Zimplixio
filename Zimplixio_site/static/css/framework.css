@@ -228,6 +228,65 @@
   filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.4));
 }
 
+/* --- Hub/node entrance animations --- */
+@keyframes nodeEnter {
+  from { opacity: 0; transform: scale(0.35); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes edgeEnter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* --- Orbit ring (always rotating) --- */
+.hub-orbit-ring {
+  animation: hubOrbitRotate 30s linear infinite;
+}
+
+@keyframes hubOrbitRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* --- Stage node pulse ring --- */
+.stage-pulse-ring {
+  transform-origin: center;
+  animation: stagePulse 3.5s ease-out infinite;
+}
+
+.stage-pulse-ring.paused {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+@keyframes stagePulse {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* --- Stage node orbit rings --- */
+.stage-orbit-cw {
+  animation: stageOrbitCW 18s linear infinite;
+}
+
+.stage-orbit-ccw {
+  animation: stageOrbitCCW 15s linear infinite;
+}
+
+@keyframes stageOrbitCW  { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
+@keyframes stageOrbitCCW { from { transform: rotate(0deg); }   to { transform: rotate(-360deg); } }
+
+/* --- Stage icon float --- */
+.stage-icon-float {
+  animation: stageIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes stageIconFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-3px); }
+}
+
 /* --- Hub pulse ring --- */
 .hub-pulse-ring {
   transform-origin: center;
@@ -317,6 +376,29 @@
   .node-number {
     font-size: 13px;
   }
+}
+
+/* ==========================================================================
+   Stage Modal — enter/exit animations
+   ========================================================================== */
+
+.modal-overlay {
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-card {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform-origin: center;
+}
+
+.modal-card.hidden {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 /* --- Print Styles --- */

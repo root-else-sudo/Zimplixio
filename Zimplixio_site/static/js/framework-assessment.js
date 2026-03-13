@@ -84,7 +84,11 @@ document.addEventListener('DOMContentLoaded', function () {
     currentQuestion: 0,
     answers: {},
     loading: false,
-    direction: 'forward'
+    direction: 'forward',
+    // contact capture
+    showingContact: false,
+    leadName: '',
+    leadEmail: ''
   };
 
   // --- DOM Elements ---
@@ -269,6 +273,129 @@ document.addEventListener('DOMContentLoaded', function () {
     renderQuestion();
   });
 
+  // --- Contact Capture Step ---
+  var BLOCKED_DOMAINS = [
+    'test.com', 'example.com', 'fake.com', 'mailinator.com', 'guerrillamail.com',
+    'throwaway.email', 'yopmail.com', 'sharklasers.com', 'trashmail.com',
+    'trashmail.me', 'trashmail.io', 'dispostable.com', 'maildrop.cc',
+    'tempr.email', 'tempmail.com', 'temp-mail.org', 'getnada.com', 'burnermail.io',
+    'spam4.me'
+  ];
+
+  function validateContactEmail(email) {
+    email = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return 'Please enter a valid email address.';
+    }
+    var domain = email.split('@')[1];
+    if (BLOCKED_DOMAINS.indexOf(domain) !== -1) {
+      return 'Please use a real business or personal email address.';
+    }
+    if (/^(test|fake|noreply|no-reply|admin|null|none|asdf|qwerty|aaa|bbb|xxx|user123)\b/i.test(email.split('@')[0])) {
+      return 'Please enter your real email so we can follow up with you.';
+    }
+    return null;
+  }
+
+  function showContactStep(report) {
+    loadingEl.classList.add('hidden');
+
+    var contactEl = document.getElementById('assessment-contact');
+    contactEl.innerHTML = '';
+    contactEl.classList.remove('hidden');
+
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    var html = '<div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 max-w-lg mx-auto">';
+    html += '<div class="text-center mb-6">';
+    html += '<div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo-100 mb-4">';
+    html += '<svg class="w-7 h-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+    html += '</div>';
+    html += '<p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-1">Your report is ready</p>';
+    html += '<h3 class="text-2xl font-bold text-gray-900 mb-2">One last step</h3>';
+    html += '<p class="text-gray-500 text-sm">Enter your details to unlock your personalised AI Readiness Report. We may reach out to discuss your results — no spam, ever.</p>';
+    html += '</div>';
+    html += '<div class="space-y-4">';
+    html += '<div>';
+    html += '<label class="block text-sm font-medium text-gray-700 mb-1" for="lead-name">Your name</label>';
+    html += '<input id="lead-name" type="text" autocomplete="name" placeholder="Jane Smith" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">';
+    html += '</div>';
+    html += '<div>';
+    html += '<label class="block text-sm font-medium text-gray-700 mb-1" for="lead-email">Work or personal email</label>';
+    html += '<input id="lead-email" type="email" autocomplete="email" placeholder="jane@company.com" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">';
+    html += '</div>';
+    html += '<p id="contact-error" class="text-sm text-red-600 hidden"></p>';
+    html += '</div>';
+    html += '<button id="btn-get-report" class="mt-6 w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer text-base">';
+    html += 'Unlock My Report &rarr;';
+    html += '</button>';
+    html += '<button id="btn-skip-contact" class="mt-3 w-full py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer">';
+    html += 'Skip and view report';
+    html += '</button>';
+    html += '</div>';
+
+    contactEl.innerHTML = html;
+
+    var nameInput = document.getElementById('lead-name');
+    var emailInput = document.getElementById('lead-email');
+    nameInput.focus();
+
+    function submitContact(skipLead) {
+      var contactErr = document.getElementById('contact-error');
+      if (!skipLead) {
+        var name = nameInput.value.trim();
+        var email = emailInput.value.trim();
+
+        if (!name) {
+          contactErr.textContent = 'Please enter your name.';
+          contactErr.classList.remove('hidden');
+          nameInput.focus();
+          return;
+        }
+        var emailErrMsg = validateContactEmail(email);
+        if (emailErrMsg) {
+          contactErr.textContent = emailErrMsg;
+          contactErr.classList.remove('hidden');
+          emailInput.focus();
+          return;
+        }
+
+        contactErr.classList.add('hidden');
+        state.leadName = name;
+        state.leadEmail = email;
+
+        // Save lead in background — don't block report reveal
+        fetch('/framework/api/save-lead/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            readiness_level: report.readiness_level || '',
+            answers: state.answers,
+          }),
+        }).catch(function () { /* silently ignore — report still shows */ });
+      }
+
+      contactEl.innerHTML = '';
+      contactEl.classList.add('hidden');
+      renderReport(report);
+    }
+
+    document.getElementById('btn-get-report').addEventListener('click', function () {
+      submitContact(false);
+    });
+
+    document.getElementById('btn-skip-contact').addEventListener('click', function () {
+      submitContact(true);
+    });
+
+    emailInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { submitContact(false); }
+    });
+  }
+
   // --- Submit Assessment ---
   function handleSubmit() {
     formEl.classList.add('hidden');
@@ -313,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
       loadingEl.classList.add('hidden');
 
       if (result.data.success) {
-        renderReport(result.data.report);
+        showContactStep(result.data.report);
       } else {
         var msg = 'Something went wrong. Please try again.';
         if (result.status === 429) {
@@ -432,7 +559,12 @@ document.addEventListener('DOMContentLoaded', function () {
         state.currentQuestion = 0;
         state.answers = {};
         state.direction = 'forward';
+        state.showingContact = false;
+        state.leadName = '';
+        state.leadEmail = '';
         reportEl.classList.add('hidden');
+        var contactEl = document.getElementById('assessment-contact');
+        if (contactEl) { contactEl.innerHTML = ''; contactEl.classList.add('hidden'); }
         reportEl.innerHTML = '';
         formEl.classList.remove('hidden');
         renderQuestion();

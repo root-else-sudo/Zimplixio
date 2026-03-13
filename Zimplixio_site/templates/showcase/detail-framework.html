@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/framework.css' %}">
+<link rel="stylesheet" href="{% static 'dist/framework-accordion.css' %}">
 <meta name="csrf-token" content="{{ csrf_token }}">
 {% endblock %}
 
@@ -158,6 +159,11 @@
         <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>People & Change</div>
         <div class="loading-stage text-sm text-gray-500"><span class="text-indigo-500 mr-2">&#10003;</span>Measurement & ROI</div>
       </div>
+    </div>
+
+    <!-- Contact Capture (shown after loading, before report) -->
+    <div id="assessment-contact" class="hidden">
+      <!-- Populated by JS -->
     </div>
 
     <!-- Report Output -->

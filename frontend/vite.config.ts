@@ -12,7 +12,8 @@ export default defineConfig({
       output: {
         // No hashing — WhiteNoise handles cache-busting in production
         entryFileNames: 'framework-accordion.js',
-        assetFileNames: '[name][extname]',
+        assetFileNames: (info) =>
+          info.name?.endsWith('.css') ? 'framework-accordion.css' : '[name][extname]',
         // Single file, no code splitting
         manualChunks: undefined,
       },

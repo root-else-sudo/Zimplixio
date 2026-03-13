@@ -105,6 +105,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Anthropic API
 ANTHROPIC_API_KEY = env('ANTHROPIC_API_KEY', default='')
 
+# Email
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@zimplixio.com')
+LEAD_NOTIFICATION_EMAIL = 'joe.ugalde@zimplixio.com'
+
 # Security (production only)
 if not DEBUG:
     SECURE_SSL_REDIRECT = True

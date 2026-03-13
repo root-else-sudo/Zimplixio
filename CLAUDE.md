@@ -23,7 +23,7 @@ python manage.py migrate
 python manage.py createsuperuser
 
 # Tests
-python manage.py test                              # Run all tests (47 tests)
+python manage.py test                              # Run all tests (50 tests)
 python manage.py test pages                        # Run tests for a specific app
 python manage.py test pages.tests.PageStatusTests  # Run a specific test class
 python manage.py test pages.tests.PageStatusTests.test_home_page  # Run a single test
@@ -71,6 +71,7 @@ python manage.py check --deploy
 | `/book/` | booking | BookCallView |
 | `/book/success/` | booking | BookingSuccessView |
 | `/framework/api/assessment/` | framework | assessment_view (POST, Anthropic API) |
+| `/framework/api/save-lead/` | framework | save_lead_view (POST, saves AssessmentLead + sends email notification) |
 | `/zm-admin/` | django.admin | Admin interface |
 | `/sitemap.xml` | django.sitemaps | XML sitemap |
 | `/robots.txt` | — | TemplateView |
@@ -84,6 +85,7 @@ python manage.py check --deploy
 - **`metrics.NPSMetric`** — NPS scores (single-active enforcement via `save()` override)
 - **`booking.TimeSlot`** — admin-defined weekly available windows (day_of_week, start_time, end_time, is_active)
 - **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled)
+- **`framework.AssessmentLead`** — lead captures from the AI assessment (fields: name, email, submitted_at, readiness_level, answers JSON)
 
 ### Key Dependencies
 
@@ -92,6 +94,7 @@ python manage.py check --deploy
 - `django-ratelimit` — rate limiting on contact and booking form POSTs (5/hr per IP), assessment API (3/hr per IP)
 - `Pillow` — image field support for showcase uploads
 - `anthropic` — Anthropic Python SDK for AI readiness assessment API calls
+- `@xyflow/react` (v12) — React Flow library for hub-and-spoke diagram in framework accordion (bundled into `static/dist/framework-accordion.js`)
 - `gunicorn` — WSGI server for production (referenced in `Procfile`, not yet in `Pipfile`)
 - Tailwind CSS via CDN (development)
 - AOS (Animate On Scroll) via unpkg CDN — global scroll-triggered animations
@@ -169,8 +172,8 @@ templates/
 | `static/js/faq-accordion.js` | Expand/collapse FAQ items on services page |
 | `static/js/timeline.js` | Interactive career timeline on about page |
 | `static/js/demo-iframe.js` | Iframe loading overlay + toggle buttons on showcase detail page |
-| `static/js/framework-accordion.js` | Expand/collapse stage cards on AI framework page |
-| `static/js/framework-assessment.js` | Form wizard, API call, loading animation, report rendering for AI assessment |
+| `static/js/framework-accordion.js` | Vanilla JS expand/collapse for stage cards — used by `framework/index.html` (unrouted, see Known Gotchas) |
+| `static/js/framework-assessment.js` | Form wizard, API call, loading animation, contact capture step, report rendering for AI assessment |
 
 ### Other Static Files
 
@@ -178,6 +181,8 @@ templates/
 |------|---------|
 | `static/css/main.css` | Custom styles (smooth scrolling, focus styles, accordion transitions) |
 | `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules |
+| `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
+| `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
 | `static/manifest.json` | PWA web app manifest with Zimplixio branding |
 
 ### Security
@@ -189,16 +194,21 @@ templates/
 
 ### AI Adoption Framework (Embedded in Showcase)
 
-The framework content is embedded directly in the showcase detail page at `/showcase/ai-adoption-framework/` via a custom template (`templates/showcase/detail-framework.html`). The standalone page at `/framework/` no longer exists.
+The framework content is served at `/showcase/ai-adoption-framework/` via a custom template (`templates/showcase/detail-framework.html`). `framework/urls.py` routes the assessment API and save-lead endpoints. `FrameworkPageView` and `templates/framework/index.html` exist in the codebase but are **unrouted dead code** (see Known Gotchas).
 
 - **Custom template routing**: `ShowcaseDetailView.get_template_names()` returns `detail-framework.html` when `slug == 'ai-adoption-framework'`; `get_context_data()` injects `stages` from `framework.content.STAGES` and `api_available`
-- **Page structure**: Hero (with "Try the Assessment" scroll button) → Core Philosophy → Framework Accordion (6 stages) → Closing Quote → Case Study sections → CTA Panel → Assessment wizard
+- **Page structure**: Hero (with "Try the Assessment" scroll button) → Core Philosophy → Framework Accordion (6 stages, React Flow) → Closing Quote → CTA Panel → Assessment wizard
+- **Framework accordion**: React + React Flow component mounted on `<div id="framework-root">`. Hub-and-spoke diagram with `HubNode` (center AI circle, pulse/orbit animations), `StageNode` (6 stage circles with icons, idle animations), `GradientEdge` (animated dot spokes). Clicking a node opens a `StageModal` portal overlay with full stage content. Tech stack: React, Vite, `@xyflow/react` v12.
+- **React source**: `frontend/src/` — `FlowHub.tsx`, `HubNode.tsx`, `StageNode.tsx`, `StageIcons.tsx`, `GradientEdge.tsx`, `StageModal.tsx`, `FrameworkAccordion.tsx`. Build with `cd frontend && npm run build`.
 - **Fonts**: DM Serif Display + DM Sans loaded via Google Fonts in `{% block extra_head %}`
-- **Content source**: `framework/content.py` — all stage content hardcoded as Python dicts with `body_html` rendered via `|safe`
-- **Assessment API**: `POST /framework/api/assessment/` — rate-limited 3/hr per IP, calls `claude-sonnet-4-6`, returns structured JSON report
-- **Prompt engineering**: `framework/prompts.py` — system prompt encodes full framework + strict JSON schema; user prompt interpolates 8 answers
-- **No models**: The framework app has no database models — content is in `content.py`, the showcase gallery entry is created via data migration
-- **Environment variable**: `ANTHROPIC_API_KEY` in `.env` — assessment returns 503 if empty
+- **Content source**: `framework/content.py` — all 6 stage dicts (stages 0, 1, 2, 3, P, M) with `body_html` rendered via `|safe`; stage types are `step` or `ongoing`
+- **Assessment API**: `POST /framework/api/assessment/` — rate-limited 3/hr per IP, calls `claude-sonnet-4-6`, returns structured JSON report (`readiness_level`, `readiness_summary`, `priority_stage`, `top_risks`, `first_30_days`, `one_line_verdict`)
+- **Assessment user flow**: 8-question wizard → loading screen (API call) → contact capture form (name + email) → lead saved + email notification sent → report revealed
+- **Lead capture**: `POST /framework/api/save-lead/` — validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (`joe.ugalde@zimplixio.com`). Recipient is server-side only, never exposed to the client.
+- **Lead model**: `framework.AssessmentLead` — viewable at `/zm-admin/framework/assessmentlead/`
+- **Prompt engineering**: `framework/prompts.py` — `build_system_prompt()` encodes full framework + strict JSON schema; `build_user_prompt(answers)` interpolates 8 user answers
+- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal.
+- **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
 
 ### Known Gotchas
 
@@ -209,3 +219,5 @@ The framework content is embedded directly in the showcase detail page at `/show
 - **Gallery thumbnails**: Use `object-contain` (not `object-cover`) so icon-style images display fully without cropping
 - **HomePageView cross-app query**: `HomePageView` imports `showcase.ShowcaseProject` to fetch `featured_projects` for the homepage — changes to the showcase model can affect the homepage
 - **gunicorn not in Pipfile**: The `Procfile` references gunicorn for Heroku deployment, but it is not yet listed as a dependency in `Pipfile` — add it before deploying
+- **Unrouted `FrameworkPageView`**: `framework/views.py` contains `FrameworkPageView` (a TemplateView serving `framework/index.html`) but it is NOT wired in `framework/urls.py` — only `api/assessment/` and `api/save-lead/` are routed. If a standalone `/framework/` page is ever needed, add `path('', FrameworkPageView.as_view(), name='index')` to `framework/urls.py`.
+- **Two accordion implementations**: `detail-framework.html` loads the React bundle (`static/dist/framework-accordion.js`) via `{% static 'dist/framework-accordion.js' %}`. The vanilla JS `static/js/framework-accordion.js` is a separate implementation intended for `framework/index.html`. Do not confuse them — edits to one don't affect the other.

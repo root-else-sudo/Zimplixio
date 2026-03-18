@@ -7,6 +7,7 @@ import { ContactForm } from './ContactForm';
 import { AssessmentReport } from './AssessmentReport';
 
 type Step = 'idle' | 'questions' | 'loading' | 'contact' | 'report' | 'error';
+type Direction = 'forward' | 'back';
 
 function getCsrf(): string {
   return (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
@@ -15,6 +16,7 @@ function getCsrf(): string {
 export function AssessmentWizard() {
   const [step, setStep] = useState<Step>('idle');
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [direction, setDirection] = useState<Direction>('forward');
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [report, setReport] = useState<ReportData | null>(null);
   const [error, setError] = useState('');
@@ -23,6 +25,7 @@ export function AssessmentWizard() {
     function onStart() {
       setStep('questions');
       setCurrentQuestion(0);
+      setDirection('forward');
       setAnswers({});
       setTimeout(() => {
         document.getElementById('assessment')?.scrollIntoView({ behavior: 'smooth' });
@@ -44,11 +47,15 @@ export function AssessmentWizard() {
   }
 
   function goBack() {
-    if (currentQuestion > 0) setCurrentQuestion((i) => i - 1);
+    if (currentQuestion > 0) {
+      setDirection('back');
+      setCurrentQuestion((i) => i - 1);
+    }
   }
 
   async function goNext() {
     if (currentQuestion < QUESTIONS.length - 1) {
+      setDirection('forward');
       setCurrentQuestion((i) => i + 1);
     } else {
       // Submit
@@ -80,6 +87,7 @@ export function AssessmentWizard() {
   function handleRestart() {
     setStep('questions');
     setCurrentQuestion(0);
+    setDirection('forward');
     setAnswers({});
     setReport(null);
     setError('');
@@ -120,6 +128,22 @@ export function AssessmentWizard() {
 
   return (
     <div className="assessment-wizard max-w-2xl mx-auto">
+      {/* Step dots */}
+      <div className="flex justify-center gap-2 mb-4">
+        {QUESTIONS.map((_, i) => (
+          <div
+            key={i}
+            className={`rounded-full transition-all duration-300 ${
+              i < currentQuestion
+                ? 'w-2.5 h-2.5 bg-indigo-600'
+                : i === currentQuestion
+                ? 'w-2.5 h-2.5 bg-indigo-600 ring-2 ring-indigo-300 ring-offset-1'
+                : 'w-2.5 h-2.5 bg-gray-300 dark:bg-gray-600'
+            }`}
+          />
+        ))}
+      </div>
+
       {/* Progress bar */}
       <div className="mb-8">
         <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
@@ -128,17 +152,22 @@ export function AssessmentWizard() {
         </div>
         <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-600 rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
+            className="h-full bg-indigo-600 rounded-full"
+            style={{
+              width: `${progress}%`,
+              transition: 'width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            }}
           />
         </div>
       </div>
 
-      {/* Question */}
+      {/* Question — key forces remount to trigger animation */}
       <WizardQuestion
+        key={currentQuestion}
         question={q}
         answer={currentAnswer}
         onChange={handleAnswerChange}
+        direction={direction}
       />
 
       {/* Navigation */}

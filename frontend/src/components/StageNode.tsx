@@ -17,18 +17,18 @@ export function StageNode({ data }: NodeProps) {
   const size = isOngoing ? 134 : 152;
 
   const Icon = STAGE_ICONS[stage.number];
-  const iconColor = active ? 'white' : '#4F46E5';
+  const iconColor = active ? 'white' : '#2563eb';
   const iconSize  = isOngoing ? 40 : 46;
 
-  // Color palette — ongoing uses purple-violet, steps use indigo
-  const accentColor  = isOngoing ? 'rgba(124,58,237,' : 'rgba(99,102,241,';
-  const inactiveBorder = isOngoing ? '1.5px dashed #A78BFA' : '1.5px solid #C7D2FE';
+  // Color palette — ongoing uses purple-violet, steps use electric blue / navy
+  const accentColor  = isOngoing ? 'rgba(124,58,237,' : 'rgba(37,99,235,';
+  const inactiveBorder = isOngoing ? '1.5px dashed #A78BFA' : '1.5px solid #bfdbfe';
   const inactiveBg     = isOngoing
     ? 'linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%)'
-    : 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)';
+    : 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)';
   const activeBg = isOngoing
     ? 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)'
-    : 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
+    : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
 
   // Decorative ring dimensions — centered via top/left offset inside overflow:visible container
   const orbitSize = size + 16;
@@ -148,7 +148,7 @@ export function StageNode({ data }: NodeProps) {
           fontFamily: 'DM Sans, sans-serif',
           fontWeight: 700,
           letterSpacing: '0.04em',
-          color: active ? 'rgba(255,255,255,0.85)' : (isOngoing ? '#7C3AED' : '#4F46E5'),
+          color: active ? 'rgba(255,255,255,0.85)' : (isOngoing ? '#7C3AED' : '#2563eb'),
           lineHeight: 1,
         }}>
           {isOngoing ? stage.number : `0${stage.number}`}
@@ -165,7 +165,7 @@ export function StageNode({ data }: NodeProps) {
         fontSize: 14,
         fontFamily: 'DM Sans, sans-serif',
         fontWeight: active ? 600 : 500,
-        color: active ? (isOngoing ? '#7C3AED' : '#4F46E5') : '#6B7280',
+        color: active ? (isOngoing ? '#7C3AED' : '#2563eb') : '#6B7280',
         pointerEvents: 'none',
         letterSpacing: '0.01em',
       }}>

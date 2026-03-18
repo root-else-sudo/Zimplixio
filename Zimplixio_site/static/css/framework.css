@@ -95,13 +95,14 @@
 /* --- Report Block Stagger Reveal --- */
 .report-block {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transform: translateY(24px) scale(0.98);
+  transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .report-block.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 /* --- Readiness Badges --- */
@@ -154,14 +155,14 @@
 }
 
 .assessment-option:hover {
-  border-color: #818CF8;
-  background: #F5F3FF;
+  border-color: #60a5fa;
+  background: #eff6ff;
 }
 
 .assessment-option.selected {
-  border-color: #6366F1;
-  background: #EEF2FF;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 /* ==========================================================================
@@ -255,6 +256,8 @@
 
 .modal-overlay {
   transition: opacity 0.25s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .modal-overlay.hidden {
@@ -269,7 +272,12 @@
 
 .modal-card.hidden {
   opacity: 0;
-  transform: scale(0.95);
+  transform: scale(0.92) translateY(20px);
+}
+
+.modal-card:not(.hidden) {
+  transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* --- Loading Container & Spinner --- */
@@ -280,8 +288,8 @@
 .loading-spinner {
   width: 3.5rem;
   height: 3.5rem;
-  border: 4px solid #E0E7FF;
-  border-top-color: #6366F1;
+  border: 4px solid #dbeafe;
+  border-top-color: #2563eb;
   border-radius: 50%;
   animation: spinnerRotate 0.8s linear infinite;
 }
@@ -362,8 +370,8 @@
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 9999px;
-  background: #EEF2FF;
-  color: #4338CA;
+  background: #eff6ff;
+  color: #1d4ed8;
   font-size: 0.75rem;
   font-weight: 700;
   display: flex;
@@ -446,14 +454,14 @@
 }
 
 .dark .first-30-number {
-  background: #312e81;
-  color: #a5b4fc;
+  background: #0f2044;
+  color: #93c5fd;
 }
 
 /* --- Loading spinner --- */
 .dark .loading-spinner {
-  border-color: #312e81;
-  border-top-color: #818cf8;
+  border-color: #0f2044;
+  border-top-color: #60a5fa;
 }
 
 /* --- Report section title --- */
@@ -486,20 +494,63 @@
 }
 
 .dark .assessment-option:hover {
-  border-color: #6366f1;
-  background: #1e1b4b;
-  color: #e0e7ff;
+  border-color: #2563eb;
+  background: #071829;
+  color: #dbeafe;
 }
 
 .dark .assessment-option.selected {
-  border-color: #6366f1;
-  background: #1e1b4b;
-  color: #c7d2fe;
+  border-color: #2563eb;
+  background: #071829;
+  color: #bfdbfe;
 }
 
 /* --- Verdict quote border --- */
 .dark .verdict-quote {
   color: #d1d5db;
+}
+
+/* --- Orbiting Particle Dots --- */
+@keyframes particleOrbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   prefers-reduced-motion: Disable all animations
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-orbit-ring,
+  .stage-pulse-ring,
+  .stage-orbit-cw,
+  .stage-orbit-ccw,
+  .stage-icon-float,
+  .hub-pulse-ring {
+    animation: none !important;
+  }
+
+  .hub-particle-orbit {
+    animation: none !important;
+  }
+
+  .modal-card,
+  .modal-overlay {
+    transition: none !important;
+  }
+
+  .report-block {
+    transition: none !important;
+  }
+
+  .question-slide,
+  .question-slide-back {
+    animation: none !important;
+  }
+
+  .progress-bar-fill {
+    transition: none !important;
+  }
 }
 
 /* --- Print Styles --- */

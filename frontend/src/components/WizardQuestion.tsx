@@ -4,9 +4,10 @@ interface Props {
   question: Question;
   answer: string | string[];
   onChange: (value: string | string[]) => void;
+  direction?: 'forward' | 'back';
 }
 
-export function WizardQuestion({ question, answer, onChange }: Props) {
+export function WizardQuestion({ question, answer, onChange, direction = 'forward' }: Props) {
   const selected = Array.isArray(answer) ? answer : answer ? [answer] : [];
 
   function toggle(option: string) {
@@ -25,7 +26,7 @@ export function WizardQuestion({ question, answer, onChange }: Props) {
   }
 
   return (
-    <div>
+    <div className={direction === 'back' ? 'question-slide-back' : 'question-slide'}>
       <p className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-6">{question.text}</p>
       {question.type === 'multi' && (
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">

@@ -3,7 +3,7 @@
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
-      <a href="{% url 'pages:home' %}" class="flex items-center">
+      <a href="{% url 'pages:home' %}" class="logo-magnetic flex items-center">
         <img src="{% static 'images/logo.svg' %}" alt="Zimplixio" class="h-14 w-auto">
       </a>
 
@@ -28,7 +28,7 @@
           </svg>
         </button>
 
-        <a href="{% url 'booking:book' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+        <a href="{% url 'booking:book' %}" class="logo-magnetic btn-premium inline-flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
           Book a Call
         </a>
       </div>
@@ -64,7 +64,7 @@
         <a href="{% url 'showcase:gallery' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Showcase</a>
         <a href="{% url 'metrics:results' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Results</a>
         <a href="{% url 'pages:contact' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Contact</a>
-        <a href="{% url 'booking:book' %}" class="mx-3 mt-2 text-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">Book a Call</a>
+        <a href="{% url 'booking:book' %}" class="btn-premium mx-3 mt-2 text-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">Book a Call</a>
       </div>
     </div>
   </nav>

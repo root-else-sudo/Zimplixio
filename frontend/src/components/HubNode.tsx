@@ -39,19 +39,19 @@ export function HubNode({ data }: NodeProps) {
       {/* ── Layer 1: Soft ambient glow bloom ── */}
       <div style={{
         ...centered(420),
-        background: 'radial-gradient(circle, rgba(99,102,241,0.18) 0%, rgba(99,102,241,0.06) 45%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, rgba(37,99,235,0.06) 45%, transparent 70%)',
       }} />
 
       {/* ── Layer 2: Rotating dashed orbit ring ── */}
       <div className="hub-orbit-ring" style={{
         ...centered(270),
-        border: '1px dashed rgba(129,140,248,0.45)',
+        border: '1px dashed rgba(96,165,250,0.45)',
       }} />
 
       {/* ── Layer 3: Static inner accent ring ── */}
       <div style={{
         ...centered(212),
-        border: '1px solid rgba(99,102,241,0.18)',
+        border: '1px solid rgba(37,99,235,0.18)',
       }} />
 
       {/* ── Layer 4: Three staggered pulse rings ── */}
@@ -61,7 +61,7 @@ export function HubNode({ data }: NodeProps) {
           className={`hub-pulse-ring${paused ? ' paused' : ''}`}
           style={{
             ...centered(236),
-            border: '1.5px solid rgba(99,102,241,0.4)',
+            border: '1.5px solid rgba(37,99,235,0.4)',
             animationDelay: `${delay}ms`,
           }}
         />
@@ -70,11 +70,11 @@ export function HubNode({ data }: NodeProps) {
       {/* ── Layer 5: Main circle ── */}
       <div style={{
         ...centered(HUB),
-        background: 'linear-gradient(135deg, #818CF8 0%, #4F46E5 45%, #3730A3 100%)',
+        background: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 45%, #0f2044 100%)',
         boxShadow: [
           '0 0 0 1px rgba(255,255,255,0.1) inset',
-          '0 0 40px rgba(79,70,229,0.55)',
-          '0 0 90px rgba(99,102,241,0.2)',
+          '0 0 40px rgba(37,99,235,0.55)',
+          '0 0 90px rgba(59,130,246,0.2)',
         ].join(', '),
         display: 'flex',
         flexDirection: 'column',
@@ -131,6 +131,41 @@ export function HubNode({ data }: NodeProps) {
           Hub
         </span>
       </div>
+
+      {/* ── Layer 6: Orbiting particle dots ── */}
+      {([
+        { radius: 92,  size: 4, speed: '7s',  startAngle: 0   },
+        { radius: 105, size: 3, speed: '11s', startAngle: 120 },
+        { radius: 88,  size: 3, speed: '9s',  startAngle: 240 },
+        { radius: 100, size: 4, speed: '13s', startAngle: 60  },
+      ] as const).map((p, i) => (
+        <div
+          key={i}
+          className={paused ? '' : 'hub-particle-orbit'}
+          style={{
+            position: 'absolute',
+            width: p.radius * 2,
+            height: p.radius * 2,
+            top: (HUB - p.radius * 2) / 2,
+            left: (HUB - p.radius * 2) / 2,
+            borderRadius: '50%',
+            pointerEvents: 'none',
+            animation: paused ? 'none' : `particleOrbit ${p.speed} linear infinite`,
+            animationDelay: `${-parseFloat(p.speed) * (p.startAngle / 360)}s`,
+          }}
+        >
+          <div style={{
+            position: 'absolute',
+            width: p.size,
+            height: p.size,
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            borderRadius: '50%',
+            background: 'rgba(147,197,253,0.7)',
+          }} />
+        </div>
+      ))}
 
       {/* ── Invisible source handles on all 4 sides ── */}
       <Handle type="source" id="t" position={Position.Top}    style={{ opacity: 0, background: 'transparent', border: 'none', width: 1, height: 1 }} />

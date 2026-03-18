@@ -19,6 +19,11 @@
     var isDark = document.documentElement.classList.contains('dark');
     updateIcons(isDark);
 
+    // Enable smooth transitions after first paint to prevent FOUC
+    requestAnimationFrame(function () {
+      document.body.classList.add('transitions-enabled');
+    });
+
     document.querySelectorAll('.dark-mode-toggle').forEach(function (btn) {
       btn.addEventListener('click', toggleTheme);
     });

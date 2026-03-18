@@ -5,15 +5,16 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="relative bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900 py-20 md:py-24 overflow-hidden">
+<section class="hero-animated-bg relative py-20 md:py-24 overflow-hidden">
   <div class="absolute inset-0 opacity-10">
     <div class="absolute top-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
     <div class="absolute bottom-20 left-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl"></div>
   </div>
+  <div id="hero-particles" aria-hidden="true"></div>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-    <p class="text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down" data-aos-duration="600">What We Do</p>
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4" data-aos="fade-up" data-aos-duration="800">Our Services</h1>
-    <p class="text-xl text-indigo-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+    <p class="section-label label-visible text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down">What We Do</p>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4" data-aos="fade-up">Our Services</h1>
+    <p class="text-xl text-indigo-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
       Enterprise-grade technology consulting, right-sized for growing businesses. From strategy to implementation, we've got you covered.
     </p>
   </div>
@@ -99,10 +100,10 @@
 <section class="py-20 bg-gray-50 dark:bg-gray-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-14">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">From First Call to Delivery</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">From First Call to Delivery</p>
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white" data-aos="fade-up" data-aos-delay="100">How We Work</h2>
     </div>
-    <div class="grid md:grid-cols-4 gap-8">
+    <div class="process-steps-wrapper grid md:grid-cols-4 gap-8" id="process-steps">
       <div class="text-center" data-aos="fade-up" data-aos-delay="100">
         <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">1</div>
         <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Discovery Call</h3>
@@ -124,6 +125,19 @@
         <p class="text-sm text-gray-600 dark:text-gray-400">Full documentation, knowledge transfer, and ongoing support as needed.</p>
       </div>
     </div>
+    <script>
+      (function () {
+        var el = document.getElementById('process-steps');
+        if (!el) return;
+        var obs = new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) {
+            el.classList.add('connector-visible');
+            obs.disconnect();
+          }
+        }, { threshold: 0.4 });
+        obs.observe(el);
+      })();
+    </script>
   </div>
 </section>
 
@@ -131,7 +145,7 @@
 <section class="py-20 dark:bg-gray-900">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">Common Questions</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">Common Questions</p>
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white" data-aos="fade-up" data-aos-delay="100">Frequently Asked Questions</h2>
     </div>
     <div class="space-y-4" id="faq-accordion">

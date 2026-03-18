@@ -5,14 +5,33 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Smooth dark mode transition (applied after DOMContentLoaded to avoid flash) */
+body.transitions-enabled {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Focus styles for accessibility */
 a:focus-visible,
 button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
 select:focus-visible {
   outline: 2px solid #4f46e5;
   outline-offset: 2px;
+}
+
+/* Enhanced focus glow for form inputs */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="datetime-local"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 /* Transition utilities */
@@ -21,7 +40,289 @@ select:focus-visible {
   overflow: hidden;
 }
 
-/* Dark mode: Django-rendered form inputs */
+/* ==========================================================================
+   Magnetic Logo
+   ========================================================================== */
+
+.logo-magnetic {
+  display: inline-flex;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Hero Particle Canvas Container
+   ========================================================================== */
+
+#hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;       /* above blur blobs (no z-index), below hero text (z-10) */
+  pointer-events: none; /* interactivity via detectsOn:"window" — never blocks clicks */
+}
+
+#hero-particles canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+/* ==========================================================================
+   Animated Hero Gradient
+   ========================================================================== */
+
+.hero-animated-bg {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f2044 30%, #060c18 50%, #162d4a 70%, #0f2044 100%);
+  background-size: 300% 300%;
+  animation: heroGradientShift 14s ease infinite;
+}
+
+@keyframes heroGradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==========================================================================
+   Button Micro-interactions
+   ========================================================================== */
+
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-premium:active {
+  transform: scale(0.97);
+}
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 100%
+  );
+  transition: left 0.4s ease;
+  pointer-events: none;
+}
+
+.btn-premium:hover::before {
+  left: 100%;
+}
+
+/* ==========================================================================
+   Header Scroll Elevation
+   ========================================================================== */
+
+.header-elevated {
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.12), 0 2px 8px -2px rgba(79, 70, 229, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.dark .header-elevated {
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.4), 0 2px 8px -2px rgba(99, 102, 241, 0.12);
+}
+
+/* ==========================================================================
+   Section Label Accent Line
+   ========================================================================== */
+
+.section-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease 0.1s;
+}
+
+.section-label.aos-animate::before,
+.section-label.label-visible::before {
+  transform: scaleX(1);
+}
+
+/* ==========================================================================
+   Word Reveal Animation (Homepage H1)
+   ========================================================================== */
+
+.word-reveal-item {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: wordReveal 0.5s ease-out forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes wordReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Custom AOS: zoom-custom (scale + blur entrance)
+   ========================================================================== */
+
+[data-aos="zoom-custom"] {
+  opacity: 0;
+  transform: scale(0.95);
+  filter: blur(4px);
+  transition-property: opacity, transform, filter;
+}
+
+[data-aos="zoom-custom"].aos-animate {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* ==========================================================================
+   Showcase Gallery: Spring Card Hover
+   ========================================================================== */
+
+.showcase-card {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.showcase-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px -8px rgba(79, 70, 229, 0.22),
+              0 4px 16px -4px rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   Services: Process Steps Connector Line
+   ========================================================================== */
+
+.process-steps-wrapper {
+  position: relative;
+}
+
+.process-steps-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 28px; /* aligned to center of step circles */
+  left: calc(12.5% + 28px); /* start after first circle */
+  right: calc(12.5% + 28px); /* end before last circle */
+  height: 2px;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 50%, #2563eb 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s ease-out;
+}
+
+.process-steps-wrapper.connector-visible::before {
+  transform: scaleX(1);
+}
+
+@media (max-width: 767px) {
+  .process-steps-wrapper::before {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Homepage: Glassmorphism Credential Pills
+   ========================================================================== */
+
+.credential-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 9999px;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  font-weight: 700;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease,
+              color 0.2s ease;
+}
+
+.credential-pill:hover {
+  transform: translateY(-3px);
+  background: rgba(37, 99, 235, 0.12);
+  color: #93c5fd;
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
+/* ==========================================================================
+   Timeline: Active Node Glow + Line Draw-in
+   ========================================================================== */
+
+.timeline-node--active {
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3),
+              0 0 20px rgba(29, 78, 216, 0.4);
+}
+
+.dark .timeline-node--active {
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.35),
+              0 0 24px rgba(37, 99, 235, 0.5);
+}
+
+.timeline-grow {
+  animation: timelineGrow 0.8s ease-out both;
+  transform-origin: top;
+}
+
+@keyframes timelineGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* ==========================================================================
+   Showcase Detail: SVG Draw-in Section Labels
+   ========================================================================== */
+
+.section-label-line {
+  stroke-dasharray: 32;
+  stroke-dashoffset: 32;
+  transition: stroke-dashoffset 0.5s ease 0.2s;
+}
+
+[data-aos].aos-animate .section-label-line {
+  stroke-dashoffset: 0;
+}
+
+/* ==========================================================================
+   Footer Link Micro-interaction
+   ========================================================================== */
+
+.footer-link {
+  display: inline-block;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.footer-link:hover {
+  transform: translateX(2px);
+  color: white;
+}
+
+/* ==========================================================================
+   Dark Mode: Django-rendered form inputs
+   ========================================================================== */
+
 .dark input[type="text"],
 .dark input[type="email"],
 .dark input[type="tel"],
@@ -51,6 +352,7 @@ select:focus-visible {
 .dark select:focus {
   border-color: #6366f1;
   outline-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .dark input::placeholder,
@@ -61,4 +363,62 @@ select:focus-visible {
 .dark select option {
   background-color: #1f2937;
   color: #f3f4f6;
+}
+
+/* ==========================================================================
+   prefers-reduced-motion: Disable all animations
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  #hero-particles {
+    display: none;
+  }
+
+  .hero-animated-bg {
+    animation: none;
+  }
+
+  .btn-premium::before {
+    display: none;
+  }
+
+  .btn-premium:active {
+    transform: none;
+  }
+
+  .word-reveal-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-aos="zoom-custom"] {
+    filter: none;
+  }
+
+  .showcase-card:hover {
+    transform: none;
+  }
+
+  .process-steps-wrapper::before {
+    transition: none;
+  }
+
+  .credential-pill:hover {
+    transform: none;
+  }
+
+  .section-label::before {
+    transition: none;
+    transform: scaleX(1);
+  }
+
+  .timeline-grow {
+    animation: none;
+  }
+
+  .section-label-line {
+    transition: none;
+    stroke-dashoffset: 0;
+  }
 }

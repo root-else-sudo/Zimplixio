@@ -27,7 +27,7 @@ export function AssessmentReport({ report, onRestart }: Props) {
       timers.push(
         setTimeout(() => {
           setVisibleBlocks((prev) => [...prev, i]);
-        }, i * 150)
+        }, i * 200)
       );
     }
     return () => timers.forEach(clearTimeout);

@@ -5,11 +5,12 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="relative bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900 py-20 overflow-hidden">
+<section class="hero-animated-bg relative py-20 overflow-hidden">
   <div class="absolute inset-0 opacity-10">
     <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
     <div class="absolute bottom-10 right-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl"></div>
   </div>
+  <div id="hero-particles" aria-hidden="true"></div>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <a href="{% url 'showcase:gallery' %}" class="inline-flex items-center text-indigo-200 hover:text-white mb-6 transition-colors text-sm" data-aos="fade-right" data-aos-duration="600">
       <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -34,21 +35,36 @@
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
     <!-- The Scenario -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">The Challenge</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">
+        <svg class="inline-block mr-1 -mt-0.5" width="32" height="4" viewBox="0 0 32 4" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line class="section-label-line" x1="0" y1="2" x2="32" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        The Challenge
+      </p>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Scenario</h2>
       <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ project.business_problem }}</p>
     </section>
 
     <!-- The Approach -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Our Strategy</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">
+        <svg class="inline-block mr-1 -mt-0.5" width="32" height="4" viewBox="0 0 32 4" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line class="section-label-line" x1="0" y1="2" x2="32" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Our Strategy
+      </p>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Approach</h2>
       <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ project.approach }}</p>
     </section>
 
     <!-- The Solution -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">What We Built</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">
+        <svg class="inline-block mr-1 -mt-0.5" width="32" height="4" viewBox="0 0 32 4" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line class="section-label-line" x1="0" y1="2" x2="32" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        What We Built
+      </p>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Solution</h2>
       <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">{{ project.solution_description }}</p>
       {% if project.architecture_diagram %}
@@ -61,7 +77,12 @@
     <!-- Screenshots -->
     {% if project.screenshots.all %}
     <section data-aos="fade-up">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Visual Walkthrough</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">
+        <svg class="inline-block mr-1 -mt-0.5" width="32" height="4" viewBox="0 0 32 4" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line class="section-label-line" x1="0" y1="2" x2="32" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Visual Walkthrough
+      </p>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Screenshots</h2>
       <div class="grid md:grid-cols-2 gap-6">
         {% for screenshot in project.screenshots.all %}
@@ -78,7 +99,12 @@
 
     <!-- The Outcome -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">The Impact</p>
+      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">
+        <svg class="inline-block mr-1 -mt-0.5" width="32" height="4" viewBox="0 0 32 4" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line class="section-label-line" x1="0" y1="2" x2="32" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        The Impact
+      </p>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Outcome</h2>
       <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ project.outcomes }}</p>
     </section>

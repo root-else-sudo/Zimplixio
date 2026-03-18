@@ -36,7 +36,7 @@ export function GradientEdge({
         <path
           d={edgePath}
           fill="none"
-          stroke={animated ? 'rgba(99,102,241,0.95)' : 'rgba(79,70,229,0.7)'}
+          stroke={animated ? 'rgba(37,99,235,0.95)' : 'rgba(29,78,216,0.7)'}
           strokeWidth={animated ? 4 : 3}
           strokeDasharray={animated ? '2 11' : '2 16'}
           strokeLinecap="round"

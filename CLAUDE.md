@@ -175,12 +175,18 @@ templates/
 | `static/js/faq-accordion.js` | Expand/collapse FAQ items on services page |
 | `static/js/timeline.js` | Interactive career timeline on about page |
 | `static/js/demo-iframe.js` | Iframe loading overlay + toggle buttons on showcase detail page |
+| `static/js/dark-mode.js` | Dark mode toggle with smooth transition (enables `body.transitions-enabled` after first paint to avoid FOUC) |
+| `static/js/header-scroll.js` | Adds `.header-elevated` box-shadow to `<header>` when `scrollY > 20` |
+| `static/js/logo-magnetic.js` | Magnetic cursor effect on `.logo-magnetic` elements (logo + Book a Call button) — lerp-based rAF loop, STRENGTH=0.28, EASE=0.1 |
+| `static/js/hero-text.js` | Word-by-word H1 reveal on `[data-word-reveal]` elements — splits into `<span class="word-reveal-item">` with staggered CSS animation |
+| `static/js/counter-anim.js` | IntersectionObserver counter animation on `[data-counter]` elements — ease-out-cubic count from 0 to `data-target` |
+| `static/js/particles-hero.js` | **Twisted Particle Stream** — custom canvas ImageData animation (no WebGL, no external lib). 20,000 particles across 6 twisted ribbon surfaces with perspective projection simulating 3D depth. Mouse movement tilts the camera (±1.2 rad Y, ±0.65 rad X). Present on all hero sections. |
 
 ### Other Static Files
 
 | File | Purpose |
 |------|---------|
-| `static/css/main.css` | Custom styles (smooth scrolling, focus styles, accordion transitions) |
+| `static/css/main.css` | Custom styles — smooth scrolling, focus glow, `.hero-animated-bg` gradient animation, `.btn-premium` shimmer, `.logo-magnetic`, `.showcase-card` spring hover, `.header-elevated`, `.section-label` accent line, `.word-reveal-item`, `zoom-custom` AOS, `.credential-pill`, `.timeline-node--active`, `.footer-link`, dark mode form inputs, `prefers-reduced-motion` overrides |
 | `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules |
 | `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
 | `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
@@ -227,3 +233,7 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **React Flow scroll blocking**: `FlowHub.tsx` sets `preventScrolling={false}` on the `<ReactFlow>` component. Without this, React Flow intercepts wheel events and calls `preventDefault()` even when zoom is disabled, causing scroll jank on the framework page. Do not remove this prop.
 - **Logo SVG sizing**: `static/images/logo.svg` has no fixed `width`/`height` attributes (removed so CSS controls size). The viewBox is cropped to the content area (`278 337 1656 426`). If the logo looks wrong, check these two things first.
 - **`{% load static %}` in partials**: `_header.html` includes its own `{% load static %}` at the top — required because partials do not inherit the parent template's loaded tags.
+- **Hero particle effect — `#hero-particles` div required**: `particles-hero.js` looks for `<div id="hero-particles">` inside the hero `<section>`. The div must be present with `position:absolute; inset:0; z-index:1; pointer-events:none` (defined in `main.css`). All 9 hero pages have this div. The script listens on `document` (not the canvas) for mousemove since the canvas has `pointer-events:none`.
+- **No tsParticles / no CDN for hero effect**: The hero animation is pure vanilla JS canvas (ImageData pixel writing). The tsParticles CDN was removed. `cdn.jsdelivr.net` was also removed from the CSP `script-src` directive in `core/middleware.py`.
+- **Color palette — Tailwind `indigo` remapped**: The `indigo` color scale in `base.html` Tailwind config is overridden to a navy/electric-blue palette (`indigo-600 = #2563eb`, `indigo-800 = #0f2044`, `indigo-900 = #0a1628`). This cascades sitewide — do not add new raw hex values for blue; use `indigo-*` classes.
+- **`.logo-magnetic` on multiple elements**: The magnetic effect uses `querySelectorAll('.logo-magnetic')` with independent state per element. Applied to the logo `<a>` and desktop "Book a Call" button in `_header.html`. Do not apply to the mobile "Book a Call" (inside the dropdown menu).

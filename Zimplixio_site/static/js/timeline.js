@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // Animate the vertical timeline line on scroll
+  var timelineLine = document.querySelector('.timeline-line');
+  if (timelineLine) {
+    timelineLine.classList.add('timeline-grow');
+  }
+
   document.querySelectorAll('.timeline-toggle').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var details = btn.closest('.timeline-item').querySelector('.timeline-details');
+      var item = btn.closest('.timeline-item');
+      var details = item.querySelector('.timeline-details');
       var chevron = btn.querySelector('.timeline-chevron');
       var isOpen = !details.classList.contains('hidden');
 
@@ -14,14 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
         c.style.transform = '';
       });
       document.querySelectorAll('.timeline-node').forEach(function (n) {
-        n.classList.remove('ring-4', 'ring-indigo-200');
+        n.classList.remove('timeline-node--active');
       });
 
       if (!isOpen) {
         details.classList.remove('hidden');
         details.style.maxHeight = details.scrollHeight + 'px';
         chevron.style.transform = 'rotate(180deg)';
-        btn.closest('.timeline-item').querySelector('.timeline-node').classList.add('ring-4', 'ring-indigo-200');
+        // Apply glow to the node in this item
+        item.querySelector('.timeline-node').classList.add('timeline-node--active');
       }
     });
   });

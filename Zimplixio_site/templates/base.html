@@ -8,10 +8,21 @@
 
   {% include "partials/_meta_tags.html" %}
 
+  <!-- Dark mode: apply before paint to prevent FOUC -->
+  <script>
+    (function() {
+      var theme = localStorage.getItem('theme');
+      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
   <!-- Tailwind CSS (CDN for development) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -46,7 +57,7 @@
   </script>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen flex flex-col bg-white text-gray-900 antialiased">
+<body class="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-900 dark:text-white">
   {% include "partials/_header.html" %}
 
   <main class="flex-1">
@@ -56,6 +67,7 @@
   {% include "partials/_footer.html" %}
   {% include "partials/_cookie_banner.html" %}
 
+  <script src="{% static 'js/dark-mode.js' %}"></script>
   <script src="{% static 'js/mobile-nav.js' %}"></script>
   <script src="{% static 'js/cookie-consent.js' %}"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>

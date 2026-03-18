@@ -184,6 +184,8 @@ templates/
 | `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules |
 | `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
 | `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
+| `static/images/logo.svg` | Zimplixio banner logo — used in `_header.html` nav. ViewBox cropped to content area; fixed width/height removed so CSS controls sizing (`h-14 w-auto` in nav) |
+| `static/images/favicon.png` | Site favicon — circular icon PNG with transparent background, sourced from `cropped_circle_image.png`. Linked in `base.html` as `<link rel="icon" type="image/png">` |
 | `static/manifest.json` | PWA web app manifest with Zimplixio branding |
 
 ### Security
@@ -222,3 +224,6 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **gunicorn not in Pipfile**: The `Procfile` references gunicorn for Heroku deployment, but it is not yet listed as a dependency in `Pipfile` — add it before deploying
 - **Assessment wizard is pure React**: The wizard on the framework page is fully React (`AssessmentWizard` mounted on `#assessment-root`). There is no vanilla JS fallback. The "Start Assessment" button uses `onclick="document.dispatchEvent(new CustomEvent('assessmentStart'))"` to signal the React component.
 - **One React bundle for everything**: `static/dist/framework-accordion.js` (built from `frontend/`) drives both the hub-and-spoke diagram and the assessment wizard. Rebuilding with `cd frontend && npm run build` updates both.
+- **React Flow scroll blocking**: `FlowHub.tsx` sets `preventScrolling={false}` on the `<ReactFlow>` component. Without this, React Flow intercepts wheel events and calls `preventDefault()` even when zoom is disabled, causing scroll jank on the framework page. Do not remove this prop.
+- **Logo SVG sizing**: `static/images/logo.svg` has no fixed `width`/`height` attributes (removed so CSS controls size). The viewBox is cropped to the content area (`278 337 1656 426`). If the logo looks wrong, check these two things first.
+- **`{% load static %}` in partials**: `_header.html` includes its own `{% load static %}` at the top — required because partials do not inherit the parent template's loaded tags.

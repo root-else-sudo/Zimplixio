@@ -46,14 +46,14 @@ export function AssessmentReport({ report, onRestart }: Props) {
             {BADGE_LABEL[report.readiness_level] ?? report.readiness_level}
           </span>
         </div>
-        <p className="text-gray-700 leading-relaxed">{report.readiness_summary}</p>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{report.readiness_summary}</p>
       </div>
 
       {/* Block 1: Priority stage */}
       <div className={`report-block ${isVisible(1) ? 'visible' : ''}`}>
         <h4 className="report-section-title">Your Priority Stage</h4>
-        <p className="font-semibold text-indigo-700 text-lg mb-2">{report.priority_stage.name}</p>
-        <p className="text-gray-700">{report.priority_stage.reason}</p>
+        <p className="font-semibold text-indigo-700 dark:text-indigo-400 text-lg mb-2">{report.priority_stage.name}</p>
+        <p className="text-gray-700 dark:text-gray-300">{report.priority_stage.reason}</p>
       </div>
 
       {/* Block 2: Top risks */}
@@ -62,8 +62,8 @@ export function AssessmentReport({ report, onRestart }: Props) {
         <div className="risk-grid">
           {report.top_risks.map((risk, i) => (
             <div key={i} className="risk-card">
-              <p className="font-semibold text-gray-900 mb-1">{risk.title}</p>
-              <p className="text-sm text-gray-600">{risk.detail}</p>
+              <p className="font-semibold text-gray-900 dark:text-white mb-1">{risk.title}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{risk.detail}</p>
             </div>
           ))}
         </div>
@@ -96,7 +96,7 @@ export function AssessmentReport({ report, onRestart }: Props) {
           </button>
           <button
             onClick={onRestart}
-            className="border-2 border-indigo-600 text-indigo-600 font-semibold px-6 py-3 rounded-xl hover:bg-indigo-50 transition-colors"
+            className="border-2 border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 font-semibold px-6 py-3 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
           >
             Start Over
           </button>

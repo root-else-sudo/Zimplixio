@@ -26,9 +26,9 @@ export function WizardQuestion({ question, answer, onChange }: Props) {
 
   return (
     <div>
-      <p className="text-lg font-semibold text-gray-800 mb-6">{question.text}</p>
+      <p className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-6">{question.text}</p>
       {question.type === 'multi' && (
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           {question.maxSelect
             ? `Select up to ${question.maxSelect}`
             : 'Select all that apply'}
@@ -43,8 +43,8 @@ export function WizardQuestion({ question, answer, onChange }: Props) {
               type="button"
               className={`assessment-option w-full text-left px-4 py-3 rounded-xl border-2 transition-all ${
                 isSelected
-                  ? 'border-indigo-600 bg-indigo-50 text-indigo-900 font-medium'
-                  : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300'
+                  ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-900 dark:text-indigo-200 font-medium'
+                  : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:border-indigo-300 dark:hover:border-indigo-500'
               }`}
               onClick={() => toggle(option)}
             >

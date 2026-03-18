@@ -30,29 +30,29 @@
   </div>
 </section>
 
-<article class="py-20">
+<article class="py-20 dark:bg-gray-900">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
     <!-- The Scenario -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">The Challenge</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">The Scenario</h2>
-      <p class="text-gray-600 text-lg leading-relaxed">{{ project.business_problem }}</p>
+      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">The Challenge</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Scenario</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ project.business_problem }}</p>
     </section>
 
     <!-- The Approach -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">Our Strategy</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">The Approach</h2>
-      <p class="text-gray-600 text-lg leading-relaxed">{{ project.approach }}</p>
+      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Our Strategy</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Approach</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ project.approach }}</p>
     </section>
 
     <!-- The Solution -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">What We Built</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">The Solution</h2>
-      <p class="text-gray-600 text-lg leading-relaxed mb-6">{{ project.solution_description }}</p>
+      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">What We Built</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Solution</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">{{ project.solution_description }}</p>
       {% if project.architecture_diagram %}
-      <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100" data-aos="fade-up">
+      <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-700" data-aos="fade-up">
         <img src="{{ project.architecture_diagram.url }}" alt="Architecture diagram for {{ project.title }}" class="w-full rounded-xl" loading="lazy">
       </div>
       {% endif %}
@@ -61,14 +61,14 @@
     <!-- Screenshots -->
     {% if project.screenshots.all %}
     <section data-aos="fade-up">
-      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">Visual Walkthrough</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Screenshots</h2>
+      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Visual Walkthrough</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Screenshots</h2>
       <div class="grid md:grid-cols-2 gap-6">
         {% for screenshot in project.screenshots.all %}
-        <figure class="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <figure class="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
           <img src="{{ screenshot.image.url }}" alt="{{ screenshot.caption }}" class="w-full" loading="lazy">
           {% if screenshot.caption %}
-          <figcaption class="px-4 py-3 text-sm text-gray-600">{{ screenshot.caption }}</figcaption>
+          <figcaption class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ screenshot.caption }}</figcaption>
           {% endif %}
         </figure>
         {% endfor %}
@@ -78,14 +78,14 @@
 
     <!-- The Outcome -->
     <section data-aos="fade-up">
-      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">The Impact</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">The Outcome</h2>
-      <p class="text-gray-600 text-lg leading-relaxed">{{ project.outcomes }}</p>
+      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">The Impact</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">The Outcome</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ project.outcomes }}</p>
     </section>
 
     {% if project.demo_url %}
     <div class="text-center" data-aos="fade-up">
-      <a href="{{ project.demo_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors shadow-lg">
+      <a href="{{ project.demo_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors shadow-lg">
         View Live Demo
         <svg class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
       </a>
@@ -96,36 +96,36 @@
 
 {% if project.live_demo_url %}
 <!-- Interactive Demo -->
-<section class="py-20 bg-gray-50" data-aos="fade-up">
+<section class="py-20 bg-gray-50 dark:bg-gray-800" data-aos="fade-up">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-10">
-      <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">Hands-On Experience</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Interactive Demo</h2>
+      <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Hands-On Experience</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Interactive Demo</h2>
       <div class="flex flex-wrap gap-2 justify-center">
         <button class="demo-toggle px-4 py-2 rounded-full text-sm font-medium transition-colors bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" data-url="{{ project.live_demo_url }}">
           Live App
         </button>
         {% if project.system_design_url %}
-        <button class="demo-toggle px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200" data-url="{{ project.system_design_url }}">
+        <button class="demo-toggle px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600" data-url="{{ project.system_design_url }}">
           System Design
         </button>
         {% endif %}
       </div>
     </div>
-    <div class="relative bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      <div id="demo-loading" class="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
+    <div class="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+      <div id="demo-loading" class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
         <div class="flex flex-col items-center gap-3">
           <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
           </svg>
-          <span class="text-sm text-gray-500">Loading demo&hellip;</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">Loading demo&hellip;</span>
         </div>
       </div>
       <iframe id="demo-iframe" src="{{ project.live_demo_url }}" class="w-full" style="height: 600px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" title="Interactive demo of {{ project.title }}"></iframe>
     </div>
-    <p class="text-center mt-4 text-sm text-gray-500">
-      Having trouble? <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 font-medium">Open in a new tab &rarr;</a>
+    <p class="text-center mt-4 text-sm text-gray-500 dark:text-gray-400">
+      Having trouble? <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium">Open in a new tab &rarr;</a>
     </p>
   </div>
 </section>

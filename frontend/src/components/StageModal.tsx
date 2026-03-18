@@ -163,13 +163,13 @@ export function StageModal({ stage, onClose }: StageModalProps) {
 
         {/* Body */}
         <div
+          className="modal-body"
           style={{
             padding: '2rem',
-            background: 'white',
             borderRadius: '0 0 1.5rem 1.5rem',
           }}
         >
-          <p style={{ color: '#374151', marginBottom: '1.5rem', lineHeight: 1.7, fontFamily: 'DM Sans, sans-serif' }}>
+          <p className="modal-body-text" style={{ marginBottom: '1.5rem', lineHeight: 1.7, fontFamily: 'DM Sans, sans-serif' }}>
             {stage.intro}
           </p>
           <DualColumn left={stage.columns.left} right={stage.columns.right} />

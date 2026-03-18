@@ -7,7 +7,7 @@ interface ComparisonTableProps {
 export function ComparisonTable({ table }: ComparisonTableProps) {
   return (
     <div className="mt-6 mb-4">
-      <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+      <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
         {table.title}
       </h4>
       <div className="overflow-x-auto">

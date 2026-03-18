@@ -3,15 +3,15 @@
 {% block title %}Message Sent — {{ site_name }}{% endblock %}
 
 {% block content %}
-<section class="py-28">
+<section class="py-28 dark:bg-gray-900">
   <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8" data-aos="zoom-in" data-aos-duration="500">
-      <svg class="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="w-20 h-20 bg-green-100 dark:bg-green-900/40 rounded-full flex items-center justify-center mx-auto mb-8" data-aos="zoom-in" data-aos-duration="500">
+      <svg class="w-10 h-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
       </svg>
     </div>
-    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-aos="fade-up" data-aos-delay="200">Thank You!</h1>
-    <p class="text-lg text-gray-600 mb-8" data-aos="fade-up" data-aos-delay="300">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4" data-aos="fade-up" data-aos-delay="200">Thank You!</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8" data-aos="fade-up" data-aos-delay="300">
       Your message has been received. A senior consultant will review it and respond within 24 hours.
     </p>
     <a href="{% url 'pages:home' %}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20" data-aos="fade-up" data-aos-delay="400">

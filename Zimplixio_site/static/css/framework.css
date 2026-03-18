@@ -377,6 +377,131 @@
   padding: 2rem 0;
 }
 
+/* ==========================================================================
+   Dark Mode Overrides
+   ========================================================================== */
+
+/* --- Django template sections --- */
+/* (handled via Tailwind dark: classes in the template) */
+
+/* --- Stage Modal body --- */
+.modal-body {
+  background: white;
+}
+
+.modal-body-text {
+  color: #374151;
+}
+
+.dark .modal-body {
+  background: #1f2937;
+}
+
+.dark .modal-body-text {
+  color: #d1d5db;
+}
+
+/* --- Loading screen text --- */
+.dark .loading-stage {
+  color: #d1d5db;
+}
+
+/* --- Callout boxes --- */
+.dark .framework-callout {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+/* --- Comparison tables --- */
+.dark .framework-table {
+  border-color: #374151;
+}
+
+.dark .framework-table th {
+  background: #111827;
+  color: #e5e7eb;
+  border-bottom-color: #374151;
+}
+
+.dark .framework-table td {
+  color: #d1d5db;
+  border-bottom-color: #374151;
+}
+
+/* --- Report blocks --- */
+.dark #report-output .report-block {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* --- Risk cards --- */
+.dark .risk-card {
+  background: #111827;
+  border-color: #374151;
+}
+
+/* --- First 30 days list --- */
+.dark .first-30-item {
+  color: #d1d5db;
+}
+
+.dark .first-30-number {
+  background: #312e81;
+  color: #a5b4fc;
+}
+
+/* --- Loading spinner --- */
+.dark .loading-spinner {
+  border-color: #312e81;
+  border-top-color: #818cf8;
+}
+
+/* --- Report section title --- */
+.dark .report-section-title {
+  color: #6b7280;
+}
+
+/* --- Assessment wizard: question text --- */
+.dark .assessment-wizard p,
+.dark .assessment-wizard > div > div > p {
+  color: #d1d5db;
+}
+
+/* --- Assessment wizard: progress bar background --- */
+.dark .assessment-wizard .bg-gray-200 {
+  background-color: #374151;
+}
+
+/* --- Assessment wizard: back button --- */
+.dark .assessment-wizard .border-gray-300 {
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+/* --- Assessment option buttons (default state) --- */
+.dark .assessment-option {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.dark .assessment-option:hover {
+  border-color: #6366f1;
+  background: #1e1b4b;
+  color: #e0e7ff;
+}
+
+.dark .assessment-option.selected {
+  border-color: #6366f1;
+  background: #1e1b4b;
+  color: #c7d2fe;
+}
+
+/* --- Verdict quote border --- */
+.dark .verdict-quote {
+  color: #d1d5db;
+}
+
 /* --- Print Styles --- */
 @media print {
   header, footer, nav,

@@ -21,26 +21,26 @@
 </section>
 
 <!-- Contact Form & Sidebar -->
-<section class="py-20">
+<section class="py-20 dark:bg-gray-900">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid md:grid-cols-5 gap-12">
       <!-- Form -->
       <div class="md:col-span-3" data-aos="fade-up" data-aos-delay="100">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
           <div class="mb-8">
-            <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">Send a Message</p>
-            <h2 class="text-2xl font-bold text-gray-900">How can we help?</h2>
+            <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Send a Message</p>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">How can we help?</h2>
           </div>
           <form method="post" class="space-y-6">
             {% csrf_token %}
             {% for field in form %}
             <div>
-              <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+              <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
               </label>
               {{ field }}
               {% if field.errors %}
-              <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
+              <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ field.errors.0 }}</p>
               {% endif %}
             </div>
             {% endfor %}
@@ -55,55 +55,55 @@
       <div class="md:col-span-2 space-y-6" data-aos="fade-up" data-aos-delay="250">
         <!-- NPS Badge -->
         {% if nps_score is not None %}
-        <div class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-sm border border-green-100 p-6 text-center" data-aos="fade-up" data-aos-delay="300">
-          <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-gray-800 rounded-2xl shadow-sm border border-green-100 dark:border-green-900/40 p-6 text-center" data-aos="fade-up" data-aos-delay="300">
+          <div class="w-16 h-16 bg-green-100 dark:bg-green-900/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           </div>
-          <p class="text-4xl font-bold text-green-700">{{ nps_score }}</p>
-          <p class="text-green-600 font-medium mt-1">NPS Score</p>
-          <p class="text-sm text-green-500 mt-1">Based on {{ nps_total_responses }} client responses</p>
+          <p class="text-4xl font-bold text-green-700 dark:text-green-400">{{ nps_score }}</p>
+          <p class="text-green-600 dark:text-green-500 font-medium mt-1">NPS Score</p>
+          <p class="text-sm text-green-500 dark:text-green-600 mt-1">Based on {{ nps_total_responses }} client responses</p>
         </div>
         {% endif %}
 
         <!-- What Happens Next -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" data-aos="fade-up" data-aos-delay="350">
-          <p class="text-indigo-600 font-medium tracking-wider uppercase text-sm mb-2">Your Next Steps</p>
-          <h3 class="font-bold text-gray-900 text-lg mb-4">What happens next?</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6" data-aos="fade-up" data-aos-delay="350">
+          <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Your Next Steps</p>
+          <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-4">What happens next?</h3>
           <ol class="space-y-4">
             <li class="flex gap-4 items-start">
               <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shrink-0 text-sm font-bold shadow-lg shadow-indigo-600/30">1</div>
               <div>
-                <p class="font-medium text-gray-900 text-sm">We review your message</p>
-                <p class="text-sm text-gray-500">Within 24 hours of submission.</p>
+                <p class="font-medium text-gray-900 dark:text-white text-sm">We review your message</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Within 24 hours of submission.</p>
               </div>
             </li>
             <li class="flex gap-4 items-start">
               <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shrink-0 text-sm font-bold shadow-lg shadow-indigo-600/30">2</div>
               <div>
-                <p class="font-medium text-gray-900 text-sm">A senior consultant responds</p>
-                <p class="text-sm text-gray-500">Personally, not a sales rep.</p>
+                <p class="font-medium text-gray-900 dark:text-white text-sm">A senior consultant responds</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Personally, not a sales rep.</p>
               </div>
             </li>
             <li class="flex gap-4 items-start">
               <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shrink-0 text-sm font-bold shadow-lg shadow-indigo-600/30">3</div>
               <div>
-                <p class="font-medium text-gray-900 text-sm">We schedule a discovery call</p>
-                <p class="text-sm text-gray-500">If there's a fit, we move forward together.</p>
+                <p class="font-medium text-gray-900 dark:text-white text-sm">We schedule a discovery call</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">If there's a fit, we move forward together.</p>
               </div>
             </li>
           </ol>
         </div>
 
         <!-- Prefer to Talk -->
-        <div class="bg-gradient-to-br from-indigo-50 to-white rounded-2xl shadow-sm border border-indigo-100 p-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-gray-800 rounded-2xl shadow-sm border border-indigo-100 dark:border-indigo-800 p-6" data-aos="fade-up" data-aos-delay="400">
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             </div>
             <div>
-              <h3 class="font-bold text-gray-900 mb-1">Prefer to talk?</h3>
-              <p class="text-sm text-gray-600 mb-3">Skip the form and speak with a consultant directly.</p>
-              <a href="{% url 'booking:book' %}" class="inline-flex items-center gap-1 text-indigo-600 font-semibold text-sm hover:text-indigo-800 transition-colors">
+              <h3 class="font-bold text-gray-900 dark:text-white mb-1">Prefer to talk?</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Skip the form and speak with a consultant directly.</p>
+              <a href="{% url 'booking:book' %}" class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-semibold text-sm hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
                 Book a free discovery call
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
               </a>

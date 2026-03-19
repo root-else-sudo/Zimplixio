@@ -8,13 +8,19 @@
       </a>
 
       <!-- Desktop nav -->
+      {% url 'pages:home' as url_home %}
+      {% url 'pages:about' as url_about %}
+      {% url 'services:services' as url_services %}
+      {% url 'showcase:gallery' as url_showcase %}
+      {% url 'metrics:results' as url_results %}
+      {% url 'pages:contact' as url_contact %}
       <div class="hidden md:flex items-center space-x-8">
-        <a href="{% url 'pages:home' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-indigo-400">Home</a>
-        <a href="{% url 'pages:about' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-indigo-400">About</a>
-        <a href="{% url 'services:services' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-indigo-400">Services</a>
-        <a href="{% url 'showcase:gallery' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-indigo-400">Showcase</a>
-        <a href="{% url 'metrics:results' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-indigo-400">Results</a>
-        <a href="{% url 'pages:contact' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-indigo-400">Contact</a>
+        <a href="{{ url_home }}" class="font-medium transition-colors {% if request.path == url_home %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_home %}aria-current="page"{% endif %}>Home</a>
+        <a href="{{ url_about }}" class="font-medium transition-colors {% if request.path == url_about %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_about %}aria-current="page"{% endif %}>About</a>
+        <a href="{{ url_services }}" class="font-medium transition-colors {% if request.path == url_services %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_services %}aria-current="page"{% endif %}>Services</a>
+        <a href="{{ url_showcase }}" class="font-medium transition-colors {% if request.path == url_showcase %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_showcase %}aria-current="page"{% endif %}>Showcase</a>
+        <a href="{{ url_results }}" class="font-medium transition-colors {% if request.path == url_results %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_results %}aria-current="page"{% endif %}>Results</a>
+        <a href="{{ url_contact }}" class="font-medium transition-colors {% if request.path == url_contact %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_contact %}aria-current="page"{% endif %}>Contact</a>
 
         <!-- Dark mode toggle (desktop) -->
         <button class="dark-mode-toggle p-2 rounded-lg text-gray-600 hover:text-indigo-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-indigo-400 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle dark mode">
@@ -58,12 +64,12 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-gray-100 dark:border-gray-700">
       <div class="flex flex-col space-y-2 pt-4">
-        <a href="{% url 'pages:home' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Home</a>
-        <a href="{% url 'pages:about' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">About</a>
-        <a href="{% url 'services:services' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Services</a>
-        <a href="{% url 'showcase:gallery' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Showcase</a>
-        <a href="{% url 'metrics:results' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Results</a>
-        <a href="{% url 'pages:contact' %}" class="px-3 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-md font-medium dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400">Contact</a>
+        <a href="{{ url_home }}" class="px-3 py-2 rounded-md font-medium {% if request.path == url_home %}bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400{% else %}text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_home %}aria-current="page"{% endif %}>Home</a>
+        <a href="{{ url_about }}" class="px-3 py-2 rounded-md font-medium {% if request.path == url_about %}bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400{% else %}text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_about %}aria-current="page"{% endif %}>About</a>
+        <a href="{{ url_services }}" class="px-3 py-2 rounded-md font-medium {% if request.path == url_services %}bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400{% else %}text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_services %}aria-current="page"{% endif %}>Services</a>
+        <a href="{{ url_showcase }}" class="px-3 py-2 rounded-md font-medium {% if request.path == url_showcase %}bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400{% else %}text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_showcase %}aria-current="page"{% endif %}>Showcase</a>
+        <a href="{{ url_results }}" class="px-3 py-2 rounded-md font-medium {% if request.path == url_results %}bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400{% else %}text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_results %}aria-current="page"{% endif %}>Results</a>
+        <a href="{{ url_contact }}" class="px-3 py-2 rounded-md font-medium {% if request.path == url_contact %}bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400{% else %}text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_contact %}aria-current="page"{% endif %}>Contact</a>
         <a href="{% url 'booking:book' %}" class="btn-premium mx-3 mt-2 text-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">Book a Call</a>
       </div>
     </div>

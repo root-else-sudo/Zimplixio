@@ -18,6 +18,11 @@
     })();
   </script>
 
+  <!-- Premium typography: Poppins (headings) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
   <!-- Tailwind CSS (CDN for development) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -31,6 +36,10 @@
               400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
               800: '#0f2044', 900: '#0a1628',
             }
+          },
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            heading: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           }
         }
       }
@@ -58,9 +67,11 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-900 dark:text-white">
+  <!-- Skip to main content (keyboard accessibility) -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:font-semibold focus:rounded-lg focus:shadow-lg">Skip to main content</a>
   {% include "partials/_header.html" %}
 
-  <main class="flex-1">
+  <main id="main-content" class="flex-1">
     {% block content %}{% endblock %}
   </main>
 

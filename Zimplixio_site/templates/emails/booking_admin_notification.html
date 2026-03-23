@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Booking Request</title>
+<style>
+  body { margin: 0; padding: 0; background: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .wrapper { max-width: 560px; margin: 32px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .header { background: linear-gradient(135deg, #1e3a6e 0%, #0f2044 100%); padding: 32px 40px; text-align: center; }
+  .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; }
+  .header p { margin: 6px 0 0; color: #93c5fd; font-size: 13px; }
+  .body { padding: 36px 40px; }
+  .body p { margin: 0 0 12px; color: #374151; font-size: 15px; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  td { padding: 10px 12px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
+  td:first-child { color: #6b7280; font-weight: 600; width: 140px; }
+  td:last-child { color: #111827; }
+  .message-box { background: #f9fafb; border-radius: 6px; padding: 14px 16px; margin-top: 4px; font-size: 14px; color: #374151; line-height: 1.6; }
+  .cta { display: block; width: fit-content; margin: 24px auto 0; background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+  .footer { background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 20px 40px; text-align: center; }
+  .footer p { margin: 0; color: #9ca3af; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>New Booking Request</h1>
+    <p>Zimplixio Admin Notification</p>
+  </div>
+  <div class="body">
+    <p>A new discovery call has been requested. Review and confirm in the admin panel.</p>
+    <table>
+      <tr><td>Name</td><td>{{ booking.name }}</td></tr>
+      <tr><td>Email</td><td>{{ booking.email }}</td></tr>
+      {% if booking.company %}<tr><td>Company</td><td>{{ booking.company }}</td></tr>{% endif %}
+      <tr><td>Date</td><td>{{ date_str }}</td></tr>
+      <tr><td>Time</td><td>{{ time_str }}</td></tr>
+      <tr><td>Status</td><td>Pending</td></tr>
+      {% if booking.message %}
+      <tr>
+        <td>Message</td>
+        <td><div class="message-box">{{ booking.message }}</div></td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+  <div class="footer">
+    <p>Zimplixio Admin · Change status to Confirmed to notify the visitor.</p>
+  </div>
+</div>
+</body>
+</html>

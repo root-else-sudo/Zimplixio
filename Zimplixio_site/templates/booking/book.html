@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Book a Discovery Call — {{ site_name }}{% endblock %}
 
@@ -21,36 +22,167 @@
   </div>
 </section>
 
-<!-- Booking Form & Sidebar -->
+<!-- Booking Wizard & Sidebar -->
 <section class="py-20 dark:bg-gray-900">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid md:grid-cols-5 gap-12">
-      <!-- Form -->
+
+      <!-- Wizard Panel -->
       <div class="md:col-span-3" data-aos="fade-up" data-aos-delay="100">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
-          <div class="mb-8">
-            <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Schedule Your Call</p>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Pick a time that works for you</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+
+          <!-- Progress indicator -->
+          <div class="flex items-center justify-center gap-0 px-8 pt-8 pb-6">
+            <!-- Step 1 -->
+            <div id="progress-dot-1" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-indigo-600 text-white border-2 border-indigo-600">1</div>
+            <div id="progress-line-1" class="flex-1 h-0.5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+            <!-- Step 2 -->
+            <div id="progress-dot-2" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white dark:bg-gray-800 text-gray-400 border-2 border-gray-300 dark:border-gray-600">2</div>
+            <div id="progress-line-2" class="flex-1 h-0.5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+            <!-- Step 3 -->
+            <div id="progress-dot-3" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white dark:bg-gray-800 text-gray-400 border-2 border-gray-300 dark:border-gray-600">3</div>
           </div>
-          <form method="post" class="space-y-6">
-            {% csrf_token %}
-            {% for field in form %}
-            <div>
-              <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
-              </label>
-              {{ field }}
-              {% if field.errors %}
-              <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ field.errors.0 }}</p>
-              {% endif %}
+          <div class="flex justify-between px-10 pb-6 text-xs text-gray-400 dark:text-gray-500 font-medium">
+            <span>Date</span>
+            <span>Time</span>
+            <span>Details</span>
+          </div>
+
+          <!-- ── Step 1: Pick a date ── -->
+          <div id="booking-step-1" class="px-6 pb-8">
+            <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-xs mb-1">Step 1 of 3</p>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Choose a date</h2>
+
+            <!-- Month navigation -->
+            <div class="flex items-center justify-between mb-4">
+              <button id="cal-prev" type="button" aria-label="Previous month"
+                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <span id="cal-title" class="font-semibold text-gray-900 dark:text-white text-base"></span>
+              <button id="cal-next" type="button" aria-label="Next month"
+                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
             </div>
-            {% endfor %}
-            <button type="submit" class="btn-premium w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">
-              Request Call
-            </button>
-          </form>
-        </div>
-      </div>
+
+            <!-- Calendar grid -->
+            <div id="cal-grid" class="grid grid-cols-7 gap-y-1">
+              <!-- Populated by JS -->
+            </div>
+
+            <p class="mt-5 text-xs text-gray-400 dark:text-gray-500 text-center">
+              <span class="inline-block w-3 h-3 rounded-full ring-2 ring-indigo-400 mr-1 align-middle"></span>Available days are highlighted
+            </p>
+          </div>
+
+          <!-- ── Step 2: Pick a time ── -->
+          <div id="booking-step-2" class="hidden px-6 pb-8">
+            <div class="flex items-center gap-3 mb-5">
+              <button id="back-to-step1" type="button"
+                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <div>
+                <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-xs">Step 2 of 3</p>
+                <p id="step2-date-label" class="font-semibold text-gray-900 dark:text-white text-sm mt-0.5"></p>
+              </div>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Choose a time</h2>
+            <div id="slot-container">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- ── Step 3: Contact details ── -->
+          <div id="booking-step-3" class="hidden px-6 pb-8">
+            <div class="flex items-center gap-3 mb-4">
+              <button id="back-to-step2" type="button"
+                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <div>
+                <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-xs">Step 3 of 3</p>
+              </div>
+            </div>
+
+            <!-- Selected date+time summary -->
+            <div class="flex items-center gap-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-xl px-4 py-3 mb-6">
+              <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <p id="step3-summary" class="text-sm font-semibold text-indigo-800 dark:text-indigo-300"></p>
+            </div>
+
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Your details</h2>
+
+            <form method="post" class="space-y-5">
+              {% csrf_token %}
+              <!-- Hidden date/time inputs -->
+              {{ form.requested_date }}
+              {{ form.requested_time }}
+
+              <!-- Name -->
+              <div>
+                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Name <span class="text-red-500">*</span>
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}<p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.name.errors.0 }}</p>{% endif %}
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email <span class="text-red-500">*</span>
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}<p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.email.errors.0 }}</p>{% endif %}
+              </div>
+
+              <!-- Company -->
+              <div>
+                <label for="{{ form.company.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Company <span class="text-gray-400 font-normal">(optional)</span>
+                </label>
+                {{ form.company }}
+                {% if form.company.errors %}<p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.company.errors.0 }}</p>{% endif %}
+              </div>
+
+              <!-- Message -->
+              <div>
+                <label for="{{ form.message.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Anything to share? <span class="text-gray-400 font-normal">(optional)</span>
+                </label>
+                {{ form.message }}
+                {% if form.message.errors %}<p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.message.errors.0 }}</p>{% endif %}
+              </div>
+
+              <!-- Non-field errors -->
+              {% if form.requested_date.errors or form.requested_time.errors %}
+              <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg px-4 py-3">
+                <p class="text-sm text-red-600 dark:text-red-400">Please go back and select a valid date and time.</p>
+              </div>
+              {% endif %}
+              {% if form.non_field_errors %}
+              <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg px-4 py-3">
+                {% for error in form.non_field_errors %}
+                <p class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <button type="submit" class="btn-premium w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20 mt-2">
+                Request Call
+              </button>
+              <p class="text-xs text-gray-400 dark:text-gray-500 text-center">
+                We'll confirm your slot within 24 hours.
+              </p>
+            </form>
+          </div>
+
+        </div><!-- /wizard card -->
+      </div><!-- /col-span-3 -->
 
       <!-- Sidebar -->
       <div class="md:col-span-2 space-y-6" data-aos="fade-up" data-aos-delay="250">
@@ -114,8 +246,13 @@
             </li>
           </ol>
         </div>
-      </div>
+      </div><!-- /sidebar -->
+
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/booking-wizard.js' %}"></script>
 {% endblock %}

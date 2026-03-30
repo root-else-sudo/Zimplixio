@@ -70,6 +70,8 @@ python manage.py check --deploy
 | `/results/` | metrics | NPSResultsView |
 | `/book/` | booking | BookCallView |
 | `/book/success/` | booking | BookingSuccessView |
+| `/book/slots/` | booking | available_slots_view (GET, returns time pills for a date) |
+| `/book/available-days/` | booking | available_days_view (GET, returns bookable days for a month) |
 | `/framework/api/assessment/` | framework | assessment_view (POST, Anthropic API) |
 | `/framework/api/save-lead/` | framework | save_lead_view (POST, saves AssessmentLead + sends email notification) |
 | `/zm-admin/` | django.admin | Admin interface |
@@ -83,8 +85,8 @@ python manage.py check --deploy
 - **`showcase.ShowcaseProject`** — case study projects. Includes `live_demo_url` and `system_design_url` for interactive iframe demos on detail pages
 - **`showcase.ShowcaseScreenshot`** — screenshot images linked to a ShowcaseProject (FK)
 - **`metrics.NPSMetric`** — NPS scores (single-active enforcement via `save()` override)
-- **`booking.TimeSlot`** — admin-defined weekly available windows (day_of_week, start_time, end_time, is_active)
-- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled)
+- **`booking.TimeSlot`** — admin-defined weekly available windows (day_of_week, start_time, end_time, is_active). Managed via `/zm-admin/booking/timeslot/` — this is the only place to configure availability (no external calendar sync).
+- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled). Confirmed slots are excluded from future availability. Changing status → `confirmed` in admin triggers a visitor confirmation email.
 - **`framework.AssessmentLead`** — lead captures from the AI assessment (fields: name, email, submitted_at, readiness_level, answers JSON)
 
 ### Key Dependencies
@@ -134,7 +136,7 @@ The showcase detail page (`templates/showcase/detail.html`) supports interactive
 - **Iframe sandbox**: `allow-scripts allow-same-origin allow-forms allow-popups` for security
 - **Loading overlay**: Spinner shown until iframe fires `load` event, driven by `static/js/demo-iframe.js`
 - **Gallery badge**: Projects with `live_demo_url` show a green "Live Demo" badge on gallery cards
-- First showcased project: **recomares.com** (e-commerce platform with `/system-design` page)
+- **Showcased projects with live iframes**: **recomares.com** (e-commerce, has `/system-design` toggle) and **simple-forecast.com** (LSS forecasting, no system design page). Simple Forecast order=2, created via migration `0007`.
 
 ### About Page — Special Features
 
@@ -163,6 +165,10 @@ templates/
 ├── showcase/                  # gallery (filterable) + detail pages
 ├── metrics/                   # NPS results page
 ├── booking/                   # book form + booking_success
+├── emails/                    # transactional HTML email templates
+│   ├── booking_visitor_received.html    # sent on form submit (acknowledgement)
+│   ├── booking_admin_notification.html  # sent to admin on new booking
+│   └── booking_visitor_confirmed.html   # sent when admin confirms a booking
 └── framework/                 # AI adoption framework page + assessment
 ```
 
@@ -181,6 +187,7 @@ templates/
 | `static/js/hero-text.js` | Word-by-word H1 reveal on `[data-word-reveal]` elements — splits into `<span class="word-reveal-item">` with staggered CSS animation |
 | `static/js/counter-anim.js` | IntersectionObserver counter animation on `[data-counter]` elements — ease-out-cubic count from 0 to `data-target` |
 | `static/js/particles-hero.js` | **Twisted Particle Stream** — custom canvas ImageData animation (no WebGL, no external lib). 20,000 particles across 6 twisted ribbon surfaces with perspective projection simulating 3D depth. Mouse movement tilts the camera (±1.2 rad Y, ±0.65 rad X). Present on all hero sections. |
+| `static/js/booking-wizard.js` | Calendly-like 3-step booking wizard — state machine driving calendar grid (step 1), time pills (step 2), and contact form (step 3). Fetches available days and slots from JSON API endpoints. Populates hidden `requested_date`/`requested_time` inputs before form submission. |
 
 ### Other Static Files
 
@@ -237,3 +244,9 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **No tsParticles / no CDN for hero effect**: The hero animation is pure vanilla JS canvas (ImageData pixel writing). The tsParticles CDN was removed. `cdn.jsdelivr.net` was also removed from the CSP `script-src` directive in `core/middleware.py`.
 - **Color palette — Tailwind `indigo` remapped**: The `indigo` color scale in `base.html` Tailwind config is overridden to a navy/electric-blue palette (`indigo-600 = #2563eb`, `indigo-800 = #0f2044`, `indigo-900 = #0a1628`). This cascades sitewide — do not add new raw hex values for blue; use `indigo-*` classes.
 - **`.logo-magnetic` on multiple elements**: The magnetic effect uses `querySelectorAll('.logo-magnetic')` with independent state per element. Applied to the logo `<a>` and desktop "Book a Call" button in `_header.html`. Do not apply to the mobile "Book a Call" (inside the dropdown menu).
+- **Booking wizard — availability is DB-only**: There is no Google Calendar / external calendar sync. Availability comes entirely from `TimeSlot` records in the admin. Create at least one active `TimeSlot` or the calendar will show no selectable days.
+- **Booking wizard — `requested_date`/`requested_time` are hidden inputs**: The wizard populates these via JS before form submission. If JS is disabled the form cannot be submitted — this is by design (the wizard requires JS).
+- **Booking confirmation email triggers on admin save**: `BookingRequestAdmin.save_model()` detects the `pending → confirmed` transition and sends `booking_visitor_confirmed.html`. This works for both the detail change form and `list_editable` inline saves.
+- **Booking emails use console backend in dev**: `EMAIL_BACKEND` defaults to `django.core.mail.backends.console.EmailBackend` — emails print to the terminal. Configure SMTP in `.env` for production sending.
+- **Zoom call link is hardcoded in confirmation email**: `templates/emails/booking_visitor_confirmed.html` contains a fixed Zoom link. Update this template if the meeting link changes.
+- **`_format_time()` / `_format_date()` helpers in `booking/views.py`**: Used instead of `strftime('%-I')` to avoid Windows-incompatible format codes. Always use these helpers for booking date/time formatting.

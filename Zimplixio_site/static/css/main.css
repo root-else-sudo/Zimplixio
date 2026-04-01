@@ -204,13 +204,208 @@ textarea:focus {
 
 .showcase-card {
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+              box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.3s ease;
 }
 
 .showcase-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 40px -8px rgba(79, 70, 229, 0.22),
-              0 4px 16px -4px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 16px 48px -8px rgba(79, 70, 229, 0.18),
+              0 4px 16px -4px rgba(0, 0, 0, 0.08);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Image container */
+.showcase-card-img {
+  overflow: hidden;
+}
+.showcase-card-img img {
+  transition: transform 0.4s ease;
+}
+.showcase-card:hover .showcase-card-img img {
+  transform: scale(1.05);
+}
+
+/* Gradient fade at bottom of image into card body */
+.showcase-card-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, white, transparent);
+  pointer-events: none;
+}
+.dark .showcase-card-fade {
+  background: linear-gradient(to top, #111827, transparent);
+}
+
+/* Hover overlay with CTA text */
+.showcase-card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.showcase-card:hover .showcase-card-overlay {
+  opacity: 1;
+}
+
+/* Tech tags with accent dot */
+.showcase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+  background: rgba(99, 102, 241, 0.06);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.12);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.showcase-tag::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.showcase-card:hover .showcase-tag {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+.dark .showcase-tag {
+  background: rgba(129, 140, 248, 0.08);
+  color: #a5b4fc;
+  border-color: rgba(129, 140, 248, 0.15);
+}
+.dark .showcase-card:hover .showcase-tag {
+  background: rgba(129, 140, 248, 0.14);
+  border-color: rgba(129, 140, 248, 0.25);
+}
+
+/* ==========================================================================
+   Showcase Carousel — Netflix-Style
+   ========================================================================== */
+
+.showcase-carousel {
+  position: relative;
+  padding: 0 3rem;
+}
+
+.showcase-viewport {
+  overflow: hidden;
+  padding: 1.5rem 0;
+}
+
+.showcase-track {
+  display: flex;
+  will-change: transform;
+}
+
+.showcase-slide {
+  flex: 0 0 33.333%;
+  padding: 0 0.75rem;
+  transition: transform 0.35s ease, z-index 0s;
+  position: relative;
+}
+
+/* Center card emphasis */
+.showcase-slide.is-center {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+/* Hover zoom — any card comes forward */
+.showcase-slide:hover {
+  transform: scale(1.08);
+  z-index: 20;
+}
+.showcase-slide.is-center:hover {
+  transform: scale(1.12);
+  z-index: 20;
+}
+
+/* Make cards fill the slide */
+.showcase-slide .showcase-card {
+  display: block;
+  height: 100%;
+}
+
+/* Navigation arrows */
+.showcase-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4f46e5;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.showcase-arrow:hover {
+  background: white;
+  box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.2);
+  transform: translateY(-50%) scale(1.08);
+}
+.showcase-arrow-left {
+  left: 0;
+}
+.showcase-arrow-right {
+  right: 0;
+}
+
+/* Dark mode arrows */
+.dark .showcase-arrow {
+  background: rgba(17, 24, 39, 0.85);
+  border-color: rgba(129, 140, 248, 0.2);
+  color: #a5b4fc;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.3);
+}
+.dark .showcase-arrow:hover {
+  background: #1f2937;
+  box-shadow: 0 8px 24px -4px rgba(129, 140, 248, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .showcase-carousel {
+    padding: 0 2.5rem;
+  }
+  .showcase-slide {
+    flex: 0 0 85%;
+  }
+  .showcase-slide.is-center {
+    transform: none;
+  }
+  .showcase-slide:hover {
+    transform: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .showcase-slide {
+    flex: 0 0 50%;
+  }
 }
 
 /* ==========================================================================
@@ -248,6 +443,33 @@ textarea:focus {
    Homepage: Glassmorphism Credential Pills
    ========================================================================== */
 
+/* --- Credential logos --- */
+.credential-logo {
+  width: 140px;
+  height: 52px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.credential-logo-xl {
+  width: 280px;
+  height: 104px;
+}
+.credential-logo:hover {
+  transform: scale(1.06);
+}
+
+@media (max-width: 767px) {
+  .credential-logo {
+    width: 100px;
+    height: 36px;
+  }
+  .credential-logo-xl {
+    width: 140px;
+    height: 48px;
+  }
+}
+
+/* Legacy pill (kept for about page) */
 .credential-pill {
   display: inline-flex;
   align-items: center;
@@ -257,7 +479,7 @@ textarea:focus {
   -webkit-backdrop-filter: blur(4px);
   border: 1px solid rgba(37, 99, 235, 0.25);
   border-radius: 9999px;
-  color: #374151; /* gray-700 — 7.6:1 on gray-50, passes WCAG AA */
+  color: #374151;
   font-size: 1.5rem;
   font-weight: 700;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -382,6 +604,411 @@ textarea:focus {
 }
 
 /* ==========================================================================
+   PDCA Process Steps — Premium Horizontal Flow
+   ========================================================================== */
+
+/* --- Section base: light canvas for glass effect --- */
+.pdca-section {
+  background: #f1f5f9;
+}
+.dark .pdca-section {
+  background: #030712;
+}
+
+/* --- Vibrant gradient blobs (color source behind glass) --- */
+.pdca-ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.pdca-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: pdca-float 14s ease-in-out infinite;
+}
+.pdca-ambient-1 {
+  width: 450px;
+  height: 450px;
+  background: rgba(59, 130, 246, 0.35);
+  top: -15%;
+  left: 5%;
+  animation-delay: 0s;
+}
+.pdca-ambient-2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(139, 92, 246, 0.3);
+  bottom: -10%;
+  right: 10%;
+  animation-delay: -4s;
+}
+.pdca-ambient-3 {
+  width: 320px;
+  height: 320px;
+  background: rgba(6, 182, 212, 0.28);
+  top: 20%;
+  right: 0%;
+  animation-delay: -8s;
+}
+.pdca-ambient-4 {
+  width: 350px;
+  height: 350px;
+  background: rgba(16, 185, 129, 0.22);
+  bottom: 10%;
+  left: 20%;
+  animation-delay: -6s;
+}
+@keyframes pdca-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-24px) scale(1.08); }
+}
+
+/* Dark mode: slightly reduced orb intensity */
+.dark .pdca-ambient-1 { background: rgba(59, 130, 246, 0.25); }
+.dark .pdca-ambient-2 { background: rgba(139, 92, 246, 0.2); }
+.dark .pdca-ambient-3 { background: rgba(6, 182, 212, 0.18); }
+.dark .pdca-ambient-4 { background: rgba(16, 185, 129, 0.14); }
+
+/* --- Frosted glass overlay --- */
+.pdca-glass-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  backdrop-filter: blur(60px) saturate(1.3);
+  -webkit-backdrop-filter: blur(60px) saturate(1.3);
+  background: rgba(241, 245, 249, 0.35);
+}
+.dark .pdca-glass-layer {
+  background: rgba(3, 7, 18, 0.6);
+}
+
+.pdca-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+
+/* --- Connector line + animated dot between cards --- */
+.pdca-connector {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  position: relative;
+}
+.pdca-connector-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(99,102,241,0.1), rgba(99,102,241,0.25), rgba(99,102,241,0.1));
+}
+.pdca-connector-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow: 0 0 8px rgba(99,102,241,0.4);
+  transform: translateY(-50%);
+  animation: pdca-dot-travel 2.4s ease-in-out infinite;
+}
+@keyframes pdca-dot-travel {
+  0%   { left: 0; opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { left: calc(100% - 6px); opacity: 0; }
+}
+/* --- Cards (glass-on-light) --- */
+.pdca-flow .pdca-card {
+  flex: 1;
+  position: relative;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+.pdca-flow .pdca-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 20px 50px -12px rgba(99, 102, 241, 0.15),
+              0 0 0 1px rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+.dark .pdca-flow .pdca-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+.dark .pdca-flow .pdca-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px -12px rgba(99, 102, 241, 0.15),
+              0 0 0 1px rgba(129, 140, 248, 0.12);
+  border-color: rgba(129, 140, 248, 0.25);
+}
+
+/* Inner content layer */
+.pdca-card-inner {
+  position: relative;
+  z-index: 2;
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-align: center;
+}
+
+/* Background glow on hover */
+.pdca-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.pdca-flow .pdca-card:hover .pdca-glow {
+  opacity: 1;
+}
+
+/* Step-specific glow colors */
+.pdca-pos-plan .pdca-glow  { background: radial-gradient(circle at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 60%); }
+.pdca-pos-do .pdca-glow    { background: radial-gradient(circle at 50% 0%, rgba(6,182,212,0.08) 0%, transparent 60%); }
+.pdca-pos-check .pdca-glow { background: radial-gradient(circle at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 60%); }
+.pdca-pos-act .pdca-glow   { background: radial-gradient(circle at 50% 0%, rgba(13,148,136,0.08) 0%, transparent 60%); }
+
+.dark .pdca-pos-plan .pdca-glow  { background: radial-gradient(circle at 50% 0%, rgba(96,165,250,0.1) 0%, transparent 60%); }
+.dark .pdca-pos-do .pdca-glow    { background: radial-gradient(circle at 50% 0%, rgba(34,211,238,0.1) 0%, transparent 60%); }
+.dark .pdca-pos-check .pdca-glow { background: radial-gradient(circle at 50% 0%, rgba(167,139,250,0.1) 0%, transparent 60%); }
+.dark .pdca-pos-act .pdca-glow   { background: radial-gradient(circle at 50% 0%, rgba(45,212,191,0.1) 0%, transparent 60%); }
+
+/* --- Icon wrap with animated ring --- */
+.pdca-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.pdca-flow .pdca-card:hover .pdca-icon-wrap {
+  transform: scale(1.1);
+}
+
+/* Animated ring around icon on hover */
+.pdca-icon-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 22px;
+  border: 2px solid transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.pdca-flow .pdca-card:hover .pdca-icon-ring {
+  opacity: 1;
+  animation: pdca-ring-spin 3s linear infinite;
+}
+.pdca-pos-plan .pdca-icon-ring  { border-color: rgba(59,130,246,0.4) transparent rgba(59,130,246,0.4) transparent; }
+.pdca-pos-do .pdca-icon-ring    { border-color: rgba(6,182,212,0.4) transparent rgba(6,182,212,0.4) transparent; }
+.pdca-pos-check .pdca-icon-ring { border-color: rgba(139,92,246,0.4) transparent rgba(139,92,246,0.4) transparent; }
+.pdca-pos-act .pdca-icon-ring   { border-color: rgba(13,148,136,0.4) transparent rgba(13,148,136,0.4) transparent; }
+@keyframes pdca-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.pdca-icon-plan {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  box-shadow: 0 0 0 0 rgba(59,130,246,0);
+}
+.pdca-icon-do {
+  background: rgba(6, 182, 212, 0.1);
+  color: #06b6d4;
+  box-shadow: 0 0 0 0 rgba(6,182,212,0);
+}
+.pdca-icon-check {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+  box-shadow: 0 0 0 0 rgba(139,92,246,0);
+}
+.pdca-icon-act {
+  background: rgba(13, 148, 136, 0.1);
+  color: #0d9488;
+  box-shadow: 0 0 0 0 rgba(13,148,136,0);
+}
+.pdca-flow .pdca-card:hover .pdca-icon-plan  { box-shadow: 0 4px 16px -4px rgba(59,130,246,0.3); }
+.pdca-flow .pdca-card:hover .pdca-icon-do    { box-shadow: 0 4px 16px -4px rgba(6,182,212,0.3); }
+.pdca-flow .pdca-card:hover .pdca-icon-check { box-shadow: 0 4px 16px -4px rgba(139,92,246,0.3); }
+.pdca-flow .pdca-card:hover .pdca-icon-act   { box-shadow: 0 4px 16px -4px rgba(13,148,136,0.3); }
+
+/* Dark icon backgrounds */
+.dark .pdca-icon-plan  { background: rgba(96,165,250,0.12); color: #60a5fa; }
+.dark .pdca-icon-do    { background: rgba(34,211,238,0.12); color: #22d3ee; }
+.dark .pdca-icon-check { background: rgba(167,139,250,0.12); color: #a78bfa; }
+.dark .pdca-icon-act   { background: rgba(45,212,191,0.12); color: #2dd4bf; }
+
+/* --- Step number with animated ring --- */
+.pdca-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.75rem;
+  text-align: center;
+  position: relative;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #94a3b8;
+  transition: color 0.3s ease;
+}
+
+/* Ring border that draws on hover */
+.pdca-num-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+.pdca-num-ring::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* On hover: ring draws + number shifts to accent color */
+.pdca-flow .pdca-card:hover .pdca-num-ring {
+  animation: pdca-num-ring-draw 0.6s ease forwards;
+}
+.pdca-flow .pdca-card:hover .pdca-num-ring::after {
+  opacity: 1;
+  animation: pdca-ring-spin 3s linear infinite;
+  animation-delay: 0.6s;
+}
+
+/* Step-specific hover colors for number + ring */
+.pdca-pos-plan:hover .pdca-step-num  { color: #3b82f6; }
+.pdca-pos-do:hover .pdca-step-num    { color: #06b6d4; }
+.pdca-pos-check:hover .pdca-step-num { color: #8b5cf6; }
+.pdca-pos-act:hover .pdca-step-num   { color: #0d9488; }
+
+.pdca-pos-plan:hover .pdca-num-ring  { border-color: rgba(59,130,246,0.4); }
+.pdca-pos-do:hover .pdca-num-ring    { border-color: rgba(6,182,212,0.4); }
+.pdca-pos-check:hover .pdca-num-ring { border-color: rgba(139,92,246,0.4); }
+.pdca-pos-act:hover .pdca-num-ring   { border-color: rgba(13,148,136,0.4); }
+
+.pdca-pos-plan:hover .pdca-num-ring::after  { border-color: rgba(59,130,246,0.3) transparent rgba(59,130,246,0.3) transparent; }
+.pdca-pos-do:hover .pdca-num-ring::after    { border-color: rgba(6,182,212,0.3) transparent rgba(6,182,212,0.3) transparent; }
+.pdca-pos-check:hover .pdca-num-ring::after { border-color: rgba(139,92,246,0.3) transparent rgba(139,92,246,0.3) transparent; }
+.pdca-pos-act:hover .pdca-num-ring::after   { border-color: rgba(13,148,136,0.3) transparent rgba(13,148,136,0.3) transparent; }
+
+/* Dark mode hover colors */
+.dark .pdca-pos-plan:hover .pdca-step-num  { color: #60a5fa; }
+.dark .pdca-pos-do:hover .pdca-step-num    { color: #22d3ee; }
+.dark .pdca-pos-check:hover .pdca-step-num { color: #a78bfa; }
+.dark .pdca-pos-act:hover .pdca-step-num   { color: #2dd4bf; }
+
+/* Ring draw animation */
+@keyframes pdca-num-ring-draw {
+  0%   { clip-path: polygon(50% 0%, 50% 0%, 50% 50%, 50% 50%); }
+  25%  { clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%); }
+  50%  { clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 50%); }
+  75%  { clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 50% 50%); }
+  100% { clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%); }
+}
+
+/* --- Description reveal on hover --- */
+.pdca-desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.35s ease, margin 0.4s ease;
+  margin-top: 0;
+}
+.pdca-flow .pdca-card:hover .pdca-desc {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 0.25rem;
+}
+
+/* --- Top accent line (gradient, not solid border) --- */
+.pdca-flow .pdca-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+.pdca-flow .pdca-card:hover::before {
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+.pdca-pos-plan::before  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.pdca-pos-do::before    { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+.pdca-pos-check::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.pdca-pos-act::before   { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
+
+/* --- Mobile: vertical stack --- */
+@media (max-width: 767px) {
+  .pdca-flow {
+    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
+    gap: 0;
+  }
+  .pdca-connector {
+    width: auto;
+    height: 32px;
+    justify-content: center;
+  }
+  .pdca-connector-line {
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(99,102,241,0.15), rgba(99,102,241,0.3), rgba(99,102,241,0.15));
+  }
+  .pdca-connector-dot {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    animation: pdca-dot-travel-v 2.4s ease-in-out infinite;
+  }
+  @keyframes pdca-dot-travel-v {
+    0%   { top: 0; opacity: 0; }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { top: calc(100% - 6px); opacity: 0; }
+  }
+
+  /* Show descriptions always on mobile (no hover) */
+  .pdca-desc {
+    max-height: none;
+    opacity: 1;
+    margin-top: 0.25rem;
+  }
+}
+
+/* ==========================================================================
    prefers-reduced-motion: Disable all animations
    ========================================================================== */
 
@@ -436,5 +1063,28 @@ textarea:focus {
   .section-label-line {
     transition: none;
     stroke-dashoffset: 0;
+  }
+
+  /* Showcase carousel: no transitions */
+  .showcase-track {
+    transition: none !important;
+  }
+  .showcase-slide,
+  .showcase-slide.is-center,
+  .showcase-slide:hover {
+    transform: none !important;
+  }
+
+  /* PDCA: disable ambient floats, connector dots, ring spin */
+  .pdca-ambient-orb,
+  .pdca-connector-dot {
+    animation: none;
+  }
+  .pdca-icon-ring {
+    animation: none !important;
+  }
+  .pdca-desc {
+    max-height: none;
+    opacity: 1;
   }
 }

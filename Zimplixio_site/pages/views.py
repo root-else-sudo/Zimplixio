@@ -15,7 +15,7 @@ class HomePageView(TemplateView):
         context['featured_projects'] = (
             ShowcaseProject.objects
             .filter(is_published=True)
-            .prefetch_related('tech_tags')[:3]
+            .prefetch_related('tech_tags')[:10]
         )
         return context
 

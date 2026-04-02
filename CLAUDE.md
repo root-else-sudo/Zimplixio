@@ -146,6 +146,7 @@ The About page (`templates/pages/about.html`) has unique components beyond the s
 - **Interactive career timeline**: Expand/collapse nodes driven by `static/js/timeline.js`, with CSS `max-height` transitions and gradient accent line
 - **Stat cards**: Animated gradient-text numbers (17+ years, 20+ apps, etc.)
 - Real data from Joseph Ugalde's resume (HPE, IBM, MICIT, Systems X career path). A second consultant bio is planned.
+- **Interactive world map**: See "About Page — World Map" section below.
 
 ### Template Structure
 

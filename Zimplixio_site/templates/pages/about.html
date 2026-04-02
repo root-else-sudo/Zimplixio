@@ -45,48 +45,40 @@
       Built Different.<br class="hidden sm:block"> On Purpose.
     </h1>
     <p class="text-xl text-indigo-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-      17 years inside the world's largest technology companies taught us one thing: growing businesses deserve the same caliber of expertise — without the overhead.
+      Growing businesses deserve the same caliber of expertise without the overhead — from custom software development, data management & analytics to workflow optimization & automation.
     </p>
   </div>
 </section>
 
 <!-- Origin Story -->
 <section class="py-20 dark:bg-gray-900">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid md:grid-cols-2 gap-16 items-center">
-      <div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-4 gap-12 items-stretch">
+      <div class="lg:col-span-1">
         <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6" data-aos="fade-right" data-aos-duration="700">
           The gap we saw
         </h2>
         <div class="space-y-4 text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
           <p data-aos="fade-right" data-aos-duration="700" data-aos-delay="100">
-            After nearly two decades leading engineering teams, shipping products, and solving complex problems at <strong class="text-gray-900 dark:text-white">Hewlett Packard Enterprise</strong> and <strong class="text-gray-900 dark:text-white">IBM</strong>, a pattern became impossible to ignore.
+            After years leading engineering and product teams, and solving complex workflow problems at <strong class="text-gray-900 dark:text-white">PayPal</strong> , <strong class="text-gray-900 dark:text-white">Hewlett Packard</strong> , <strong class="text-gray-900 dark:text-white">IBM</strong> and <strong class="text-gray-900 dark:text-white">Intel</strong>, a pattern became impossible to ignore.
           </p>
           <p data-aos="fade-right" data-aos-duration="700" data-aos-delay="200">
-            The companies that needed the most help — growing SMBs hitting technology walls — were the ones least served. Enterprise consultancies priced them out. Freelancers couldn't deliver the architectural rigor. Agencies sold them cookie-cutter solutions.
+            The companies that needed the most help — growing SMBs stuck between spreadsheets and enterprise tools they'd never fully adopted — were the ones least served.
           </p>
           <p data-aos="fade-right" data-aos-duration="700" data-aos-delay="300">
-            <strong class="text-gray-900 dark:text-white">Zimplixio was founded to close that gap.</strong> Enterprise-grade thinking, right-sized for businesses that are ready to scale but refuse to overpay for it.
+            <strong class="text-gray-900 dark:text-white">Zimplixio was founded to close that gap.</strong> We don't advise from the sidelines — we build, implement, and stay until it works. Enterprise-grade thinking, right-sized for businesses ready to scale..
           </p>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-4" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
-        <div class="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-gray-800 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 text-center">
-          <p class="stat-number text-4xl font-bold" data-counter data-target="17" data-suffix="+">17+</p>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Years of Experience</p>
+      <div class="lg:col-span-3 flex flex-col" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+        <div id="world-map-container" class="flex-1"
+             data-world-url="{% static 'data/world-110m.json' %}"
+             data-us-url="{% static 'data/us-10m.json' %}">
+          <noscript>
+            <p style="color:#94a3b8;padding:2rem;text-align:center">Enable JavaScript to view the interactive map.</p>
+          </noscript>
         </div>
-        <div class="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-gray-800 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 text-center">
-          <p class="stat-number text-4xl font-bold" data-counter data-target="20" data-suffix="+">20+</p>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Apps Shipped</p>
-        </div>
-        <div class="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-gray-800 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 text-center">
-          <p class="stat-number text-4xl font-bold" data-counter data-target="150" data-suffix="K+">150K+</p>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Hours Saved via Automation</p>
-        </div>
-        <div class="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-gray-800 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 text-center">
-          <p class="stat-number text-4xl font-bold" data-counter data-target="5" data-suffix="">5</p>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Continents Served</p>
-        </div>
+        <p class="map-hint" aria-hidden="true">Tap the Americas to explore our U.S. locations</p>
       </div>
     </div>
   </div>
@@ -447,4 +439,7 @@
 {% block extra_js %}
 <script src="{% static 'js/timeline.js' %}"></script>
 <script src="{% static 'js/counter-anim.js' %}"></script>
+<script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="{% static 'js/world-map.js' %}"></script>
 {% endblock %}

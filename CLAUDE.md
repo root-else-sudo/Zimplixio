@@ -144,10 +144,10 @@ The showcase detail page (`templates/showcase/detail.html`) supports interactive
 
 The About page (`templates/pages/about.html`) has unique components beyond the standard design system:
 
-- **Consultant bio card**: Photo placeholder with initials, certifications list, LinkedIn link, expertise pills, education details
+- **Founder cards** (`/* === Founder Cards === */` block in `main.css`): Two horizontal cards — Joseph Ugalde (photo left) and Maria Jose Espinoza (photo right, `.founder-card--reverse`). Each card has a dark gradient photo panel (`founder-photo-panel`) with top-anchored photo, gradient fade overlay, name/title/LinkedIn button (`founder-meta-block`), and a content panel (`founder-content-panel`) with story-driven bio (`founder-bio`) and a blue left-border accent quote (`founder-accent`). Photos at `static/images/joseph.jpg` and `static/images/maria-jose.png`. Full light/dark mode support. AOS `fade-up` staggered entrance.
 - **Interactive career timeline**: Expand/collapse nodes driven by `static/js/timeline.js`, with CSS `max-height` transitions and gradient accent line
 - **Stat cards**: Animated gradient-text numbers (17+ years, 20+ apps, etc.)
-- Real data from Joseph Ugalde's resume (HPE, IBM, MICIT, Systems X career path). A second consultant bio is planned.
+- Real data from Joseph Ugalde's resume (HPE, IBM, MICIT, Systems X career path). Maria Jose Espinoza (Co-Founder & Operations Lead) added as second founder card.
 - **Interactive world map**: See "About Page — World Map" section below.
 
 ### Template Structure
@@ -198,7 +198,7 @@ templates/
 
 | File | Purpose |
 |------|---------|
-| `static/css/main.css` | Custom styles — smooth scrolling, focus glow, `.hero-animated-bg` gradient animation, `.btn-premium` shimmer, `.logo-magnetic`, `.showcase-card` hover + image zoom + overlay + gradient fade, `.showcase-tag` accent-dot pills, `.showcase-carousel` Netflix-style layout + arrows, `.header-elevated`, `.section-label` accent line, `.word-reveal-item`, `zoom-custom` AOS, `.credential-pill`, `.credential-logo` grayscale→color hover, `.timeline-node--active`, `.footer-link`, dark mode form inputs, PDCA glassmorphism section (`.pdca-section`, `.pdca-glass-layer`, `.pdca-ambient` orbs, `.pdca-flow` horizontal cards, `.pdca-icon-wrap` + `.pdca-icon-ring` hover spin, `.pdca-num-ring` hover draw, `.pdca-desc` reveal on hover, `.pdca-connector` animated dot, `.pdca-glow` radial hover), `prefers-reduced-motion` overrides |
+| `static/css/main.css` | Custom styles — smooth scrolling, focus glow, `.hero-animated-bg` gradient animation, `.btn-premium` shimmer, `.logo-magnetic`, `.showcase-card` hover + image zoom + overlay + gradient fade, `.showcase-tag` accent-dot pills, `.showcase-carousel` Netflix-style layout + arrows, `.header-elevated`, `.section-label` accent line, `.word-reveal-item`, `zoom-custom` AOS, `.credential-pill`, `.credential-logo` grayscale→color hover, `.timeline-node--active`, `.footer-link`, dark mode form inputs, PDCA glassmorphism section (`.pdca-section`, `.pdca-glass-layer`, `.pdca-ambient` orbs, `.pdca-flow` horizontal cards, `.pdca-icon-wrap` + `.pdca-icon-ring` hover spin, `.pdca-num-ring` hover draw, `.pdca-desc` reveal on hover, `.pdca-connector` animated dot, `.pdca-glow` radial hover), world map styles, founder cards (`.founder-card`, `.founder-card--reverse`, `.founder-photo-panel`, `.founder-content-panel`, `.founder-bio`, `.founder-accent`, `.founder-linkedin-btn`), `prefers-reduced-motion` overrides |
 | `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules |
 | `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
 | `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
@@ -208,6 +208,8 @@ templates/
 | `static/images/IBM.svg` | IBM logo SVG — used in homepage credentials section |
 | `static/images/HPE.svg` | HPE logo SVG (white text, green icon) — used in homepage credentials section |
 | `static/images/Intel.svg` | Intel logo SVG — used in homepage credentials section |
+| `static/images/joseph.jpg` | Joseph Ugalde photo — used in About page founder card |
+| `static/images/maria-jose.png` | Maria Jose Espinoza photo — used in About page founder card |
 | `static/manifest.json` | PWA web app manifest with Zimplixio branding |
 
 ### Security

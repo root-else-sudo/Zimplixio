@@ -176,8 +176,8 @@
       })
       .attr('d', ctx.path);
 
-    drawPins(ctx.g, CONTINENTAL, ctx.proj, ctx.tooltip, 'c-pin', 5);
-    if (reducedMotion) drawPins(ctx.g, CITIES, ctx.proj, ctx.tooltip, 'city-pin', 4);
+    drawPins(ctx.g, CONTINENTAL, ctx.proj, ctx.tooltip, 'c-pin');
+    if (reducedMotion) drawPins(ctx.g, CITIES, ctx.proj, ctx.tooltip, 'city-pin');
 
     // ── Unified click handler (globe / flat / us states) ──────────────────
     ctx.svg.on('click', function (event) {
@@ -189,6 +189,8 @@
         // Globe: click Americas country or any c-pin → morph to flat world
         if ((d && AMERICAS.has(+d.id)) || target.closest('.c-pin')) {
           if (hint) hint.style.display = 'none';
+          var desktopHint = el.querySelector('.map-globe-hint');
+          if (desktopHint) { desktopHint.style.animation = 'none'; desktopHint.style.opacity = '0'; }
           transitionToFlat(world, us, ctx);
         }
       } else if (ctx.state.view === 'flat') {
@@ -255,6 +257,30 @@
     }).on('mouseenter', function () { clearTimeout(ctx.state.timer); });
   }
 
+  /* ── US hint animation ────────────────────────────────────────────────── */
+
+  function startUSHint(ctx) {
+    if (reducedMotion) return;
+    var usNode = ctx.g.selectAll('.map-country')
+      .filter(function (d) { return +d.id === 840; })
+      .node();
+    if (!usNode) return;
+
+    ctx._usHintInterval = setInterval(function () {
+      if (ctx.state.view !== 'flat') { stopUSHint(ctx); return; }
+      usNode.classList.toggle('map-country--us-hint');
+    }, 900);
+  }
+
+  function stopUSHint(ctx) {
+    clearInterval(ctx._usHintInterval);
+    ctx._usHintInterval = null;
+    var usNode = ctx.g.selectAll('.map-country')
+      .filter(function (d) { return +d.id === 840; })
+      .node();
+    if (usNode) usNode.classList.remove('map-country--us-hint');
+  }
+
   /* ── Globe → Flat ─────────────────────────────────────────────────────── */
 
   function transitionToFlat(world, us, ctx) {
@@ -300,6 +326,7 @@
         });
         ctx.state.view = 'flat';
         ctx.state.busy = false;
+        startUSHint(ctx);
       });
   }
 
@@ -309,10 +336,12 @@
     if (ctx.state.busy || ctx.state.view === 'world') return;
     ctx.state.busy = true;
 
+    stopUSHint(ctx);
+    ctx.g.selectAll('.map-country').style('opacity', null); // reset before morph
     hideTooltip(ctx.tooltip);
 
     // Remove US layers and hide all pins before morphing
-    ctx.g.selectAll('.city-pin, .map-state')
+    ctx.g.selectAll('.city-pin, .map-state, .city-pin-layer, .states-layer')
       .transition().duration(reducedMotion ? 0 : 150).style('opacity', 0).remove();
     ctx.g.selectAll('.c-pin')
       .transition().duration(reducedMotion ? 0 : 150).style('opacity', 0);
@@ -372,6 +401,13 @@
     if (ctx.state.busy) return;
     ctx.state.busy = true;
 
+    stopUSHint(ctx);
+
+    // Dim world countries to focus attention on the US
+    ctx.g.selectAll('.map-country')
+      .transition().duration(reducedMotion ? 0 : 600)
+      .style('opacity', 0.12);
+
     // Use continental US corners — avoids Alaska & Hawaii inflating the bounding box
     var tl = ctx.proj([-125, 50]); // top-left  (NW corner)
     var br = ctx.proj([-66,  24]); // bottom-right (SE corner)
@@ -388,10 +424,15 @@
       .ease(d3.easeCubicInOut)
       .attr('transform', 'translate(' + tx + ',' + ty + ') scale(' + k + ')')
       .on('end', function () {
+        // Hide continental pins — they have no scale compensation and blow up at zoom
+        ctx.g.selectAll('.c-pin').style('opacity', 0);
         ctx.state.view = 'us';
         ctx.state.busy = false;
-        drawStates(ctx.g, us, ctx.proj);
-        staggerCityPins(ctx.g, ctx.proj, ctx.tooltip);
+        // Insert states layer first, then pin layer — fixed DOM order guarantees pins are always on top
+        var statesLayer = ctx.g.append('g').attr('class', 'states-layer');
+        var pinLayer    = ctx.g.append('g').attr('class', 'city-pin-layer');
+        drawStates(statesLayer, us, ctx.proj);
+        staggerCityPins(pinLayer, ctx.proj, ctx.tooltip, k);
       });
   }
 
@@ -402,7 +443,12 @@
     ctx.state.busy = true;
     hideTooltip(ctx.tooltip);
 
-    ctx.g.selectAll('.city-pin, .map-state')
+    // Restore world country opacity
+    ctx.g.selectAll('.map-country')
+      .transition().duration(reducedMotion ? 0 : 400)
+      .style('opacity', 1);
+
+    ctx.g.selectAll('.city-pin, .map-state, .city-pin-layer, .states-layer')
       .transition().duration(reducedMotion ? 0 : 200)
       .style('opacity', 0).remove();
 
@@ -411,8 +457,11 @@
       .ease(d3.easeCubicInOut)
       .attr('transform', 'translate(0,0) scale(1)')
       .on('end', function () {
+        // Restore continental pins now that g is back to identity scale
+        ctx.g.selectAll('.c-pin').style('opacity', 1);
         ctx.state.view = 'flat';
         ctx.state.busy = false;
+        startUSHint(ctx);
       });
   }
 
@@ -420,23 +469,35 @@
 
   function drawStates(g, us, proj) {
     var statePath = d3.geoPath().projection(proj);
-    g.selectAll('.map-state')
-      .data(topojson.feature(us, us.objects.states).features)
-      .enter().append('path').attr('class', 'map-state').attr('d', statePath)
-      .style('opacity', 0)
-      .transition().duration(reducedMotion ? 0 : 350).ease(d3.easeCubicOut).style('opacity', 1);
+    var features = topojson.feature(us, us.objects.states).features
+      .slice()
+      .sort(function (a, b) {
+        return d3.geoCentroid(a)[0] - d3.geoCentroid(b)[0]; // west → east sweep
+      });
+    features.forEach(function (feature, i) {
+      setTimeout(function () {
+        g.append('path')
+          .datum(feature)
+          .attr('class', 'map-state')
+          .attr('d', statePath)
+          .style('opacity', 0)
+          .transition().duration(reducedMotion ? 0 : 300).ease(d3.easeCubicOut)
+          .style('opacity', 1);
+      }, reducedMotion ? 0 : i * 30);
+    });
   }
 
   /* ── Staggered city pins ──────────────────────────────────────────────── */
 
-  function staggerCityPins(g, proj, tooltip) {
+  function staggerCityPins(g, proj, tooltip, k) {
+    var pinScale = 1 / (k || 1); // compensate for parent g zoom transform
     CITIES.forEach(function (city, i) {
       setTimeout(function () {
         var coords = proj([city.lon, city.lat]);
         if (!coords) return;
         var pg = g.append('g')
           .attr('class', 'map-pin-group city-pin')
-          .attr('transform', 'translate(' + coords[0] + ',' + coords[1] + ')')
+          .attr('transform', 'translate(' + coords[0] + ',' + coords[1] + ') scale(' + pinScale + ')')
           .style('opacity', 0);
         pg.append('path').attr('class', 'map-pin-icon').attr('d', PIN_SM).attr('fill', '#ef4444');
         pg.append('circle').attr('class', 'map-pin-dot').attr('cx', 0).attr('cy', -9).attr('r', 2);
@@ -466,7 +527,7 @@
 
   /* ── Static pins ──────────────────────────────────────────────────────── */
 
-  function drawPins(g, pins, proj, tooltip, cls, r) {
+  function drawPins(g, pins, proj, tooltip, cls) {
     pins.forEach(function (pin) {
       var visible = globeVisible(proj, pin.lon, pin.lat);
       var coords  = visible ? proj([pin.lon, pin.lat]) : null;

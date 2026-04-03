@@ -52,7 +52,7 @@ python manage.py check --deploy
 | `showcase` | `Zimplixio_site/showcase/` | Solution showcase gallery & detail pages |
 | `metrics` | `Zimplixio_site/metrics/` | NPS score tracking & results page |
 | `booking` | `Zimplixio_site/booking/` | Discovery call booking system |
-| `framework` | `Zimplixio_site/framework/` | AI Adoption Framework page + AI readiness assessment API |
+| `framework` | `Zimplixio_site/framework/` | AI readiness assessment API endpoints only (no page-level views — the framework page is served by `showcase` at `/showcase/ai-adoption-framework/`) |
 
 ### URL Map
 
@@ -66,12 +66,13 @@ python manage.py check --deploy
 | `/cookie-policy/` | pages | CookiePolicyView |
 | `/services/` | services | ServicesPageView |
 | `/showcase/` | showcase | ShowcaseGalleryView |
-| `/showcase/<slug>/` | showcase | ShowcaseDetailView |
+| `/showcase/<slug>/` | showcase | ShowcaseDetailView (slug `ai-adoption-framework` uses custom template `detail-framework.html`) |
 | `/results/` | metrics | NPSResultsView |
 | `/book/` | booking | BookCallView |
 | `/book/success/` | booking | BookingSuccessView |
 | `/book/slots/` | booking | available_slots_view (GET, returns time pills for a date) |
 | `/book/available-days/` | booking | available_days_view (GET, returns bookable days for a month) |
+| **`/framework/api/*`** | **framework — API only** | **No page views; framework page lives at `/showcase/ai-adoption-framework/`** |
 | `/framework/api/assessment/` | framework | assessment_view (POST, Anthropic API) |
 | `/framework/api/save-lead/` | framework | save_lead_view (POST, saves AssessmentLead + sends email notification) |
 | `/zm-admin/` | django.admin | Admin interface |
@@ -98,7 +99,7 @@ python manage.py check --deploy
 - `anthropic` — Anthropic Python SDK for AI readiness assessment API calls
 - `@xyflow/react` (v12) — React Flow library for hub-and-spoke diagram in framework accordion (bundled into `static/dist/framework-accordion.js`)
 - `react` v19 + `react-dom` v19 — UI library for the framework accordion bundle
-- `gunicorn` — WSGI server for production (referenced in `Procfile`, not yet in `Pipfile`)
+- `gunicorn` — WSGI server for production (referenced in `Procfile` and declared in `Pipfile`)
 - Tailwind CSS via CDN (development)
 - AOS (Animate On Scroll) via unpkg CDN — global scroll-triggered animations
 
@@ -126,6 +127,7 @@ All pages follow a consistent design language. When creating new pages, follow t
 - **Card styling**: `rounded-2xl border border-gray-200 shadow-sm` with `hover:shadow-md transition-shadow` for interactive cards
 - **Section spacing**: Consistent `py-20` for content sections
 - **CTA buttons**: `bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20`
+- **Dark mode**: Tailwind `darkMode: 'class'` — the `dark` class is toggled on `<html>` by `dark-mode.js`. Preference is persisted in `localStorage` and applied on page load (inline script in `<head>`) to prevent FOUC. Use `dark:` variants on all new UI elements. Common pairings: `bg-white dark:bg-gray-900`, `text-gray-900 dark:text-white`, `border-gray-200 dark:border-gray-700`, `bg-gray-50 dark:bg-gray-800`. Toggle button uses `.dark-mode-toggle` class; icons use `.dark-mode-moon` (visible in light) and `.dark-mode-sun` (visible in dark, starts `hidden`).
 
 ### Showcase Detail Page — Interactive Demos
 
@@ -190,6 +192,7 @@ templates/
 | `static/js/particles-hero.js` | **Twisted Particle Stream** — custom canvas ImageData animation (no WebGL, no external lib). 20,000 particles across 6 twisted ribbon surfaces with perspective projection simulating 3D depth. Mouse movement tilts the camera (±1.2 rad Y, ±0.65 rad X). Present on all hero sections. |
 | `static/js/booking-wizard.js` | Calendly-like 3-step booking wizard — state machine driving calendar grid (step 1), time pills (step 2), and contact form (step 3). Fetches available days and slots from JSON API endpoints. Populates hidden `requested_date`/`requested_time` inputs before form submission. |
 | `static/js/showcase-carousel.js` | Netflix-style infinite-loop carousel for Featured Solutions on homepage. Vanilla JS IIFE — clones first/last N slides for seamless wrapping, `translateX` percentage-based positioning, CSS transitions. Auto-play (5s, pauses on hover/focus), left/right arrow + keyboard navigation. Responsive: 1 card mobile, 2 tablet, 3 desktop. Rebuilds clones on resize. `prefers-reduced-motion` disables auto-play. |
+| `static/js/world-map.js` | Interactive world map on the About page — D3 v7 + TopoJSON IIFE. Three-state machine: `'world'` (orthographic globe), `'flat'` (Natural Earth world map), `'us'` (US bounding-box zoom). See "About Page — World Map" section. |
 
 ### Other Static Files
 
@@ -278,6 +281,61 @@ The "Built on Enterprise Experience" section shows company logos from Joseph's r
 - **Hover**: Subtle scale 1.06 on hover.
 - **Layout**: `flex-nowrap` on desktop (single row), `flex-wrap` on mobile (wraps to two rows).
 
+### About Page — World Map
+
+The "The gap we saw" section of the About page contains an interactive world map in the right `lg:col-span-3` of a `lg:grid-cols-4` layout inside `max-w-7xl`.
+
+**Files**
+
+| File | Role |
+|------|------|
+| `static/js/world-map.js` | Main IIFE component (~500 lines) |
+| `static/css/main.css` | Map styles appended at bottom (`/* === World Map === */`) |
+| `static/data/world-110m.json` | World TopoJSON (CC0, world-atlas v2) |
+| `static/data/us-10m.json` | US states TopoJSON (CC0, us-atlas v3) |
+| `templates/pages/about.html` | Section markup + `extra_js` block |
+
+CDN scripts in `extra_js`: D3 v7 and TopoJSON v3 from `unpkg.com`. Data URLs injected via `data-world-url` / `data-us-url` attributes on `#world-map-container` using `{% static %}` tags.
+
+**Three-state interaction**
+
+| State | `state.view` | How to enter | How to exit |
+|-------|-------------|--------------|-------------|
+| Orthographic globe | `'world'` | Page load | Click any country pin or Americas landmass |
+| Flat world map (Natural Earth) | `'flat'` | Morph animation completes | Click US country or US pin → zoom; or mouse-out (600ms) → globe |
+| US bounding-box zoom | `'us'` | Click US in flat state | Click outside US states → zoom back to flat; or mouse-out → globe |
+
+**Globe state details**
+- Drag SVG to rotate freely (drag handler on `ctx.svg`)
+- `globeVisible(proj, lon, lat)` great-circle check controls pin show/hide — never uses `clipAngle` return value alone (avoids edge-case ocean pins)
+- All 29 country pins are created on load; back-hemisphere pins hidden via `opacity:0` + `translate(-9999,-9999)`
+
+**Country pins (`CONTINENTAL` array — 29 entries)**
+Americas: United States, Canada, Mexico, Costa Rica, Argentina, Brasil  
+Europe: Belgium, France, Germany, Ireland, Netherlands, Romania, Spain, Switzerland, United Kingdom  
+Africa: Egypt, South Africa  
+Asia: India, Indonesia, Japan, Vietnam, Philippines, Bangladesh, UAE, Taiwan, Israel, Qatar, Singapore  
+Pacific: Australia
+
+**US city pins (`CITIES` array — 12 entries)**  
+Atlanta GA, Miami FL, Houston TX, Los Angeles CA, Detroit MI, New York NY, Chicago IL, New Orleans LA, Boston MA, Newark NJ, Charlotte NC, Portland OR
+
+**Key technical details**
+- `makeInterpolatedProjection(rawA, rawB)` blends `geoOrthographicRaw` and `geoNaturalEarth1Raw` via `alpha(t)` using `geoProjectionMutator`
+- `clipAngle(90)` set at globe init; `clipAngle(null)` called after flat morph completes; `clipAngle(90)` restored before reverse morph
+- Country paths redrawn with `ctx.g.selectAll('.map-country').attr('d', ctx.path)` after `clipAngle(null)` — required or polar countries stay clipped
+- `zoomToUS` uses hardcoded continental US corners (`[-125,50]` → `[-66,24]`) to compute the bounding box — **do not switch back to `path.bounds(nation)`** as Alaska + Hawaii inflate the box and produce a near-useless zoom
+- Pin shapes: `PIN_LG` (continental, tip at origin, ~19px tall) and `PIN_SM` (city, ~13px tall) — SVG path strings, filled red (`#ef4444`) via `.attr('fill', ...)`
+- `setupTouch` function was removed; touch and desktop share one unified `ctx.svg.on('click', ...)` handler in `drawWorld`
+
+**CSS (`/* === World Map === */` block in `main.css`)**
+- `#world-map-container`: `height: 100%; min-height: 520px` — no background color (renders on page background)
+- `.map-sphere`: `fill: #060c18` (dark ocean)
+- `.map-graticule`: indigo grid at 15% opacity
+- `.map-country--americas`: slightly brighter fill, `cursor: pointer`
+- `.map-pin-icon`: red fill, white stroke, drop-shadow, `cursor: pointer`
+- `.map-pin-dot`: white circle inside pin body
+
 ### Known Gotchas
 
 - **`{% load static %}` required**: Any template using `{% static %}` tags (e.g., in `extra_js` blocks) must include `{% load static %}` after `{% extends %}`
@@ -286,7 +344,7 @@ The "Built on Enterprise Experience" section shows company logos from Joseph's r
 - **Cross-origin iframe CSRF**: Embedded apps (e.g., recomares.com) that use POST-based actions (like Django `set_language`) will fail in the iframe due to third-party cookie blocking. This is a browser limitation — fix requires `SameSite=None` on the embedded app's cookies. The "Open in new tab" fallback link is provided.
 - **Gallery thumbnails**: Use `object-contain` (not `object-cover`) so icon-style images display fully without cropping
 - **HomePageView cross-app query**: `HomePageView` imports `showcase.ShowcaseProject` to fetch `featured_projects` for the homepage — changes to the showcase model can affect the homepage
-- **gunicorn not in Pipfile**: The `Procfile` references gunicorn for Heroku deployment, but it is not yet listed as a dependency in `Pipfile` — add it before deploying
+- **gunicorn**: Declared in `Pipfile` and used by the `Procfile` for production deployment. Run `pipenv install` to ensure it's present in your local environment.
 - **Assessment wizard is pure React**: The wizard on the framework page is fully React (`AssessmentWizard` mounted on `#assessment-root`). There is no vanilla JS fallback. The "Start Assessment" button uses `onclick="document.dispatchEvent(new CustomEvent('assessmentStart'))"` to signal the React component.
 - **One React bundle for everything**: `static/dist/framework-accordion.js` (built from `frontend/`) drives both the hub-and-spoke diagram and the assessment wizard. Rebuilding with `cd frontend && npm run build` updates both.
 - **React Flow scroll blocking**: `FlowHub.tsx` sets `preventScrolling={false}` on the `<ReactFlow>` component. Without this, React Flow intercepts wheel events and calls `preventDefault()` even when zoom is disabled, causing scroll jank on the framework page. Do not remove this prop.
@@ -302,10 +360,14 @@ The "Built on Enterprise Experience" section shows company logos from Joseph's r
 - **Booking emails use console backend in dev**: `EMAIL_BACKEND` defaults to `django.core.mail.backends.console.EmailBackend` — emails print to the terminal. Configure SMTP in `.env` for production sending.
 - **Zoom call link is hardcoded in confirmation email**: `templates/emails/booking_visitor_confirmed.html` contains a fixed Zoom link. Update this template if the meeting link changes.
 - **`_format_time()` / `_format_date()` helpers in `booking/views.py`**: Used instead of `strftime('%-I')` to avoid Windows-incompatible format codes. Always use these helpers for booking date/time formatting.
-- **PDCA section — no GSAP, no JS file**: The PDCA section is pure CSS + AOS. The old `pdca-wheel.js` and GSAP CDN scripts were removed. `cdnjs.cloudflare.com` was also removed from the CSP `script-src`.
+- **PDCA section — no GSAP, no JS file**: The PDCA section is pure CSS + AOS only. Do not add JS animation libraries (e.g. GSAP) — all motion is handled via CSS keyframes and AOS entrance animations. `cdnjs.cloudflare.com` is not in the CSP `script-src` allowlist.
 - **PDCA description reveal is hover-only on desktop**: `.pdca-desc` uses `max-height: 0` → `max-height: 200px` on `:hover`. On mobile (≤767px), descriptions are always visible via CSS override. No JS fallback for touch devices on desktop — descriptions auto-reveal on card tap via `:hover` on touch browsers.
 - **Showcase carousel clones require N ≥ visible count**: The carousel clones the first/last N slides (where N = visible count: 3 desktop, 2 tablet, 1 mobile). With only 3 projects, the carousel still works because clones fill the gaps. If reduced to fewer than the visible count, the layout may look sparse.
 - **Showcase carousel auto-play pauses on hover/focus**: Auto-play resumes on `mouseleave`/`focusout`. If the user tabs into a card and doesn't tab out, auto-play stays paused indefinitely — this is intentional for accessibility.
 - **HPE logo has white text**: The HPE SVG (`static/images/HPE.svg`) was modified to use `fill:#ffffff` for text paths. The green icon element (`fill:#00b188`) was not changed. If the logo appears invisible on white backgrounds, this is why.
 - **Credential logo sizing is per-file**: PayPal/IBM/HPE use `.credential-logo-xl` (280×104px) and Intel uses default `.credential-logo` (140×52px) because the SVGs have different native aspect ratios. Adjust these classes if logos are swapped.
 - **Iframe-embedded showcase apps must allow framing**: Any external app added to the showcase with `live_demo_url` must not send `X-Frame-Options: SAMEORIGIN` (Django's default via `XFrameOptionsMiddleware`). Remove `XFrameOptionsMiddleware` from the embedded app's `MIDDLEWARE` setting to allow cross-origin embedding. Simple Forecast required this fix before its iframe would load on zimplixio.com.
+- **World map — `clipAngle(null)` must be followed by a path redraw**: After calling `ctx.proj.clipAngle(null)` in `transitionToFlat`, the country paths must be immediately redrawn (`ctx.g.selectAll('.map-country').attr('d', ctx.path)`) or polar countries remain clipped from the tween's last frame.
+- **World map — do not use `path.bounds(nation)` for US zoom**: `us.objects.nation` includes Alaska and Hawaii, which inflate the bounding box so much the zoom factor becomes ~1.5× (barely visible). Always use the hardcoded continental corners `[-125,50]` → `[-66,24]` in `zoomToUS`.
+- **World map — pin visibility uses great-circle math, not `clipAngle` return value**: `globeVisible(proj, lon, lat)` computes the angular distance from the globe center explicitly. Relying on `proj([lon,lat]) === null` produced ocean-position artifacts for points near the 90° boundary with the interpolated projection.
+- **World map — D3 v7 + TopoJSON loaded from `unpkg.com`**: Both CDN scripts must appear in `{% block extra_js %}` before `world-map.js`. The CSP `script-src` already allows `https://unpkg.com`.

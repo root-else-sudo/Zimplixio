@@ -10,6 +10,7 @@ django-environ = "*"
 whitenoise = "*"
 django-ratelimit = "*"
 anthropic = "*"
+gunicorn = "*"
 
 [dev-packages]
 

@@ -153,7 +153,7 @@ web: cd Zimplixio_site && gunicorn Zimplixio_site.wsgi --bind 0.0.0.0:$PORT
 
 On every deploy: frontend is rebuilt, migrations run, static files are collected, then Gunicorn starts.
 
-> **Note:** `gunicorn` is referenced in the `Procfile` but not yet declared in `Pipfile` — add it before deploying.
+> **Note:** `gunicorn` is declared in `Pipfile` and installed via `pipenv install`.
 
 ---
 

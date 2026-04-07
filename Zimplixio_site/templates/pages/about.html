@@ -91,13 +91,13 @@
 
 <!-- Meet the Team -->
 <section class="py-20 bg-gray-50 dark:bg-gray-900">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-14">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-14 text-center">
       <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">Meet the Team</p>
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white" data-aos="fade-up" data-aos-delay="100">The people behind Zimplixio</h2>
     </div>
 
-    <div class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
       <!-- Joseph Ugalde -->
       <div class="founder-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="150">
@@ -105,18 +105,18 @@
           <div class="founder-photo-wrap">
             <img src="{% static 'images/joseph.jpg' %}" alt="Joseph Ugalde — Founder &amp; Principal Consultant">
           </div>
+        </div>
+        <div class="founder-content-panel">
           <div class="founder-meta-block">
             <p class="founder-person-name">Joseph Ugalde</p>
-            <p class="founder-person-title">Founder &amp; Principal Consultant</p>
+            <p class="founder-person-title">Founder & Principal Consultant</p>
             <a href="https://www.linkedin.com/in/josephugaldeberrocal" target="_blank" rel="noopener noreferrer" class="founder-linkedin-btn">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
               Connect on LinkedIn
             </a>
           </div>
-        </div>
-        <div class="founder-content-panel">
           <div class="founder-bio">
-            <p>Joseph spent 17 years inside companies like IBM, PayPal, Hewlett Packard, and Intel — not in boardrooms, but in the work. Building teams, shipping products, untangling complex systems that had outgrown themselves.</p>
+            <p>Joseph spent over 15 years inside companies like PayPal, Hewlett Packard, and IBM — not in boardrooms, but in the work. Building teams, shipping products, untangling complex systems that had outgrown themselves.</p>
             <p>What he kept seeing along the way: smaller businesses facing the exact same challenges — without anyone in their corner who actually knew how to solve them.</p>
           </div>
           <blockquote class="founder-accent">
@@ -126,23 +126,23 @@
       </div>
 
       <!-- Maria Jose Espinoza -->
-      <div class="founder-card founder-card--reverse" data-aos="fade-up" data-aos-duration="800" data-aos-delay="250">
+      <div class="founder-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="250">
         <div class="founder-photo-panel">
           <div class="founder-photo-wrap">
             <img src="{% static 'images/maria-jose.png' %}" alt="Maria Jose Espinoza — Co-Founder &amp; Operations Lead">
           </div>
+        </div>
+        <div class="founder-content-panel">
           <div class="founder-meta-block">
             <p class="founder-person-name">Maria Jose Espinoza</p>
-            <p class="founder-person-title">Co-Founder &amp; Operations Lead</p>
+            <p class="founder-person-title">Co-Founder & Process Optimization and Automation Consultant</p>
             <a href="https://linkedin.com/in/maria-jose-espinoza" target="_blank" rel="noopener noreferrer" class="founder-linkedin-btn">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
               Connect on LinkedIn
             </a>
           </div>
-        </div>
-        <div class="founder-content-panel">
           <div class="founder-bio">
-            <p>Maria Jose spent over a decade inside IBM and Intel engineering the systems that keep large organizations running — workforce planning, process optimization, and automation at a scale most businesses never see from the inside.</p>
+            <p>Maria Jose spent over 10 years inside Hewlett Packard, IBM and Intel engineering the systems that keep large organizations running — workforce planning, process optimization, and automation at a scale most businesses never see from the inside.</p>
             <p>What she brought to every role wasn't just methodology. It was the ability to look at how people actually work, find where the friction lives, and fix it in ways that stick.</p>
           </div>
           <blockquote class="founder-accent">
@@ -155,292 +155,177 @@
   </div>
 </section>
 
-<!-- Interactive Career Timeline -->
-<section class="py-20 dark:bg-gray-900">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
-      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">The Journey</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white" data-aos="fade-up" data-aos-delay="100">17 Years in the Making</h2>
-      <p class="text-gray-500 dark:text-gray-400 mt-3" data-aos="fade-up" data-aos-delay="200">Click any milestone to explore the details.</p>
-    </div>
-
-    <div class="relative">
-      <!-- Vertical line -->
-      <div class="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 timeline-line"></div>
-
-      <!-- HPE -->
-      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600">
-        <div class="md:flex md:items-start">
-          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
-            <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Feb 2011 &ndash; Jul 2014</span>
-          </div>
-          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
-            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
-              <span class="text-white font-bold text-xs">HPE</span>
-            </div>
-          </div>
-          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-            <span class="md:hidden text-sm font-semibold text-indigo-600 dark:text-indigo-400">Feb 2011 &ndash; Jul 2014</span>
-            <button class="timeline-toggle w-full text-left group">
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                Project Manager
-                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </h3>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Hewlett Packard Enterprise</p>
-            </button>
-            <div class="timeline-details hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                <p>Led end-to-end delivery of high-visibility programs &mdash; chartering, scoping, planning, executing, monitoring, and closing &mdash; while consistently beating schedule, budget, and quality targets.</p>
-                <p>Orchestrated cross-functional teams through WBS-driven Gantt schedules and MS Project critical-path tracking, <strong class="text-gray-900 dark:text-white">boosting on-time delivery rate by 20%</strong>.</p>
-                <p>Translated complex data into executive-ready insights using Power BI dashboards and executive briefings that accelerated decision cycles.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- IBM Analytics -->
-      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-        <div class="md:flex md:items-start">
-          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
-            <button class="timeline-toggle w-full text-right group">
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors inline-flex items-center gap-2 justify-end">
-                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                Automation & Analytics Manager
-              </h3>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">IBM</p>
-            </button>
-            <div class="timeline-details hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400 text-left">
-                <p><strong class="text-gray-900 dark:text-white">Founded and scaled a 20-member cross-functional analytics department</strong> from the ground up, hiring data, software, and industrial engineers to support consulting practices across North America.</p>
-                <p>Acted as the analytics partner for multiple IBM Services leaders, developing advanced data models and Power BI dashboards to detect anomalies, forecast performance, and drive data-informed decisions.</p>
-                <p>Spearheaded department-wide automation using SQL, VBA, and RPA &mdash; implementing ETL pipelines, OLAP cubes, and data warehouses. <strong class="text-gray-900 dark:text-white">Saved thousands of work hours annually</strong> through Value Stream Mapping and robotic process automation.</p>
-              </div>
-            </div>
-          </div>
-          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
-            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
-              <span class="text-white font-bold text-xs">IBM</span>
-            </div>
-          </div>
-          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-            <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Aug 2014 &ndash; Jan 2018</span>
-            <!-- Mobile-only duplicate -->
-            <div class="md:hidden">
-              <button class="timeline-toggle w-full text-left group">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                  Automation & Analytics Manager
-                  <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </h3>
-                <p class="text-gray-500 dark:text-gray-400 text-sm">IBM</p>
-              </button>
-              <div class="timeline-details hidden mt-4">
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                  <p><strong class="text-gray-900 dark:text-white">Founded and scaled a 20-member cross-functional analytics department</strong> from the ground up, hiring data, software, and industrial engineers to support consulting practices across North America.</p>
-                  <p>Acted as the analytics partner for multiple IBM Services leaders, developing advanced data models and Power BI dashboards to detect anomalies, forecast performance, and drive data-informed decisions.</p>
-                  <p>Spearheaded department-wide automation using SQL, VBA, and RPA &mdash; implementing ETL pipelines, OLAP cubes, and data warehouses. <strong class="text-gray-900 dark:text-white">Saved thousands of work hours annually</strong>.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- IBM Engineering -->
-      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-        <div class="md:flex md:items-start">
-          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
-            <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Feb 2018 &ndash; Aug 2021</span>
-          </div>
-          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
-            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
-              <span class="text-white font-bold text-xs">IBM</span>
-            </div>
-          </div>
-          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-            <span class="md:hidden text-sm font-semibold text-indigo-600 dark:text-indigo-400">Feb 2018 &ndash; Aug 2021</span>
-            <button class="timeline-toggle w-full text-left group">
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                Software Engineer
-                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </h3>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">IBM &mdash; Custom Development & Automation</p>
-            </button>
-            <div class="timeline-details hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                <p>Kaizen-driven automation engineer supporting IBM Global Consulting &mdash; partnered with consultants on <strong class="text-gray-900 dark:text-white">5 continents</strong> to surface workflow bottlenecks and ship high-impact software solutions.</p>
-                <p><strong class="text-gray-900 dark:text-white">Shipped 20+ full-stack applications</strong> using Python, Django, and Bootstrap, enabling multi-user collaboration and cutting process cycle time up to 75%.</p>
-                <p>Replaced spreadsheet workflows with data-driven web apps and interactive dashboards, <strong class="text-gray-900 dark:text-white">reclaiming 150,000+ labor hours annually</strong>.</p>
-                <p>Built cloud-native applications and RESTful services on IBM Cloud with GitHub Actions CI/CD for zero-downtime deployments.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MICIT Cybersecurity -->
-      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
-        <div class="md:flex md:items-start">
-          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
-            <button class="timeline-toggle w-full text-right group">
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors inline-flex items-center gap-2 justify-end">
-                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                Cybersecurity Engineer
-              </h3>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">MICIT &mdash; Penetration Testing</p>
-            </button>
-            <div class="timeline-details hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400 text-left">
-                <p>Drafted SOW, Rules of Engagement, and NDAs in line with NIST SP 800-115 for web, API, and hybrid-cloud penetration tests.</p>
-                <p>Combined passive OSINT reconnaissance with active enumeration, prioritizing assets by CVSS scores and business impact.</p>
-                <p>Exploited OWASP Top 10 vulnerabilities using Python/Metasploit payloads. Produced executive and technical reports mapped to <strong class="text-gray-900 dark:text-white">MITRE ATT&CK framework</strong> with actionable remediation playbooks.</p>
-              </div>
-            </div>
-          </div>
-          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
-            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
-              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            </div>
-          </div>
-          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-            <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Sep 2021 &ndash; Feb 2022</span>
-            <div class="md:hidden">
-              <button class="timeline-toggle w-full text-left group">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                  Cybersecurity Engineer
-                  <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </h3>
-                <p class="text-gray-500 dark:text-gray-400 text-sm">MICIT &mdash; Penetration Testing</p>
-              </button>
-              <div class="timeline-details hidden mt-4">
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                  <p>Drafted SOW, Rules of Engagement, and NDAs in line with NIST SP 800-115 for web, API, and hybrid-cloud penetration tests.</p>
-                  <p>Combined passive OSINT reconnaissance with active enumeration, prioritizing assets by CVSS scores and business impact.</p>
-                  <p>Exploited OWASP Top 10 vulnerabilities using Python/Metasploit payloads. Produced reports mapped to <strong class="text-gray-900 dark:text-white">MITRE ATT&CK framework</strong>.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Systems X -->
-      <div class="timeline-item relative mb-12" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
-        <div class="md:flex md:items-start">
-          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
-            <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Feb 2022 &ndash; Present</span>
-          </div>
-          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
-            <div class="timeline-node w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
-              <span class="text-white font-bold text-xs">SX</span>
-            </div>
-          </div>
-          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-            <span class="md:hidden text-sm font-semibold text-indigo-600 dark:text-indigo-400">Feb 2022 &ndash; Present</span>
-            <button class="timeline-toggle w-full text-left group">
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                Software Solution Manager
-                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </h3>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Systems X</p>
-            </button>
-            <div class="timeline-details hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                <p>Defined product vision and multi-year roadmaps for multi-tenant, cloud-native SaaS solutions. Led a <strong class="text-gray-900 dark:text-white">cross-functional distributed Agile team across North America, LATAM, Europe, and Asia</strong>.</p>
-                <p>Built CI/CD pipelines using GitHub Actions, designed bidirectional ERP integration APIs, and directed cloud solution architecture on Azure Stack.</p>
-                <p>Managed project P&L, led SaaS cost modeling, and <strong class="text-gray-900 dark:text-white">reduced new-client onboarding time by 15%</strong> through velocity tracking and process optimization.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Zimplixio -->
-      <div class="timeline-item relative" data-aos="fade-up" data-aos-duration="600" data-aos-delay="500">
-        <div class="md:flex md:items-start">
-          <div class="hidden md:block md:w-1/2 md:pr-12 md:text-right">
-            <button class="timeline-toggle w-full text-right group">
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors inline-flex items-center gap-2 justify-end">
-                <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                Founder & Principal Consultant
-              </h3>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Zimplixio</p>
-            </button>
-            <div class="timeline-details hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400 text-left">
-                <p>Founded Zimplixio to bring enterprise-grade technology consulting to growing businesses &mdash; combining 17 years of experience across engineering, cybersecurity, data, and product leadership into a focused consultancy.</p>
-                <p>Delivering strategy, architecture, and hands-on implementation for SMBs that need senior expertise without enterprise overhead.</p>
-              </div>
-            </div>
-          </div>
-          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
-            <div class="timeline-node w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center shadow-lg ring-4 ring-indigo-200 dark:ring-indigo-800 cursor-pointer">
-              <span class="text-white font-bold text-sm">Z</span>
-            </div>
-          </div>
-          <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-            <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Present</span>
-            <div class="md:hidden">
-              <button class="timeline-toggle w-full text-left group">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                  Founder & Principal Consultant
-                  <svg class="timeline-chevron w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </h3>
-                <p class="text-gray-500 dark:text-gray-400 text-sm">Zimplixio</p>
-              </button>
-              <div class="timeline-details hidden mt-4">
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                  <p>Founded Zimplixio to bring enterprise-grade consulting to growing businesses &mdash; combining 17 years of experience into a focused, senior-only consultancy.</p>
-                  <p>Delivering strategy, architecture, and hands-on implementation for SMBs that need senior expertise without enterprise overhead.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
 
 <!-- Values -->
-<section class="py-20 bg-gray-50 dark:bg-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-20 bg-white dark:bg-gray-900">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
     <div class="text-center mb-12">
       <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">How We Operate</p>
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white" data-aos="fade-up" data-aos-delay="100">Our Values</h2>
     </div>
-    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700" data-aos="fade-up" data-aos-delay="100">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-5">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+
+    <!-- Timeline track + nodes -->
+    <div class="values-track-wrap" data-aos="fade-up" data-aos-delay="150">
+      <div class="values-track-line" id="values-track-line"></div>
+      <div class="values-nodes">
+        <div class="values-node">
+          <svg class="values-node-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+            <circle cx="12" cy="12" r="3.5" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="1.25" fill="currentColor" stroke="none"/>
+            <path stroke-linecap="round" stroke-width="1.5" d="M10.25 9.75a2.5 2.5 0 0 1 1.75-.75"/>
+          </svg>
         </div>
-        <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2">Radical Transparency</h3>
-        <p class="text-gray-600 dark:text-gray-400">We tell you what you need to hear, not what you want to hear. Honest assessments lead to better outcomes.</p>
-      </div>
-      <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700" data-aos="fade-up" data-aos-delay="200">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-5">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        <div class="values-node">
+          <svg class="values-node-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4h10v7a5 5 0 0 1-10 0V4z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 5H4.5A1.5 1.5 0 0 0 3 6.5v.5A4 4 0 0 0 7 11"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 5h2.5A1.5 1.5 0 0 1 21 6.5v.5A4 4 0 0 1 17 11"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14v3.5M8.5 21h7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M12 6l.75 2.3h2.4l-1.95 1.4.75 2.3L12 10.7l-1.95 1.3.75-2.3-1.95-1.4h2.4L12 6z"/>
+          </svg>
         </div>
-        <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2">Outcome Over Output</h3>
-        <p class="text-gray-600 dark:text-gray-400">We measure success by business impact, not hours billed or lines of code written.</p>
-      </div>
-      <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700" data-aos="fade-up" data-aos-delay="300">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-5">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"/></svg>
+        <div class="values-node">
+          <svg class="values-node-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L4 6v5c0 4.9 3.4 9.5 8 10.9C16.6 20.5 20 15.9 20 11V6L12 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" stroke-opacity="0.45" d="M12 5L6.5 8.2v2.8c0 3.2 2.2 6.2 5.5 7.1 3.3-.9 5.5-3.9 5.5-7.1V8.2L12 5z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2.5 2.5L15 9"/>
+          </svg>
         </div>
-        <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2">Simplicity First</h3>
-        <p class="text-gray-600 dark:text-gray-400">The best solution is often the simplest one. We fight complexity, not create it.</p>
       </div>
     </div>
+
+    <!-- Flip cards -->
+    <div class="values-grid">
+
+      <div class="values-flip-card" tabindex="0" role="button" aria-label="Radical Transparency — click to reveal" data-aos="fade-up" data-aos-delay="200">
+        <div class="values-flip-inner">
+          <div class="values-front">
+            <span class="values-flip-number">01</span>
+            <div class="values-front-content">
+              <p class="values-tag">How we communicate</p>
+              <h3 class="values-title">Radical Transparency</h3>
+              <p class="values-hint">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Click to reveal
+              </p>
+            </div>
+          </div>
+          <div class="values-back" aria-hidden="true">
+            <p class="values-back-eyebrow">Radical Transparency</p>
+            <h3 class="values-back-title">We tell you what you need to hear.</h3>
+            <p class="values-back-body">We exist to serve you, and we aim to foster a collaborative partnership. If something won't work, you'll know before we start. And if it will — we stay alongside until the solution delivers real, measurable value for your business.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="values-flip-card" tabindex="0" role="button" aria-label="Outcome Over Output — click to reveal" data-aos="fade-up" data-aos-delay="300">
+        <div class="values-flip-inner">
+          <div class="values-front">
+            <span class="values-flip-number">02</span>
+            <div class="values-front-content">
+              <p class="values-tag">How we measure success</p>
+              <h3 class="values-title">Outcome Over Output</h3>
+              <p class="values-hint">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Click to reveal
+              </p>
+            </div>
+          </div>
+          <div class="values-back" aria-hidden="true">
+            <p class="values-back-eyebrow">Outcome Over Output</p>
+            <h3 class="values-back-title">Done isn't done until it works.</h3>
+            <p class="values-back-body">A finished project that doesn't move your business forward isn't a success — it's an expensive lesson. Our work isn't complete when something is built — it's complete when it's working, adopted, and producing results your team can point to.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="values-flip-card" tabindex="0" role="button" aria-label="Built to Last — click to reveal" data-aos="fade-up" data-aos-delay="400">
+        <div class="values-flip-inner">
+          <div class="values-front">
+            <span class="values-flip-number">03</span>
+            <div class="values-front-content">
+              <p class="values-tag">How we build</p>
+              <h3 class="values-title">Built to Last</h3>
+              <p class="values-hint">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Click to reveal
+              </p>
+            </div>
+          </div>
+          <div class="values-back" aria-hidden="true">
+            <p class="values-back-eyebrow">Built to Last</p>
+            <h3 class="values-back-title">Complexity is our problem, not yours.</h3>
+            <p class="values-back-body">Complexity doesn't intimidate us — but it shouldn't burden you. We build user-friendly, intuitive, and secure solutions for the people using them, no matter what's running underneath. We move with intention, because every week without a solution is a week leaving value on the table.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
+
+  <script>
+    (function() {
+      // Line animation
+      var line = document.getElementById('values-track-line');
+      var grid = document.querySelector('.values-grid');
+      if (line && grid) {
+        var lineObserver = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting) {
+            requestAnimationFrame(function() {
+              requestAnimationFrame(function() { line.classList.add('is-visible'); });
+            });
+            lineObserver.disconnect();
+          }
+        }, { threshold: 0.1 });
+        lineObserver.observe(grid);
+      }
+
+      var cards = document.querySelectorAll('.values-flip-card');
+      var nodes = document.querySelectorAll('.values-node');
+
+      cards.forEach(function(card, i) {
+        // Click / tap toggle
+        card.addEventListener('click', function() {
+          var flipped = card.classList.toggle('is-flipped');
+          var back = card.querySelector('.values-back');
+          if (back) back.setAttribute('aria-hidden', flipped ? 'false' : 'true');
+          card.setAttribute('aria-label',
+            card.getAttribute('aria-label').replace(flipped ? 'click to reveal' : 'click to close',
+                                                     flipped ? 'click to close' : 'click to reveal'));
+        });
+
+        // Keyboard: Enter or Space triggers flip
+        card.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
+
+        // Hover still triggers node animation on desktop
+        card.addEventListener('mouseenter', function() {
+          if (nodes[i]) nodes[i].classList.add('is-hovered');
+        });
+        card.addEventListener('mouseleave', function() {
+          if (nodes[i]) nodes[i].classList.remove('is-hovered');
+        });
+      });
+
+      // Direct node hover
+      nodes.forEach(function(node) {
+        node.addEventListener('mouseenter', function() { node.classList.add('is-hovered'); });
+        node.addEventListener('mouseleave', function() { node.classList.remove('is-hovered'); });
+      });
+    })();
+  </script>
 </section>
 
 {% include "partials/_cta_section.html" %}
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/timeline.js' %}"></script>
 <script src="{% static 'js/counter-anim.js' %}"></script>
 <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
 <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>

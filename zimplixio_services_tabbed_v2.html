@@ -1,0 +1,746 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .z-wrap {
+    font-family: 'DM Sans', sans-serif;
+    background: #07111f;
+    color: #e2e8f4;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 520px;
+  }
+
+  /* Header */
+  .z-header {
+    padding: 2.5rem 3rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .z-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .z-eyebrow-line {
+    width: 28px;
+    height: 1px;
+    background: #3b82f6;
+  }
+
+  .z-eyebrow-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #3b82f6;
+    font-weight: 500;
+  }
+
+  .z-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Tabs */
+  .z-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .z-tabs::-webkit-scrollbar { display: none; }
+
+  .z-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(226,232,244,0.35);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0.75rem 1.4rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .z-tab:hover:not(.z-tab-active) { color: rgba(226,232,244,0.65); }
+
+  .z-tab.z-tab-active {
+    color: #fff;
+    border-bottom: 2px solid #3b82f6;
+  }
+
+  /* Content */
+  .z-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 380px;
+  }
+
+  .z-left {
+    padding: 2.5rem 3rem;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .z-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    color: rgba(59,130,246,0.08);
+    line-height: 1;
+    margin-bottom: -0.5rem;
+  }
+
+  .z-service-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+  }
+
+  .z-service-desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(226,232,244,0.6);
+    margin-bottom: 1.75rem;
+    font-weight: 300;
+  }
+
+  .z-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .z-bullets li {
+    font-size: 13px;
+    color: rgba(226,232,244,0.5);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .z-bullet-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #3b82f6;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  /* Right visual panel */
+  .z-right {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #060f1c;
+  }
+
+  .z-visual {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .z-visual.z-vis-active {
+    display: flex;
+    animation: visIn 0.4s ease forwards;
+  }
+
+  @keyframes visIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .z-content-panel {
+    display: none;
+  }
+
+  .z-content-panel.z-panel-active {
+    display: block;
+    animation: fadeUp 0.35s ease forwards;
+  }
+
+  /* Visual 1 - Roadmap */
+  .vis-roadmap {
+    padding: 2rem;
+    width: 100%;
+  }
+
+  .roadmap-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .roadmap-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .roadmap-step:nth-child(1) { animation-delay: 0.05s; }
+  .roadmap-step:nth-child(2) { animation-delay: 0.15s; }
+  .roadmap-step:nth-child(3) { animation-delay: 0.25s; }
+  .roadmap-step:nth-child(4) { animation-delay: 0.35s; }
+
+  .step-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(59,130,246,0.4);
+    background: rgba(59,130,246,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #3b82f6;
+  }
+
+  .step-line {
+    width: 1px;
+    height: 28px;
+    background: rgba(59,130,246,0.15);
+  }
+
+  .step-info {
+    padding-top: 6px;
+    padding-bottom: 28px;
+  }
+
+  .step-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(226,232,244,0.8);
+    margin-bottom: 3px;
+  }
+
+  .step-sub {
+    font-size: 11px;
+    color: rgba(226,232,244,0.35);
+  }
+
+  /* Visual 2 - Architecture */
+  .vis-arch {
+    padding: 2rem;
+    width: 100%;
+  }
+
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .arch-block {
+    background: rgba(59,130,246,0.06);
+    border: 1px solid rgba(59,130,246,0.12);
+    border-radius: 10px;
+    padding: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .arch-block:nth-child(1) { animation-delay: 0.05s; }
+  .arch-block:nth-child(2) { animation-delay: 0.12s; }
+  .arch-block:nth-child(3) { animation-delay: 0.19s; }
+  .arch-block:nth-child(4) { animation-delay: 0.26s; }
+
+  .arch-block-wide {
+    grid-column: span 2;
+    background: rgba(59,130,246,0.1);
+    border-color: rgba(59,130,246,0.25);
+    animation-delay: 0.33s !important;
+  }
+
+  .arch-icon { font-size: 18px; margin-bottom: 0.4rem; }
+
+  .arch-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(226,232,244,0.7);
+  }
+
+  .arch-sub {
+    font-size: 10px;
+    color: rgba(226,232,244,0.35);
+    margin-top: 2px;
+  }
+
+  /* Visual 3 - Data pipeline */
+  .vis-data {
+    padding: 2rem;
+    width: 100%;
+  }
+
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pipeline-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .pipeline-row:nth-child(1) { animation-delay: 0.05s; }
+  .pipeline-row:nth-child(2) { animation-delay: 0.15s; }
+  .pipeline-row:nth-child(3) { animation-delay: 0.25s; }
+  .pipeline-row:nth-child(4) { animation-delay: 0.35s; }
+
+  .pipeline-source {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    font-size: 10px;
+    color: rgba(226,232,244,0.45);
+    white-space: nowrap;
+    min-width: 90px;
+    text-align: center;
+  }
+
+  .pipeline-arrow {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(59,130,246,0.3), rgba(59,130,246,0.6));
+    position: relative;
+  }
+
+  .pipeline-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid #3b82f6;
+    border-top: 1.5px solid #3b82f6;
+    transform: rotate(45deg);
+  }
+
+  .pipeline-dest {
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    font-size: 10px;
+    color: #3b82f6;
+    white-space: nowrap;
+    min-width: 90px;
+    text-align: center;
+  }
+
+  /* Visual 4 - Partnership */
+  .vis-partner {
+    padding: 2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .partner-metric {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .partner-metric:nth-child(1) { animation-delay: 0.05s; }
+  .partner-metric:nth-child(2) { animation-delay: 0.15s; }
+  .partner-metric:nth-child(3) { animation-delay: 0.25s; }
+
+  .partner-metric-label {
+    font-size: 12px;
+    color: rgba(226,232,244,0.45);
+  }
+
+  .partner-metric-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #3b82f6;
+  }
+
+  .partner-bar-wrap {
+    margin-top: 0.4rem;
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .partner-bar {
+    height: 100%;
+    background: #3b82f6;
+    border-radius: 2px;
+    animation: barGrow 1s ease forwards;
+    animation-delay: 0.5s;
+    width: 0;
+  }
+
+  @keyframes barGrow {
+    to { width: var(--bar-w); }
+  }
+
+  /* Visual 5 - AI */
+  .vis-ai {
+    padding: 2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ai-stage {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .ai-stage:nth-child(1) { animation-delay: 0.05s; }
+  .ai-stage:nth-child(2) { animation-delay: 0.15s; }
+  .ai-stage:nth-child(3) { animation-delay: 0.25s; }
+  .ai-stage:nth-child(4) { animation-delay: 0.35s; }
+
+  .ai-stage-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ai-stage-label {
+    font-size: 12px;
+    color: rgba(226,232,244,0.55);
+    flex: 1;
+  }
+
+  .ai-stage-pill {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .pill-done { background: rgba(34,197,94,0.12); color: #4ade80; }
+  .pill-active { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .pill-next { background: rgba(255,255,255,0.05); color: rgba(226,232,244,0.3); }
+
+  .dot-green { background: #4ade80; }
+  .dot-blue { background: #3b82f6; }
+  .dot-gray { background: rgba(226,232,244,0.2); }
+</style>
+
+<div class="z-wrap">
+
+  <div class="z-header">
+    <div class="z-eyebrow">
+      <div class="z-eyebrow-line"></div>
+      <span class="z-eyebrow-text">What we do</span>
+    </div>
+    <div class="z-heading">Our Services</div>
+
+    <div class="z-tabs">
+      <button class="z-tab z-tab-active" onclick="zSwitch(0)">01 · Roadmap & Planning</button>
+      <button class="z-tab" onclick="zSwitch(1)">02 · Architecture & Build</button>
+      <button class="z-tab" onclick="zSwitch(2)">03 · Data & Automation</button>
+      <button class="z-tab" onclick="zSwitch(3)">04 · Technical Partnership</button>
+      <button class="z-tab" onclick="zSwitch(4)">05 · AI & Agentic</button>
+    </div>
+  </div>
+
+  <div class="z-body">
+
+    <!-- LEFT PANEL -->
+    <div class="z-left">
+
+      <div class="z-content-panel z-panel-active" id="panel-0">
+        <div class="z-num">01</div>
+        <div class="z-service-title">Technology Roadmap & Planning</div>
+        <div class="z-service-desc">You don't need more tools. You need to know which ones are worth your time and money. We assess where you are, identify what's holding you back, and build a roadmap you can actually execute.</div>
+        <ul class="z-bullets">
+          <li><span class="z-bullet-dot"></span>Current state review & gap analysis</li>
+          <li><span class="z-bullet-dot"></span>Technology stack evaluation</li>
+          <li><span class="z-bullet-dot"></span>Vendor shortlisting & selection guidance</li>
+          <li><span class="z-bullet-dot"></span>90-day actionable roadmap</li>
+        </ul>
+      </div>
+
+      <div class="z-content-panel" id="panel-1">
+        <div class="z-num">02</div>
+        <div class="z-service-title">Solution Architecture & Implementation</div>
+        <div class="z-service-desc">End-to-end design, build, deploy and maintenance. We architect your solution, write the code, deploy it, and own the outcome — with the rigor of enterprise engineering.</div>
+        <ul class="z-bullets">
+          <li><span class="z-bullet-dot"></span>Custom software development</li>
+          <li><span class="z-bullet-dot"></span>System integration</li>
+          <li><span class="z-bullet-dot"></span>Cloud architecture & migration</li>
+          <li><span class="z-bullet-dot"></span>API design & development</li>
+        </ul>
+      </div>
+
+      <div class="z-content-panel" id="panel-2">
+        <div class="z-num">03</div>
+        <div class="z-service-title">Data Engineering & Automation</div>
+        <div class="z-service-desc">Bad data and manual processes are two sides of the same problem. We clean up the first, eliminate the second, and build the pipelines and workflows that keep your operations running without constant intervention.</div>
+        <ul class="z-bullets">
+          <li><span class="z-bullet-dot"></span>Workflow analysis, redesign & automation</li>
+          <li><span class="z-bullet-dot"></span>Data pipeline development & integration</li>
+          <li><span class="z-bullet-dot"></span>Azure Data Factory & SSIS implementation</li>
+          <li><span class="z-bullet-dot"></span>Analytics, reporting & monitoring</li>
+        </ul>
+      </div>
+
+      <div class="z-content-panel" id="panel-3">
+        <div class="z-num">04</div>
+        <div class="z-service-title">Embedded Technical Partnership</div>
+        <div class="z-service-desc">Finding the right technical partner is hard. We get that. We're good at shipping fast, but this is about more than delivery — we stay in your corner for as long as you need, because the best results come from partners who actually know your business.</div>
+        <ul class="z-bullets">
+          <li><span class="z-bullet-dot"></span>Technical leadership & team guidance</li>
+          <li><span class="z-bullet-dot"></span>Managed hosting & infrastructure oversight</li>
+          <li><span class="z-bullet-dot"></span>Maintenance & evolution of existing solutions</li>
+        </ul>
+      </div>
+
+      <div class="z-content-panel" id="panel-4">
+        <div class="z-num">05</div>
+        <div class="z-service-title">AI & Agentic Automation</div>
+        <div class="z-service-desc">The gap between how enterprise companies are using AI and where most growing businesses stand is widening every day. We've seen this before — and we know what it costs to wait.</div>
+        <ul class="z-bullets">
+          <li><span class="z-bullet-dot"></span>AI readiness assessment</li>
+          <li><span class="z-bullet-dot"></span>Responsible AI adoption framework</li>
+          <li><span class="z-bullet-dot"></span>Agentic workflow design, automation & deployment</li>
+          <li><span class="z-bullet-dot"></span>AI tools training & team enablement</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- RIGHT VISUAL PANEL -->
+    <div class="z-right">
+
+      <!-- Visual 1: Roadmap steps -->
+      <div class="z-visual z-vis-active" id="vis-0">
+        <div class="vis-roadmap">
+          <div class="roadmap-steps">
+            <div class="roadmap-step">
+              <div class="step-connector">
+                <div class="step-circle">01</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-info">
+                <div class="step-label">Current state review</div>
+                <div class="step-sub">Where are you today?</div>
+              </div>
+            </div>
+            <div class="roadmap-step">
+              <div class="step-connector">
+                <div class="step-circle">02</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-info">
+                <div class="step-label">Gap analysis & stack evaluation</div>
+                <div class="step-sub">What's holding you back?</div>
+              </div>
+            </div>
+            <div class="roadmap-step">
+              <div class="step-connector">
+                <div class="step-circle">03</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-info">
+                <div class="step-label">Vendor shortlisting</div>
+                <div class="step-sub">Which tools actually fit?</div>
+              </div>
+            </div>
+            <div class="roadmap-step">
+              <div class="step-connector">
+                <div class="step-circle">04</div>
+              </div>
+              <div class="step-info">
+                <div class="step-label">90-day actionable roadmap</div>
+                <div class="step-sub">A plan you can execute</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual 2: Architecture blocks -->
+      <div class="z-visual" id="vis-1">
+        <div class="vis-arch">
+          <div class="arch-grid">
+            <div class="arch-block">
+              <div class="arch-icon">🏗</div>
+              <div class="arch-label">Architecture</div>
+              <div class="arch-sub">System design & planning</div>
+            </div>
+            <div class="arch-block">
+              <div class="arch-icon">💻</div>
+              <div class="arch-label">Development</div>
+              <div class="arch-sub">Custom software build</div>
+            </div>
+            <div class="arch-block">
+              <div class="arch-icon">☁️</div>
+              <div class="arch-label">Cloud & APIs</div>
+              <div class="arch-sub">Migration & integration</div>
+            </div>
+            <div class="arch-block">
+              <div class="arch-icon">🔗</div>
+              <div class="arch-label">Integration</div>
+              <div class="arch-sub">Systems connected</div>
+            </div>
+            <div class="arch-block arch-block-wide">
+              <div class="arch-label" style="color: #3b82f6; font-size: 12px;">Enterprise engineering rigor — right-sized for your business</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual 3: Data pipeline -->
+      <div class="z-visual" id="vis-2">
+        <div class="vis-data">
+          <div class="pipeline">
+            <div class="pipeline-row">
+              <div class="pipeline-source">SQL Server / VM</div>
+              <div class="pipeline-arrow"></div>
+              <div class="pipeline-dest">Data Pipeline</div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-source">Azure Data Factory</div>
+              <div class="pipeline-arrow"></div>
+              <div class="pipeline-dest">Analytics Layer</div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-source">Manual Workflows</div>
+              <div class="pipeline-arrow"></div>
+              <div class="pipeline-dest">Automation</div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-source">Raw Data</div>
+              <div class="pipeline-arrow"></div>
+              <div class="pipeline-dest">Dashboards</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual 4: Partnership metrics -->
+      <div class="z-visual" id="vis-3">
+        <div class="vis-partner">
+          <div class="partner-metric">
+            <div>
+              <div class="partner-metric-label">Technical leadership</div>
+              <div class="partner-bar-wrap"><div class="partner-bar" style="--bar-w: 90%;"></div></div>
+            </div>
+            <div class="partner-metric-val">Embedded</div>
+          </div>
+          <div class="partner-metric">
+            <div>
+              <div class="partner-metric-label">Infrastructure oversight</div>
+              <div class="partner-bar-wrap"><div class="partner-bar" style="--bar-w: 75%;"></div></div>
+            </div>
+            <div class="partner-metric-val">Managed</div>
+          </div>
+          <div class="partner-metric">
+            <div>
+              <div class="partner-metric-label">Solution evolution</div>
+              <div class="partner-bar-wrap"><div class="partner-bar" style="--bar-w: 60%;"></div></div>
+            </div>
+            <div class="partner-metric-val">Ongoing</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual 5: AI adoption stages -->
+      <div class="z-visual" id="vis-4">
+        <div class="vis-ai">
+          <div class="ai-stage">
+            <div class="ai-stage-dot dot-green"></div>
+            <div class="ai-stage-label">AI readiness assessment</div>
+            <div class="ai-stage-pill pill-done">Complete</div>
+          </div>
+          <div class="ai-stage">
+            <div class="ai-stage-dot dot-green"></div>
+            <div class="ai-stage-label">Adoption framework & policy</div>
+            <div class="ai-stage-pill pill-done">Complete</div>
+          </div>
+          <div class="ai-stage">
+            <div class="ai-stage-dot dot-blue"></div>
+            <div class="ai-stage-label">Agentic workflow deployment</div>
+            <div class="ai-stage-pill pill-active">In progress</div>
+          </div>
+          <div class="ai-stage">
+            <div class="ai-stage-dot dot-gray"></div>
+            <div class="ai-stage-label">Team training & enablement</div>
+            <div class="ai-stage-pill pill-next">Up next</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function zSwitch(index) {
+  document.querySelectorAll('.z-tab').forEach((t, i) => t.classList.toggle('z-tab-active', i === index));
+  document.querySelectorAll('.z-content-panel').forEach((p, i) => p.classList.toggle('z-panel-active', i === index));
+  document.querySelectorAll('.z-visual').forEach((v, i) => v.classList.toggle('z-vis-active', i === index));
+}
+</script>

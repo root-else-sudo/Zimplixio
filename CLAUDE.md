@@ -163,7 +163,7 @@ templates/
 │   ├── _nps_badge.html        # NPS score badge (conditional)
 │   └── _cta_section.html      # Reusable CTA block with gradient bg
 ├── pages/                     # home, about, contact, contact_success, privacy/cookie policy
-├── services/                  # services page with tier cards + FAQ accordion
+├── services/                  # services page with tabbed interface + FAQ accordion
 ├── showcase/                  # gallery (filterable) + detail pages
 ├── metrics/                   # NPS results page
 ├── booking/                   # book form + booking_success
@@ -196,7 +196,7 @@ templates/
 
 | File | Purpose |
 |------|---------|
-| `static/css/main.css` | Custom styles — smooth scrolling, focus glow, `.hero-animated-bg` gradient animation, `.btn-premium` shimmer, `.logo-magnetic`, `.showcase-card` hover + image zoom + overlay + gradient fade, `.showcase-tag` accent-dot pills, `.showcase-carousel` Netflix-style layout + arrows, `.header-elevated`, `.section-label` accent line, `.word-reveal-item`, `zoom-custom` AOS, `.credential-pill`, `.credential-logo` grayscale→color hover, `.footer-link`, dark mode form inputs, PDCA glassmorphism section (`.pdca-section`, `.pdca-glass-layer`, `.pdca-ambient` orbs, `.pdca-flow` horizontal cards, `.pdca-icon-wrap` + `.pdca-icon-ring` hover spin, `.pdca-num-ring` hover draw, `.pdca-desc` reveal on hover, `.pdca-connector` animated dot, `.pdca-glow` radial hover), world map styles, founder cards (`.founder-card`, `.founder-photo-panel`, `.founder-content-panel`, `.founder-bio`, `.founder-accent`, `.founder-linkedin-btn`), values flip cards (`.values-track-wrap`, `.values-track-line`, `.values-nodes`, `.values-node`, `.values-grid`, `.values-flip-card`, `.values-flip-inner`, `.values-front`, `.values-back`, `.values-back-eyebrow`, `.values-back-title`, `.values-back-body`), `prefers-reduced-motion` overrides |
+| `static/css/main.css` | Custom styles — see inline `/* === Section Name === */` comments for component groupings. Covers hero animations, showcase cards/carousel, PDCA section, founder cards, values flip cards, services tabbed interface, world map, credential logos, and dark mode form inputs. |
 | `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules |
 | `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
 | `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
@@ -235,51 +235,7 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal.
 - **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
 
-### Simple Forecast Showcase Entry
 
-Simple Forecast (`https://simple-forecast.com/`) is a Lean Six Sigma sales forecasting app embedded as a live iframe demo at `/showcase/simple-forecast/`. Created via data migrations:
-
-- **`0007_add_simple_forecast_showcase.py`** — creates the `ShowcaseProject` with full narrative content, `live_demo_url`, and 7 tech tags (Python, Django, React, PostgreSQL, Recharts, Claude API, Railway)
-- **`0008_simple_forecast_demo_url.py`** — sets `demo_url` to enable the "View Live Demo" button after The Outcome section
-- **`0009_simple_forecast_claude_api_tag.py`** — swaps "Anthropic Claude" tag for "Claude API" on Simple Forecast only (AI Adoption Framework keeps "Anthropic Claude")
-
-No custom template routing — `ShowcaseDetailView` uses the standard `detail.html` for this slug.
-
-### Homepage PDCA Process Section
-
-The "Our PDCA Process / How We Work" section (`templates/pages/home.html`) uses a premium horizontal card flow with glassmorphism background. **No SVG wheel, no GSAP** — pure CSS + AOS animations.
-
-- **Section background**: `.pdca-section` with slate-100 base. Four `.pdca-ambient-orb` gradient blobs (blue, violet, cyan, emerald) float behind with `pdca-float` CSS animation (14s breathing loop). `.pdca-glass-layer` frosted overlay (`backdrop-filter: blur(60px) saturate(1.3)`, 35% opacity) creates the glass canvas effect.
-- **Layout**: `.pdca-flow` horizontal flexbox with 4 `.pdca-card` elements and 3 `.pdca-connector` elements between them. Cards use glass-on-light styling (`rgba(255,255,255,0.7)` + `backdrop-filter: blur(16px)`). Mobile: single column via `flex-direction: column`.
-- **Four steps**: Plan (blue), Do (cyan), Check (violet), Act (teal). Each card has: accent gradient top-line (`::before`), icon in `.pdca-icon-wrap` (64px rounded square with tinted background), step number in `.pdca-step-num` (44px circle with `.pdca-num-ring`), title, and description.
-- **Interactive description reveal**: `.pdca-desc` starts at `max-height: 0; opacity: 0`. On card hover, smoothly reveals (0.4s transition). Always visible on mobile.
-- **Icon hover**: `.pdca-icon-ring` spinning dashed border appears on hover (mirrors icon ring treatment). Icon scales to 1.1 with colored shadow.
-- **Number hover**: `.pdca-num-ring` draws a circular border via `pdca-num-ring-draw` clip-path animation (0.6s), then continues spinning. Number shifts to step accent color.
-- **Connectors**: `.pdca-connector` thin gradient line with `.pdca-connector-dot` that travels across (2.4s loop, `pdca-dot-travel` keyframes). Indigo glow on the dot. Vertical on mobile.
-- **Card hover**: Lifts 6px, background brightens, border glows indigo, `.pdca-glow` radial gradient fades in behind card.
-- **No JS file**: All animations are CSS-only. AOS `fade-up` with staggered delays handles entrance. `prefers-reduced-motion` disables all animations and shows descriptions by default.
-
-### Homepage Showcase Carousel
-
-The "Featured Solutions" section uses a Netflix-style infinite-loop carousel driven by `static/js/showcase-carousel.js`.
-
-- **View**: `HomePageView` fetches up to 10 published `ShowcaseProject` records (was 3, increased for carousel).
-- **Markup**: `.showcase-carousel` wrapper with `.showcase-viewport` (overflow hidden) → `.showcase-track` (flex row) → `.showcase-slide` per project. Left/right `.showcase-arrow` buttons with Heroicon chevrons.
-- **Infinite loop**: JS clones first N and last N slides (N = visible count). At clone boundaries, after CSS transition ends, instantly jumps to corresponding real slide (no visible flicker).
-- **Auto-play**: Advances every 5s (`data-autoplay="5000"`). Pauses on `mouseenter`/`focusin`, resumes on `mouseleave`/`focusout`.
-- **Center focus**: Middle visible card gets `.is-center` class (scale 1.05). Any card on hover scales to 1.08 (center to 1.12), raises z-index.
-- **Card features**: Image zoom on hover, gradient fade at image bottom, frosted dark overlay with "View case study →" CTA, "Live Demo" green badge (pulsing dot) for projects with `live_demo_url`, `.showcase-tag` pills with accent dot + indigo border.
-- **Responsive**: 1 card on mobile (85% width), 2 on tablet, 3 on desktop. Rebuilds clones on resize.
-- **Arrows**: Glass-style circular buttons (`backdrop-filter: blur(8px)`), indigo accent, hover scale + shadow.
-
-### Homepage Credentials Section
-
-The "Built on Enterprise Experience" section shows company logos from Joseph's resume.
-
-- **Logos**: SVG files in `static/images/` — `Paypal.svg`, `IBM.svg`, `HPE.svg` (white text, green icon), `Intel.svg`. Displayed as `<img>` tags with `.credential-logo` class.
-- **Sizing**: PayPal/IBM/HPE use `.credential-logo-xl` (280×104px), Intel at default (140×52px). Mobile: scaled down (140×48px xl, 100×36px default) with `flex-wrap`.
-- **Hover**: Subtle scale 1.06 on hover.
-- **Layout**: `flex-nowrap` on desktop (single row), `flex-wrap` on mobile (wraps to two rows).
 
 ### About Page — World Map
 
@@ -328,24 +284,13 @@ Atlanta GA, Miami FL, Houston TX, Los Angeles CA, Detroit MI, New York NY, Chica
 - Pin shapes: `PIN_LG` (continental, tip at origin, ~19px tall) and `PIN_SM` (city, ~13px tall) — SVG path strings, filled red (`#ef4444`) via `.attr('fill', ...)`
 - `setupTouch` function was removed; touch and desktop share one unified `ctx.svg.on('click', ...)` handler in `drawWorld`
 
-**CSS (`/* === World Map === */` block in `main.css`)**
-- `#world-map-container`: `height: 100%; min-height: 520px` — no background color (renders on page background)
-- `.map-sphere`: `fill: #060c18` (dark ocean)
-- `.map-graticule`: indigo grid at 15% opacity
-- `.map-country--americas`: slightly brighter fill, `cursor: pointer`
-- `.map-pin-icon`: red fill, white stroke, drop-shadow, `cursor: pointer`
-- `.map-pin-dot`: white circle inside pin body
-
 ### Known Gotchas
 
-- **`{% load static %}` required**: Any template using `{% static %}` tags (e.g., in `extra_js` blocks) must include `{% load static %}` after `{% extends %}`
 - **STORAGES setting**: `CompressedManifestStaticFilesStorage` is only enabled when `DEBUG=False` — using it in dev/test without running `collectstatic` causes `ValueError: Missing staticfiles manifest entry`
 - **Enterprise references**: Homepage and About page reference PayPal, IBM, HPE, and Intel (from Joseph's updated resume). Systems X was a previous employer no longer listed.
 - **Cross-origin iframe CSRF**: Embedded apps (e.g., recomares.com) that use POST-based actions (like Django `set_language`) will fail in the iframe due to third-party cookie blocking. This is a browser limitation — fix requires `SameSite=None` on the embedded app's cookies. The "Open in new tab" fallback link is provided.
 - **Gallery thumbnails**: Use `object-contain` (not `object-cover`) so icon-style images display fully without cropping
 - **HomePageView cross-app query**: `HomePageView` imports `showcase.ShowcaseProject` to fetch `featured_projects` for the homepage — changes to the showcase model can affect the homepage
-- **gunicorn**: Declared in `Pipfile` and used by the `Procfile` for production deployment. Run `pipenv install` to ensure it's present in your local environment.
-- **Assessment wizard is pure React**: The wizard on the framework page is fully React (`AssessmentWizard` mounted on `#assessment-root`). There is no vanilla JS fallback. The "Start Assessment" button uses `onclick="document.dispatchEvent(new CustomEvent('assessmentStart'))"` to signal the React component.
 - **One React bundle for everything**: `static/dist/framework-accordion.js` (built from `frontend/`) drives both the hub-and-spoke diagram and the assessment wizard. Rebuilding with `cd frontend && npm run build` updates both.
 - **React Flow scroll blocking**: `FlowHub.tsx` sets `preventScrolling={false}` on the `<ReactFlow>` component. Without this, React Flow intercepts wheel events and calls `preventDefault()` even when zoom is disabled, causing scroll jank on the framework page. Do not remove this prop.
 - **Logo SVG sizing**: `static/images/logo.svg` has no fixed `width`/`height` attributes (removed so CSS controls size). The viewBox is cropped to the content area (`278 337 1656 426`). If the logo looks wrong, check these two things first.
@@ -357,9 +302,7 @@ Atlanta GA, Miami FL, Houston TX, Los Angeles CA, Detroit MI, New York NY, Chica
 - **Booking wizard — availability is DB-only**: There is no Google Calendar / external calendar sync. Availability comes entirely from `TimeSlot` records in the admin. Create at least one active `TimeSlot` or the calendar will show no selectable days.
 - **Booking wizard — `requested_date`/`requested_time` are hidden inputs**: The wizard populates these via JS before form submission. If JS is disabled the form cannot be submitted — this is by design (the wizard requires JS).
 - **Booking confirmation email triggers on admin save**: `BookingRequestAdmin.save_model()` detects the `pending → confirmed` transition and sends `booking_visitor_confirmed.html`. This works for both the detail change form and `list_editable` inline saves.
-- **Booking emails use console backend in dev**: `EMAIL_BACKEND` defaults to `django.core.mail.backends.console.EmailBackend` — emails print to the terminal. Configure SMTP in `.env` for production sending.
 - **Zoom call link is hardcoded in confirmation email**: `templates/emails/booking_visitor_confirmed.html` contains a fixed Zoom link. Update this template if the meeting link changes.
-- **`_format_time()` / `_format_date()` helpers in `booking/views.py`**: Used instead of `strftime('%-I')` to avoid Windows-incompatible format codes. Always use these helpers for booking date/time formatting.
 - **PDCA section — no GSAP, no JS file**: The PDCA section is pure CSS + AOS only. Do not add JS animation libraries (e.g. GSAP) — all motion is handled via CSS keyframes and AOS entrance animations. `cdnjs.cloudflare.com` is not in the CSP `script-src` allowlist.
 - **PDCA description reveal is hover-only on desktop**: `.pdca-desc` uses `max-height: 0` → `max-height: 200px` on `:hover`. On mobile (≤767px), descriptions are always visible via CSS override. No JS fallback for touch devices on desktop — descriptions auto-reveal on card tap via `:hover` on touch browsers.
 - **Showcase carousel clones require N ≥ visible count**: The carousel clones the first/last N slides (where N = visible count: 3 desktop, 2 tablet, 1 mobile). With only 3 projects, the carousel still works because clones fill the gaps. If reduced to fewer than the visible count, the layout may look sparse.
@@ -367,10 +310,7 @@ Atlanta GA, Miami FL, Houston TX, Los Angeles CA, Detroit MI, New York NY, Chica
 - **HPE logo has white text**: The HPE SVG (`static/images/HPE.svg`) was modified to use `fill:#ffffff` for text paths. The green icon element (`fill:#00b188`) was not changed. If the logo appears invisible on white backgrounds, this is why.
 - **Credential logo sizing is per-file**: PayPal/IBM/HPE use `.credential-logo-xl` (280×104px) and Intel uses default `.credential-logo` (140×52px) because the SVGs have different native aspect ratios. Adjust these classes if logos are swapped.
 - **Iframe-embedded showcase apps must allow framing**: Any external app added to the showcase with `live_demo_url` must not send `X-Frame-Options: SAMEORIGIN` (Django's default via `XFrameOptionsMiddleware`). Remove `XFrameOptionsMiddleware` from the embedded app's `MIDDLEWARE` setting to allow cross-origin embedding. Simple Forecast required this fix before its iframe would load on zimplixio.com.
-- **World map — `clipAngle(null)` must be followed by a path redraw**: After calling `ctx.proj.clipAngle(null)` in `transitionToFlat`, the country paths must be immediately redrawn (`ctx.g.selectAll('.map-country').attr('d', ctx.path)`) or polar countries remain clipped from the tween's last frame.
-- **World map — do not use `path.bounds(nation)` for US zoom**: `us.objects.nation` includes Alaska and Hawaii, which inflate the bounding box so much the zoom factor becomes ~1.5× (barely visible). Always use the hardcoded continental corners `[-125,50]` → `[-66,24]` in `zoomToUS`.
-- **World map — pin visibility uses great-circle math, not `clipAngle` return value**: `globeVisible(proj, lon, lat)` computes the angular distance from the globe center explicitly. Relying on `proj([lon,lat]) === null` produced ocean-position artifacts for points near the 90° boundary with the interpolated projection.
-- **World map — D3 v7 + TopoJSON loaded from `unpkg.com`**: Both CDN scripts must appear in `{% block extra_js %}` before `world-map.js`. The CSP `script-src` already allows `https://unpkg.com`.
 - **Values flip cards — hover + click both trigger flip**: The 3D flip fires on CSS `:hover` (desktop) AND on the `.is-flipped` JS class (click/tap). Both paths call `rotateY(180deg)` on `.values-flip-inner`. Do not remove either — hover gives instant desktop response; `.is-flipped` makes it work on touch. The `aria-hidden` attribute on `.values-back` is toggled by the JS click handler to match the flipped state.
+- **Services page uses a tabbed interface, not cards**: The original 5-card grid was replaced with a 50/50 split tabbed layout. Left panel shows service content (`.z-left`); right panel shows an animated visualization unique to each service (`.z-right`). All styles live in the `/* === Services Tabbed === */` block in `main.css` using `.z-*` prefixed classes. The inline `zSwitch(index)` function in `services.html` handles tab switching, panel visibility, and restarts the bar animation for the Partnership tab (index 3) on every click using a forced reflow (`void bar.offsetWidth`). Do not use AOS on this section — tab switches are on-demand, not scroll-triggered.
 - **About page no longer has `timeline.js`**: The interactive career timeline section ("The Journey") was removed. `static/js/timeline.js` is no longer loaded in `about.html` and is not referenced anywhere. The file still exists on disk but is unused.
 - **Founder cards have no `--reverse` variant**: Both founder cards (Joseph and Maria Jose) use the same photo-left layout. There is no `.founder-card--reverse` class in the HTML or CSS — it was removed when the layout switched from full-width stacked to side-by-side mini horizontal.

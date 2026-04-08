@@ -15,84 +15,271 @@
     <p class="section-label label-visible text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down">What We Do</p>
     <h1 class="text-4xl md:text-5xl font-bold text-white mb-4" data-aos="fade-up">Our Services</h1>
     <p class="text-xl text-indigo-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-      Enterprise-grade technology consulting, right-sized for growing businesses. From strategy to implementation, we've got you covered.
+      Most growing businesses don't have a technology problem. They have a clarity problem. We fix both.
     </p>
   </div>
 </section>
 
-<!-- Service Tiers -->
-<section class="py-20 dark:bg-gray-900">
+<!-- Service Tiers: Tabbed Interface -->
+<section class="py-20 bg-gray-50 dark:bg-gray-900">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid md:grid-cols-2 gap-8">
-      <!-- Tier 1 -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="100">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+    <div class="z-wrap">
+
+      <!-- HEADER -->
+      <div class="z-header">
+        <div class="z-eyebrow">
+          <div class="z-eyebrow-line"></div>
+          <span class="z-eyebrow-text">What We Do</span>
         </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Technology Strategy & Advisory</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
-          High-level technology roadmap and strategic planning. We assess your current landscape, identify opportunities, and create an actionable plan aligned with your business goals.
-        </p>
-        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Technology landscape assessment</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Architecture review & recommendations</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Vendor evaluation & selection support</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Roadmap & prioritization</li>
-        </ul>
+        <div class="z-heading">Our Services</div>
+        <div class="z-tabs" role="tablist" aria-label="Service categories">
+          <button class="z-tab z-tab-active" role="tab" aria-selected="true"  aria-controls="panel-0" id="tab-0" onclick="zSwitch(0)">01 · Roadmap &amp; Planning</button>
+          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-1" id="tab-1" onclick="zSwitch(1)">02 · Architecture &amp; Build</button>
+          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" onclick="zSwitch(2)">03 · Data &amp; Automation</button>
+          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" onclick="zSwitch(3)">04 · Technical Partnership</button>
+          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" onclick="zSwitch(4)">05 · AI &amp; Agentic</button>
+        </div>
       </div>
 
-      <!-- Tier 2 -->
-      <div class="bg-white dark:bg-gray-800 border-2 border-indigo-500 rounded-2xl p-8 relative hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="200">
-        <span class="absolute top-0 right-6 -translate-y-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Solution Architecture & Implementation</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
-          End-to-end design and build. We architect your solution, write the code, deploy it, and make sure it works — all with the rigor of enterprise engineering.
-        </p>
-        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Custom software development</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> System integration</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Cloud architecture & migration</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> API design & development</li>
-        </ul>
-      </div>
+      <div class="z-body">
 
-      <!-- Tier 3 -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="300">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Process Optimization & Automation</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
-          Streamline your operations with intelligent automation. We identify bottlenecks, eliminate manual work, and build systems that scale with your business.
-        </p>
-        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Workflow analysis & redesign</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Business process automation</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Data pipeline development</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Monitoring & alerting setup</li>
-        </ul>
-      </div>
+        <!-- LEFT: content panels -->
+        <div class="z-left">
 
-      <!-- Tier 4 -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="400">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Ongoing Technical Partnership</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
-          Fractional CTO-level support on retainer. Get ongoing access to senior technical leadership without the full-time executive cost.
-        </p>
-        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Fractional CTO / technical leadership</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Team mentorship & code review</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Architecture decision support</li>
-          <li class="flex gap-2"><span class="text-indigo-500">&#10003;</span> Incident response & escalation</li>
-        </ul>
-      </div>
-    </div>
+          <div class="z-content-panel z-panel-active" id="panel-0" role="tabpanel" aria-labelledby="tab-0">
+            <div class="z-num">01</div>
+            <div class="z-service-title">Technology Roadmap &amp; Planning</div>
+            <div class="z-service-desc">You don't need more tools. You need to know which ones are worth your time and money. We assess where you are, identify what's holding you back, and build a roadmap you can actually execute.</div>
+            <ul class="z-bullets">
+              <li><span class="z-bullet-dot"></span>Current state review &amp; gap analysis</li>
+              <li><span class="z-bullet-dot"></span>Technology stack evaluation</li>
+              <li><span class="z-bullet-dot"></span>Vendor shortlisting &amp; selection guidance</li>
+              <li><span class="z-bullet-dot"></span>90-day actionable roadmap</li>
+            </ul>
+          </div>
+
+          <div class="z-content-panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1" hidden>
+            <div class="z-num">02</div>
+            <div class="z-service-title">Solution Architecture &amp; Implementation</div>
+            <div class="z-service-desc">End-to-end design, build, deploy and maintenance. We architect your solution, write the code, deploy it, and own the outcome — with the rigor of enterprise engineering.</div>
+            <ul class="z-bullets">
+              <li><span class="z-bullet-dot"></span>Custom software development</li>
+              <li><span class="z-bullet-dot"></span>System integration</li>
+              <li><span class="z-bullet-dot"></span>Cloud architecture &amp; migration</li>
+              <li><span class="z-bullet-dot"></span>API design &amp; development</li>
+            </ul>
+          </div>
+
+          <div class="z-content-panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>
+            <div class="z-num">03</div>
+            <div class="z-service-title">Data Engineering &amp; Automation</div>
+            <div class="z-service-desc">Incorrect data management practices and manual processes are two sides of the same problem. We clean up the first, eliminate the second, and build the pipelines and workflows that keep your operations running without constant intervention.</div>
+            <ul class="z-bullets">
+              <li><span class="z-bullet-dot"></span>Workflow analysis, redesign &amp; automation</li>
+              <li><span class="z-bullet-dot"></span>Data pipeline development &amp; integration</li>
+              <li><span class="z-bullet-dot"></span>Azure Data Factory &amp; SSIS implementation</li>
+              <li><span class="z-bullet-dot"></span>Analytics, reporting &amp; monitoring</li>
+            </ul>
+          </div>
+
+          <div class="z-content-panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden>
+            <div class="z-num">04</div>
+            <div class="z-service-title">Embedded Technical Partnership</div>
+            <div class="z-service-desc">Finding the right technical partner is hard. We get that. We're good at shipping fast, but this is about more than delivery — we stay in your corner for as long as you need, because the best results come from partners who actually know your business.</div>
+            <ul class="z-bullets">
+              <li><span class="z-bullet-dot"></span>Technical leadership &amp; team guidance</li>
+              <li><span class="z-bullet-dot"></span>Managed hosting &amp; infrastructure oversight</li>
+              <li><span class="z-bullet-dot"></span>Maintenance &amp; evolution of existing solutions</li>
+            </ul>
+          </div>
+
+          <div class="z-content-panel" id="panel-4" role="tabpanel" aria-labelledby="tab-4" hidden>
+            <div class="z-num">05</div>
+            <div class="z-service-title">AI &amp; Agentic Automation</div>
+            <div class="z-service-desc">The gap between how enterprise companies are using AI and where most growing businesses stand is widening every day. We've seen this before — and we know what it costs to wait. We help you build the strategy, policy, and automated workflows to get ahead of it — responsibly.</div>
+            <ul class="z-bullets">
+              <li><span class="z-bullet-dot"></span>AI readiness assessment</li>
+              <li><span class="z-bullet-dot"></span>Responsible AI adoption framework</li>
+              <li><span class="z-bullet-dot"></span>Agentic workflow design, automation &amp; deployment</li>
+              <li><span class="z-bullet-dot"></span>AI tools training &amp; team enablement</li>
+            </ul>
+          </div>
+
+        </div><!-- /.z-left -->
+
+        <!-- RIGHT: visual panels (decorative, aria-hidden) -->
+        <div class="z-right" aria-hidden="true">
+
+          <!-- Visual 1: Roadmap steps -->
+          <div class="z-visual z-vis-active" id="vis-0">
+            <div class="vis-roadmap">
+              <div class="roadmap-steps">
+                <div class="roadmap-step">
+                  <div class="step-connector">
+                    <div class="step-circle">01</div>
+                    <div class="step-line"></div>
+                  </div>
+                  <div class="step-info">
+                    <div class="step-label">Current state review</div>
+                    <div class="step-sub">Where are you today?</div>
+                  </div>
+                </div>
+                <div class="roadmap-step">
+                  <div class="step-connector">
+                    <div class="step-circle">02</div>
+                    <div class="step-line"></div>
+                  </div>
+                  <div class="step-info">
+                    <div class="step-label">Gap analysis &amp; stack evaluation</div>
+                    <div class="step-sub">What's holding you back?</div>
+                  </div>
+                </div>
+                <div class="roadmap-step">
+                  <div class="step-connector">
+                    <div class="step-circle">03</div>
+                    <div class="step-line"></div>
+                  </div>
+                  <div class="step-info">
+                    <div class="step-label">Vendor shortlisting</div>
+                    <div class="step-sub">Which tools actually fit?</div>
+                  </div>
+                </div>
+                <div class="roadmap-step">
+                  <div class="step-connector">
+                    <div class="step-circle">04</div>
+                  </div>
+                  <div class="step-info">
+                    <div class="step-label">90-day actionable roadmap</div>
+                    <div class="step-sub">A plan you can execute</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual 2: Architecture blocks -->
+          <div class="z-visual" id="vis-1">
+            <div class="vis-arch">
+              <div class="arch-grid">
+                <div class="arch-block">
+                  <div class="arch-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                  </div>
+                  <div class="arch-label">Architecture</div>
+                  <div class="arch-sub">System design &amp; planning</div>
+                </div>
+                <div class="arch-block">
+                  <div class="arch-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+                  </div>
+                  <div class="arch-label">Development</div>
+                  <div class="arch-sub">Custom software build</div>
+                </div>
+                <div class="arch-block">
+                  <div class="arch-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg>
+                  </div>
+                  <div class="arch-label">Cloud &amp; APIs</div>
+                  <div class="arch-sub">Migration &amp; integration</div>
+                </div>
+                <div class="arch-block">
+                  <div class="arch-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+                  </div>
+                  <div class="arch-label">Integration</div>
+                  <div class="arch-sub">Systems connected</div>
+                </div>
+                <div class="arch-block arch-block-wide">
+                  <div class="arch-label arch-label-accent">Enterprise engineering rigor — right-sized for your business</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual 3: Data pipeline -->
+          <div class="z-visual" id="vis-2">
+            <div class="vis-data">
+              <div class="pipeline">
+                <div class="pipeline-row">
+                  <div class="pipeline-source">SQL Server / VM</div>
+                  <div class="pipeline-arrow"></div>
+                  <div class="pipeline-dest">Data Pipeline</div>
+                </div>
+                <div class="pipeline-row">
+                  <div class="pipeline-source">Azure Data Factory</div>
+                  <div class="pipeline-arrow"></div>
+                  <div class="pipeline-dest">Analytics Layer</div>
+                </div>
+                <div class="pipeline-row">
+                  <div class="pipeline-source">Manual Workflows</div>
+                  <div class="pipeline-arrow"></div>
+                  <div class="pipeline-dest">Automation</div>
+                </div>
+                <div class="pipeline-row">
+                  <div class="pipeline-source">Raw Data</div>
+                  <div class="pipeline-arrow"></div>
+                  <div class="pipeline-dest">Dashboards</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual 4: Partnership metrics -->
+          <div class="z-visual" id="vis-3">
+            <div class="vis-partner">
+              <div class="partner-metric">
+                <div class="partner-metric-left">
+                  <div class="partner-metric-label">Technical leadership</div>
+                  <div class="partner-bar-wrap"><div class="partner-bar z-bar-animate" style="--bar-w:90%"></div></div>
+                </div>
+                <div class="partner-metric-val">Embedded</div>
+              </div>
+              <div class="partner-metric">
+                <div class="partner-metric-left">
+                  <div class="partner-metric-label">Infrastructure oversight</div>
+                  <div class="partner-bar-wrap"><div class="partner-bar z-bar-animate" style="--bar-w:75%"></div></div>
+                </div>
+                <div class="partner-metric-val">Managed</div>
+              </div>
+              <div class="partner-metric">
+                <div class="partner-metric-left">
+                  <div class="partner-metric-label">Solution evolution</div>
+                  <div class="partner-bar-wrap"><div class="partner-bar z-bar-animate" style="--bar-w:60%"></div></div>
+                </div>
+                <div class="partner-metric-val">Ongoing</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual 5: AI adoption stages -->
+          <div class="z-visual" id="vis-4">
+            <div class="vis-ai">
+              <div class="ai-stage">
+                <div class="ai-stage-dot dot-green"></div>
+                <div class="ai-stage-label">AI readiness assessment</div>
+                <div class="ai-stage-pill pill-done">Complete</div>
+              </div>
+              <div class="ai-stage">
+                <div class="ai-stage-dot dot-green"></div>
+                <div class="ai-stage-label">Adoption framework &amp; policy</div>
+                <div class="ai-stage-pill pill-done">Complete</div>
+              </div>
+              <div class="ai-stage">
+                <div class="ai-stage-dot dot-blue"></div>
+                <div class="ai-stage-label">Agentic workflow deployment</div>
+                <div class="ai-stage-pill pill-active">In progress</div>
+              </div>
+              <div class="ai-stage">
+                <div class="ai-stage-dot dot-gray"></div>
+                <div class="ai-stage-label">Team training &amp; enablement</div>
+                <div class="ai-stage-pill pill-next">Up next</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.z-right -->
+      </div><!-- /.z-body -->
+    </div><!-- /.z-wrap -->
   </div>
 </section>
 
@@ -207,5 +394,28 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+function zSwitch(index) {
+  document.querySelectorAll('.z-tab').forEach(function(t, i) {
+    t.classList.toggle('z-tab-active', i === index);
+    t.setAttribute('aria-selected', i === index ? 'true' : 'false');
+  });
+  document.querySelectorAll('.z-content-panel').forEach(function(p, i) {
+    var active = i === index;
+    p.classList.toggle('z-panel-active', active);
+    active ? p.removeAttribute('hidden') : p.setAttribute('hidden', '');
+  });
+  document.querySelectorAll('.z-visual').forEach(function(v, i) {
+    v.classList.toggle('z-vis-active', i === index);
+  });
+  if (index === 3) {
+    document.querySelectorAll('#vis-3 .partner-bar').forEach(function(bar) {
+      bar.classList.remove('z-bar-animate');
+      void bar.offsetWidth;
+      bar.classList.add('z-bar-animate');
+    });
+  }
+}
+</script>
 <script src="{% static 'js/faq-accordion.js' %}"></script>
 {% endblock %}

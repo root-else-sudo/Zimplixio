@@ -3,6 +3,11 @@
 
 {% block title %}Services — {{ site_name }}{% endblock %}
 
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <!-- Hero -->
 <section class="hero-animated-bg relative py-20 md:py-24 overflow-hidden">
@@ -20,260 +25,1036 @@
   </div>
 </section>
 
-<!-- Service Tiers: Tabbed Interface -->
-<section class="py-20 bg-gray-50 dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="z-wrap">
+<!-- Service Tiers: Scroll-Pinned (desktop ≥1024px) -->
+<div class="svc-scroll-root" id="servicesOuter">
+  <div class="svc-sticky" id="servicesSticky">
 
-      <!-- HEADER -->
-      <div class="z-header">
-        <div class="z-eyebrow">
-          <div class="z-eyebrow-line"></div>
-          <span class="z-eyebrow-text">What We Do</span>
+    <div class="svc-progress-bar" id="svcProgressBar"></div>
+
+    <div class="svc-counter" aria-hidden="true">
+      <span class="svc-counter-current" id="svcCounterCurrent">01</span>
+      <span class="svc-counter-sep">/</span>
+      <span class="svc-counter-total">05</span>
+    </div>
+
+    <div class="svc-nav-dots" id="svcNavDots" aria-hidden="true">
+      <div class="svc-nav-dot svc-dot-active" data-label="Roadmap &amp; Planning"></div>
+      <div class="svc-nav-dot" data-label="Architecture &amp; Build"></div>
+      <div class="svc-nav-dot" data-label="Data &amp; Automation"></div>
+      <div class="svc-nav-dot" data-label="Technical Partnership"></div>
+      <div class="svc-nav-dot" data-label="AI &amp; Agentic"></div>
+    </div>
+
+    <div class="svc-track" id="svcPanelsTrack">
+
+      <!-- Panel 1 -->
+      <div class="svc-panel">
+        <div class="svc-panel-bg-accent"></div>
+        <div class="svc-panel-left">
+          <div class="svc-ghost-num" aria-hidden="true">01</div>
+          <div class="svc-panel-num">01 &mdash; Service</div>
+          <h2 class="svc-panel-title">Technology Roadmap &amp; Planning</h2>
+          <p class="svc-panel-desc">You don't need more tools. You need to know which ones are worth your time and money. We assess where you are, identify what's holding you back, and build a roadmap you can actually execute.</p>
         </div>
-        <div class="z-heading">Our Services</div>
-        <div class="z-tabs" role="tablist" aria-label="Service categories">
-          <button class="z-tab z-tab-active" role="tab" aria-selected="true"  aria-controls="panel-0" id="tab-0" onclick="zSwitch(0)">01 · Roadmap &amp; Planning</button>
-          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-1" id="tab-1" onclick="zSwitch(1)">02 · Architecture &amp; Build</button>
-          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" onclick="zSwitch(2)">03 · Data &amp; Automation</button>
-          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" onclick="zSwitch(3)">04 · Technical Partnership</button>
-          <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" onclick="zSwitch(4)">05 · AI &amp; Agentic</button>
+        <div class="svc-panel-right svc-panel-right--widgets">
+          <div class="p01-grid" id="p01Widgets">
+
+            <!-- Widget 1: Current State Review & Gap Analysis -->
+            <div class="p01-widget" id="p01-w1">
+              <div class="p01-wlabel">Current state review &amp; gap analysis</div>
+              <div class="p01-scan-line" id="p01-scan"></div>
+              <div class="p01-w1-grid">
+                <div>
+                  <div class="p01-col-head">Current State</div>
+                  <div class="p01-item p01-ok"   id="p01-i1"><span class="p01-idot"></span>Cloud infra</div>
+                  <div class="p01-item p01-warn"  id="p01-i2"><span class="p01-idot"></span>Data pipelines</div>
+                  <div class="p01-item p01-ok"   id="p01-i3"><span class="p01-idot"></span>Auth &amp; security</div>
+                  <div class="p01-item p01-gap"   id="p01-i4"><span class="p01-idot"></span>Automation</div>
+                  <div class="p01-item p01-warn"  id="p01-i5"><span class="p01-idot"></span>Reporting</div>
+                </div>
+                <div>
+                  <div class="p01-col-head">Gaps Found</div>
+                  <div class="p01-item p01-gap"  id="p01-g1"><span class="p01-idot"></span>Multiple on-prem apps</div>
+                  <div class="p01-item p01-gap"  id="p01-g2"><span class="p01-idot"></span>Manual ETL</div>
+                  <div class="p01-item p01-warn" id="p01-g3"><span class="p01-idot"></span>Siloed data</div>
+                  <div class="p01-item p01-gap"  id="p01-g4"><span class="p01-idot"></span>Workflows not documented</div>
+                  <div class="p01-item p01-warn" id="p01-g5"><span class="p01-idot"></span>Ad-hoc only</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widget 2: Technology Stack Evaluation -->
+            <div class="p01-widget" id="p01-w2">
+              <div class="p01-wlabel">Technology stack evaluation</div>
+              <div class="p01-w2-wrap">
+                <div class="p01-w2-row" id="p01-r1">
+                  <div class="p01-badge p01-badge-hi"><span>⚡</span><span class="p01-bname">Azure</span></div>
+                  <div class="p01-badge"><span>🐍</span><span class="p01-bname">Python</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>🔷</span><span class="p01-bname">Django</span></div>
+                  <div class="p01-badge"><span>🗄</span><span class="p01-bname">PostgreSQL</span></div>
+                  <div class="p01-badge"><span>⚛</span><span class="p01-bname">React</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>📊</span><span class="p01-bname">Power BI</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>⚡</span><span class="p01-bname">Azure</span></div>
+                  <div class="p01-badge"><span>🐍</span><span class="p01-bname">Python</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>🔷</span><span class="p01-bname">Django</span></div>
+                  <div class="p01-badge"><span>🗄</span><span class="p01-bname">PostgreSQL</span></div>
+                  <div class="p01-badge"><span>⚛</span><span class="p01-bname">React</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>📊</span><span class="p01-bname">Power BI</span></div>
+                </div>
+                <div class="p01-w2-row" id="p01-r2">
+                  <div class="p01-badge"><span>🔧</span><span class="p01-bname">SSIS</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>🏭</span><span class="p01-bname">ADF</span></div>
+                  <div class="p01-badge"><span>🐳</span><span class="p01-bname">Docker</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>🤖</span><span class="p01-bname">n8n</span></div>
+                  <div class="p01-badge"><span>☁</span><span class="p01-bname">AWS</span></div>
+                  <div class="p01-badge"><span>🗃</span><span class="p01-bname">SQL Server</span></div>
+                  <div class="p01-badge"><span>🔧</span><span class="p01-bname">SSIS</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>🏭</span><span class="p01-bname">ADF</span></div>
+                  <div class="p01-badge"><span>🐳</span><span class="p01-bname">Docker</span></div>
+                  <div class="p01-badge p01-badge-hi"><span>🤖</span><span class="p01-bname">n8n</span></div>
+                  <div class="p01-badge"><span>☁</span><span class="p01-bname">AWS</span></div>
+                  <div class="p01-badge"><span>🗃</span><span class="p01-bname">SQL Server</span></div>
+                </div>
+              </div>
+              <div class="p01-scores">
+                <div class="p01-score-row">
+                  <span class="p01-score-lbl">Stack fit</span>
+                  <div class="p01-score-bar"><div class="p01-score-fill" id="p01-fit" data-w="82%"></div></div>
+                  <span class="p01-score-val">82%</span>
+                </div>
+                <div class="p01-score-row">
+                  <span class="p01-score-lbl">Coverage</span>
+                  <div class="p01-score-bar"><div class="p01-score-fill" id="p01-cov" data-w="91%"></div></div>
+                  <span class="p01-score-val">91%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widget 3: Vendor Shortlisting -->
+            <div class="p01-widget" id="p01-w3">
+              <div class="p01-wlabel">Vendor shortlisting &amp; selection</div>
+              <div class="p01-w3-cards">
+                <div class="p01-vcard" id="p01-vc1">
+                  <div class="p01-vname">Vendor A</div>
+                  <div class="p01-vcriteria">
+                    <div class="p01-crit" id="p01-c1-cr1"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Cost</span></div>
+                    <div class="p01-crit" id="p01-c1-cr2"><span class="p01-crit-icon">✗</span><span class="p01-crit-lbl">Scale</span></div>
+                    <div class="p01-crit" id="p01-c1-cr3"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Support</span></div>
+                    <div class="p01-crit" id="p01-c1-cr4"><span class="p01-crit-icon">✗</span><span class="p01-crit-lbl">Integration</span></div>
+                  </div>
+                </div>
+                <div class="p01-vcard p01-vcard-rec" id="p01-vc2">
+                  <div class="p01-vname">Vendor B</div>
+                  <div class="p01-vcriteria">
+                    <div class="p01-crit" id="p01-c2-cr1"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Cost</span></div>
+                    <div class="p01-crit" id="p01-c2-cr2"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Scale</span></div>
+                    <div class="p01-crit" id="p01-c2-cr3"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Support</span></div>
+                    <div class="p01-crit" id="p01-c2-cr4"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Integration</span></div>
+                  </div>
+                  <div class="p01-rec-badge" id="p01-rec">★ Recommended</div>
+                </div>
+                <div class="p01-vcard" id="p01-vc3">
+                  <div class="p01-vname">Vendor C</div>
+                  <div class="p01-vcriteria">
+                    <div class="p01-crit" id="p01-c3-cr1"><span class="p01-crit-icon">✗</span><span class="p01-crit-lbl">Cost</span></div>
+                    <div class="p01-crit" id="p01-c3-cr2"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Scale</span></div>
+                    <div class="p01-crit" id="p01-c3-cr3"><span class="p01-crit-icon">✗</span><span class="p01-crit-lbl">Support</span></div>
+                    <div class="p01-crit" id="p01-c3-cr4"><span class="p01-crit-icon">✓</span><span class="p01-crit-lbl">Integration</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="p01-w3-summary">Criteria: cost &middot; scalability &middot; support &middot; integration</div>
+            </div>
+
+            <!-- Widget 4: 90-Day Roadmap -->
+            <div class="p01-widget" id="p01-w4">
+              <div class="p01-wlabel">90-day actionable roadmap</div>
+              <div class="p01-w4-timeline">
+                <div class="p01-phase p01-phase-1" id="p01-p1">
+                  <div class="p01-phase-head">
+                    <span class="p01-phase-name">Discovery</span>
+                    <span class="p01-phase-weeks">Wk 1–4</span>
+                  </div>
+                  <div class="p01-bar-bg"><div class="p01-bar-fill" id="p01-b1" data-w="30%"></div></div>
+                  <div class="p01-weeks-row" id="p01-wr1"></div>
+                  <div class="p01-milestone" id="p01-m1">
+                    <div class="p01-ms-dot p01-ms-dot--blue"></div>
+                    <span class="p01-ms-label">Assessment complete → gap report delivered</span>
+                  </div>
+                </div>
+                <div class="p01-phase p01-phase-2" id="p01-p2">
+                  <div class="p01-phase-head">
+                    <span class="p01-phase-name">Architecture</span>
+                    <span class="p01-phase-weeks">Wk 5–9</span>
+                  </div>
+                  <div class="p01-bar-bg"><div class="p01-bar-fill" id="p01-b2" data-w="38%"></div></div>
+                  <div class="p01-weeks-row" id="p01-wr2"></div>
+                  <div class="p01-milestone" id="p01-m2">
+                    <div class="p01-ms-dot p01-ms-dot--teal"></div>
+                    <span class="p01-ms-label">Stack selected → solution blueprint signed off</span>
+                  </div>
+                </div>
+                <div class="p01-phase p01-phase-3" id="p01-p3">
+                  <div class="p01-phase-head">
+                    <span class="p01-phase-name">Execution Plan</span>
+                    <span class="p01-phase-weeks">Wk 10–13</span>
+                  </div>
+                  <div class="p01-bar-bg"><div class="p01-bar-fill" id="p01-b3" data-w="32%"></div></div>
+                  <div class="p01-weeks-row" id="p01-wr3"></div>
+                  <div class="p01-milestone" id="p01-m3">
+                    <div class="p01-ms-dot p01-ms-dot--purple"></div>
+                    <span class="p01-ms-label">Roadmap locked → sprint 1 ready to kick off</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
+      <!-- Panel 2 -->
+      <div class="svc-panel">
+        <div class="svc-panel-bg-accent"></div>
+        <div class="svc-panel-left">
+          <div class="svc-ghost-num" aria-hidden="true">02</div>
+          <div class="svc-panel-num">02 &mdash; Service</div>
+          <h2 class="svc-panel-title">Solution Architecture &amp; Implementation</h2>
+          <p class="svc-panel-desc">End-to-end design, build, deploy and maintenance. We architect your solution, write the code, deploy it, and own the outcome — with the rigor of enterprise engineering.</p>
+        </div>
+        <div class="svc-panel-right svc-panel-right--widgets">
+          <div class="p02-grid" id="p02Widgets">
+
+            <!-- Widget 1: Custom Software Development -->
+            <div class="p02-widget" id="p02-w1">
+              <div class="p02-wlabel">Custom software development</div>
+              <div class="p02-editor">
+                <div class="p02-editor-bar">
+                  <div class="p02-dot p02-dot-r"></div>
+                  <div class="p02-dot p02-dot-y"></div>
+                  <div class="p02-dot p02-dot-g"></div>
+                  <span class="p02-filename">app/services/core.py</span>
+                </div>
+                <div class="p02-code">
+                  <div class="p02-line" id="p02-l1"><span class="p02-ln">1</span><span class="p02-ct"><span class="p02-kw">class</span> <span class="p02-fn">BusinessService</span>:</span></div>
+                  <div class="p02-line" id="p02-l2"><span class="p02-ln">2</span><span class="p02-ct"><span class="p02-cm">  # Enterprise logic, SMB scale</span></span></div>
+                  <div class="p02-line" id="p02-l3"><span class="p02-ln">3</span><span class="p02-ct">  <span class="p02-kw">def</span> <span class="p02-fn">process</span>(<span class="p02-var">self</span>, <span class="p02-var">data</span>):</span></div>
+                  <div class="p02-line" id="p02-l4"><span class="p02-ln">4</span><span class="p02-ct">    <span class="p02-var">result</span> = <span class="p02-fn">validate</span>(<span class="p02-var">data</span>)</span></div>
+                  <div class="p02-line" id="p02-l5"><span class="p02-ln">5</span><span class="p02-ct">    <span class="p02-kw">if</span> <span class="p02-var">result</span>.<span class="p02-fn">is_valid</span>():</span></div>
+                  <div class="p02-line" id="p02-l6"><span class="p02-ln">6</span><span class="p02-ct">      <span class="p02-kw">return</span> <span class="p02-fn">deploy</span>(<span class="p02-var">result</span>)</span></div>
+                  <div class="p02-line" id="p02-l7"><span class="p02-ln">7</span><span class="p02-ct">    <span class="p02-kw">raise</span> <span class="p02-fn">BuildError</span>(<span class="p02-str">"Fix first"</span>)</span></div>
+                  <div class="p02-line" id="p02-l8"><span class="p02-ln">8</span><span class="p02-ct"><span class="p02-cm"># Tests: 47 passed ✓</span></span></div>
+                </div>
+                <div class="p02-build-bar" id="p02-build-bar">
+                  <div class="p02-build-dot"></div>
+                  <span class="p02-build-text">Build successful — deployed to production</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widget 2: System Integration -->
+            <div class="p02-widget" id="p02-w2">
+              <div class="p02-wlabel">System integration</div>
+              <div class="p02-diagram">
+                <svg class="p02-svg" viewBox="0 0 240 160" aria-hidden="true">
+                  <line id="p02-c-crm" class="p02-connector" x1="58"  y1="30"  x2="118" y2="78"/>
+                  <line id="p02-c-erp" class="p02-connector" x1="182" y1="30"  x2="122" y2="78"/>
+                  <line id="p02-c-db"  class="p02-connector" x1="58"  y1="130" x2="118" y2="82"/>
+                  <line id="p02-c-ext" class="p02-connector" x1="182" y1="130" x2="122" y2="82"/>
+                  <circle id="p02-p1" class="p02-pulse" r="3" cx="88"  cy="54"/>
+                  <circle id="p02-p2" class="p02-pulse" r="3" cx="152" cy="54"/>
+                  <circle id="p02-p3" class="p02-pulse" r="3" cx="88"  cy="106"/>
+                  <circle id="p02-p4" class="p02-pulse" r="3" cx="152" cy="106"/>
+                  <g class="p02-node" id="p02-n-crm"><rect x="18" y="12" width="80" height="36" rx="6"/><text x="58" y="24" class="p02-svg-icon">💼</text><text x="58" y="42" class="p02-svg-lbl">CRM</text></g>
+                  <g class="p02-node" id="p02-n-erp"><rect x="142" y="12" width="80" height="36" rx="6"/><text x="182" y="24" class="p02-svg-icon">🏢</text><text x="182" y="42" class="p02-svg-lbl">ERP</text></g>
+                  <g class="p02-node p02-node-active" id="p02-n-hub"><rect x="95" y="62" width="50" height="36" rx="6"/><text x="120" y="74" class="p02-svg-icon">⚡</text><text x="120" y="92" class="p02-svg-lbl">Hub</text></g>
+                  <g class="p02-node" id="p02-n-db"><rect x="18" y="112" width="80" height="36" rx="6"/><text x="58" y="124" class="p02-svg-icon">🛢️</text><text x="58" y="142" class="p02-svg-lbl">Database</text></g>
+                  <g class="p02-node" id="p02-n-ext"><rect x="142" y="112" width="80" height="36" rx="6"/><text x="182" y="124" class="p02-svg-icon">🔌</text><text x="182" y="142" class="p02-svg-lbl">Ext. API</text></g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Widget 3: Cloud Architecture & Migration -->
+            <div class="p02-widget" id="p02-w3">
+              <div class="p02-wlabel">Cloud architecture &amp; migration</div>
+              <div class="p02-migration">
+                <div class="p02-infra-row">
+                  <div class="p02-box" id="p02-onprem"><span class="p02-box-icon">🖥</span><span class="p02-box-lbl">On-Prem</span></div>
+                  <div class="p02-arrow"><div class="p02-arrow-line" id="p02-arrline"></div><span class="p02-arrow-lbl">migrating →</span></div>
+                  <div class="p02-box" id="p02-cloud"><span class="p02-box-icon">☁️</span><span class="p02-box-lbl">Azure Cloud</span></div>
+                </div>
+                <div class="p02-svc-row">
+                  <div class="p02-box p02-box-sm" id="p02-s1"><span class="p02-box-icon-sm">🗃</span><span class="p02-box-lbl">SQL</span></div>
+                  <div class="p02-box p02-box-sm" id="p02-s2"><span class="p02-box-icon-sm">📦</span><span class="p02-box-lbl">Storage</span></div>
+                  <div class="p02-box p02-box-sm" id="p02-s3"><span class="p02-box-icon-sm">⚙️</span><span class="p02-box-lbl">Services</span></div>
+                  <div class="p02-box p02-box-sm" id="p02-s4"><span class="p02-box-icon-sm">🔒</span><span class="p02-box-lbl">Auth</span></div>
+                </div>
+                <div class="p02-prog-wrap">
+                  <div class="p02-prog-row" id="p02-pr1"><span class="p02-prog-lbl">Data</span><div class="p02-prog-bg"><div class="p02-prog-fill p02-fill-blue" id="p02-pf1" data-w="94%"></div></div><span class="p02-prog-pct">94%</span></div>
+                  <div class="p02-prog-row" id="p02-pr2"><span class="p02-prog-lbl">Services</span><div class="p02-prog-bg"><div class="p02-prog-fill p02-fill-teal" id="p02-pf2" data-w="78%"></div></div><span class="p02-prog-pct">78%</span></div>
+                  <div class="p02-prog-row" id="p02-pr3"><span class="p02-prog-lbl">Security</span><div class="p02-prog-bg"><div class="p02-prog-fill p02-fill-purple" id="p02-pf3" data-w="100%"></div></div><span class="p02-prog-pct">100%</span></div>
+                </div>
+              </div>
+              <div class="p02-migration-summary">Target: Azure &middot; IaaS &middot; PaaS &middot; Zero-trust security</div>
+            </div>
+
+            <!-- Widget 4: API Design & Development -->
+            <div class="p02-widget" id="p02-w4">
+              <div class="p02-wlabel">API design &amp; development</div>
+              <div class="p02-api">
+                <div class="p02-req" id="p02-r1">
+                  <div class="p02-req-line"><span class="p02-method p02-get">GET</span><span class="p02-endpoint">/api/v1/clients/{id}/profile</span><span class="p02-api-badge p02-s200" id="p02-st1">200 OK</span></div>
+                  <div class="p02-response" id="p02-resp1"><div class="p02-resp-text"><span class="p02-key">"id"</span>: <span class="p02-vnum">4821</span>, <span class="p02-key">"name"</span>: <span class="p02-vstr">"Acme Corp"</span>, <span class="p02-key">"active"</span>: <span class="p02-vbool">true</span></div></div>
+                </div>
+                <div class="p02-divider"></div>
+                <div class="p02-req" id="p02-r2">
+                  <div class="p02-req-line"><span class="p02-method p02-post">POST</span><span class="p02-endpoint">/api/v1/workflows/trigger</span><span class="p02-api-badge p02-s201" id="p02-st2">201 Created</span></div>
+                  <div class="p02-response" id="p02-resp2"><div class="p02-resp-text"><span class="p02-key">"workflow_id"</span>: <span class="p02-vstr">"wf_9x2k"</span>, <span class="p02-key">"status"</span>: <span class="p02-vstr">"running"</span></div></div>
+                </div>
+                <div class="p02-divider"></div>
+                <div class="p02-req" id="p02-r3">
+                  <div class="p02-req-line"><span class="p02-method p02-put">PUT</span><span class="p02-endpoint">/api/v1/integrations/sync</span><span class="p02-api-badge p02-s200" id="p02-st3">200 OK</span></div>
+                  <div class="p02-response" id="p02-resp3"><div class="p02-resp-text"><span class="p02-key">"synced"</span>: <span class="p02-vnum">1247</span>, <span class="p02-key">"errors"</span>: <span class="p02-vnum">0</span>, <span class="p02-key">"ms"</span>: <span class="p02-vnum">142</span></div></div>
+                </div>
+                <div class="p02-divider"></div>
+                <div class="p02-req" id="p02-r4">
+                  <div class="p02-req-line"><span class="p02-method p02-get">GET</span><span class="p02-endpoint">/api/v1/analytics/dashboard</span><span class="p02-api-badge p02-s200" id="p02-st4">200 OK</span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3 -->
+      <div class="svc-panel">
+        <div class="svc-panel-bg-accent"></div>
+        <div class="svc-panel-left">
+          <div class="svc-ghost-num" aria-hidden="true">03</div>
+          <div class="svc-panel-num">03 &mdash; Service</div>
+          <h2 class="svc-panel-title">Data Engineering &amp; Automation</h2>
+          <p class="svc-panel-desc">Incorrect data management practices and manual processes are two sides of the same problem. We clean up the first, eliminate the second, and build the pipelines and workflows that keep your operations running without constant intervention.</p>
+        </div>
+        <div class="svc-panel-right svc-panel-right--widgets">
+          <div class="p03-grid" id="p03Widgets">
+
+            <!-- W1: Workflow Analysis -->
+            <div class="p03-widget" id="p03-w1">
+              <div class="p03-wlabel">Workflow analysis &amp; automation</div>
+              <div class="p03-w1-flow">
+                <div>
+                  <div class="p03-col-head before">Before</div>
+                  <div class="p03-steps">
+                    <div class="p03-step manual" id="p03-b1"><span class="p03-step-icon">👤</span>Manual entry</div>
+                    <div class="p03-step bottleneck" id="p03-b2"><span class="p03-step-icon">⏳</span>Approval wait</div>
+                    <div class="p03-step manual" id="p03-b3"><span class="p03-step-icon">📧</span>Email notify</div>
+                    <div class="p03-step bottleneck" id="p03-b4"><span class="p03-step-icon">🔁</span>Re-enter data</div>
+                  </div>
+                </div>
+                <div class="p03-arrow-col">
+                  <div class="p03-transform-arrow" id="p03-arr">
+                    <span class="p03-arr-label">AUTO</span>
+                    <div class="p03-arr-line"></div>
+                    <div class="p03-arr-head"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="p03-col-head after">After</div>
+                  <div class="p03-steps">
+                    <div class="p03-step automated" id="p03-a1"><span class="p03-step-icon">⚡</span>Auto-capture</div>
+                    <div class="p03-step automated" id="p03-a2"><span class="p03-step-icon">✅</span>Rule-based</div>
+                    <div class="p03-step automated" id="p03-a3"><span class="p03-step-icon">🔔</span>Instant alert</div>
+                    <div class="p03-step automated" id="p03-a4"><span class="p03-step-icon">🔄</span>Zero touch</div>
+                  </div>
+                </div>
+              </div>
+              <div class="p03-w1-savings" id="p03-savings">
+                <span class="p03-savings-text">⚡ 83% reduction in manual processing time</span>
+              </div>
+            </div>
+
+            <!-- W2: Data Pipeline -->
+            <div class="p03-widget" id="p03-w2">
+              <div class="p03-wlabel">Data pipeline development</div>
+              <div class="p03-w2-pipeline">
+                <div class="p03-w2-stage" id="p03-s1">
+                  <div class="p03-w2-source">SQL Server</div>
+                  <div class="p03-w2-arr"><div class="p03-w2-arr-fill" id="p03-af1"></div></div>
+                  <div class="p03-w2-process">Extract<div class="p03-w2-shimmer" id="p03-sh1"></div></div>
+                  <div class="p03-w2-count" id="p03-cn1">&#8595; 142k rows</div>
+                </div>
+                <div class="p03-w2-stage" id="p03-s2">
+                  <div class="p03-w2-source">CSV / API</div>
+                  <div class="p03-w2-arr"><div class="p03-w2-arr-fill" id="p03-af2"></div></div>
+                  <div class="p03-w2-process">Transform<div class="p03-w2-shimmer" id="p03-sh2"></div></div>
+                  <div class="p03-w2-count" id="p03-cn2">&#8595; 98k clean</div>
+                </div>
+                <div class="p03-w2-stage" id="p03-s3">
+                  <div class="p03-w2-source">Azure Blob</div>
+                  <div class="p03-w2-arr"><div class="p03-w2-arr-fill" id="p03-af3"></div></div>
+                  <div class="p03-w2-process">Validate<div class="p03-w2-shimmer" id="p03-sh3"></div></div>
+                  <div class="p03-w2-count" id="p03-cn3">&#8595; 0 errors</div>
+                </div>
+                <div class="p03-w2-stage" id="p03-s4">
+                  <div class="p03-w2-source">Warehouse</div>
+                  <div class="p03-w2-arr"><div class="p03-w2-arr-fill" id="p03-af4"></div></div>
+                  <div class="p03-w2-process p03-w2-process--success">Load &#10003;<div class="p03-w2-shimmer" id="p03-sh4"></div></div>
+                  <div class="p03-w2-count" id="p03-cn4">&#8595; 240k out</div>
+                </div>
+              </div>
+              <div class="p03-w2-total" id="p03-w2-total">
+                <span class="p03-w2-total-label">Pipeline complete</span>
+                <span class="p03-w2-total-val">&#8709; 1.2s avg &middot; 99.8% uptime</span>
+              </div>
+            </div>
+
+            <!-- W3: ADF Pipeline Canvas -->
+            <div class="p03-widget" id="p03-w3">
+              <div class="p03-wlabel">Azure Data Factory &amp; SSIS</div>
+              <div class="p03-w3-canvas">
+                <svg class="p03-w3-svg" viewBox="0 0 260 150" id="p03-svg" aria-hidden="true">
+                  <defs>
+                    <marker id="p03arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L6,3 z" fill="rgba(59,130,246,0.6)"/>
+                    </marker>
+                  </defs>
+                  <line id="p03-ac1" class="p03-adf-connector" x1="72" y1="40" x2="108" y2="40"/>
+                  <line id="p03-ac2" class="p03-adf-connector" x1="152" y1="40" x2="188" y2="40"/>
+                  <line id="p03-ac3" class="p03-adf-connector" x1="130" y1="58" x2="130" y2="92"/>
+                  <line id="p03-ac4" class="p03-adf-connector p03-adf-connector--success" x1="130" y1="112" x2="130" y2="135"/>
+                  <g class="p03-adf-node" id="p03-n1">
+                    <rect x="10" y="22" width="62" height="36" rx="5"/>
+                    <text x="41" y="35" class="p03-adf-icon">&#128229;</text>
+                    <text x="41" y="49" class="p03-adf-label">Ingest</text>
+                  </g>
+                  <g class="p03-adf-node" id="p03-n2">
+                    <rect x="108" y="22" width="44" height="36" rx="5"/>
+                    <text x="130" y="35" class="p03-adf-icon">&#128203;</text>
+                    <text x="130" y="49" class="p03-adf-label">Copy</text>
+                  </g>
+                  <g class="p03-adf-node" id="p03-n3">
+                    <rect x="188" y="22" width="60" height="36" rx="5"/>
+                    <text x="218" y="35" class="p03-adf-icon">&#9881;&#65039;</text>
+                    <text x="218" y="49" class="p03-adf-label">Transform</text>
+                  </g>
+                  <g class="p03-adf-node" id="p03-n4">
+                    <rect x="108" y="92" width="44" height="36" rx="5"/>
+                    <text x="130" y="105" class="p03-adf-icon">&#128269;</text>
+                    <text x="130" y="119" class="p03-adf-label">Validate</text>
+                  </g>
+                  <g class="p03-adf-node" id="p03-n5">
+                    <rect x="108" y="132" width="44" height="14" rx="4"/>
+                    <text x="130" y="139" class="p03-adf-label p03-adf-label--sm">Load &#10003;</text>
+                  </g>
+                  <g class="p03-adf-status-badge" id="p03-sb1">
+                    <rect x="12" y="22" width="24" height="10" rx="3" fill="rgba(59,130,246,0.2)"/>
+                    <text x="24" y="28" class="p03-adf-status-text" fill="#60a5fa">RUN</text>
+                  </g>
+                  <g class="p03-adf-status-badge" id="p03-sb2">
+                    <rect x="110" y="22" width="24" height="10" rx="3" fill="rgba(34,197,94,0.15)"/>
+                    <text x="122" y="28" class="p03-adf-status-text" fill="#4ade80">DONE</text>
+                  </g>
+                  <g class="p03-adf-status-badge" id="p03-sb3">
+                    <rect x="190" y="22" width="36" height="10" rx="3" fill="rgba(245,158,11,0.15)"/>
+                    <text x="208" y="28" class="p03-adf-status-text" fill="#fbbf24">QUEUE</text>
+                  </g>
+                  <text x="130" y="12" class="p03-adf-label p03-adf-label--dim">pl_daily_refresh &middot; ADF v2</text>
+                </svg>
+              </div>
+              <div class="p03-w3-footer" id="p03-w3-footer">
+                Last run: <span class="p03-status--success">Success</span> &middot; Duration: 4m 12s &middot; Next: 06:00 UTC
+              </div>
+            </div>
+
+            <!-- W4: Analytics Dashboard -->
+            <div class="p03-widget" id="p03-w4">
+              <div class="p03-wlabel">Analytics, reporting &amp; monitoring</div>
+              <div class="p03-w4-dash">
+                <div class="p03-w4-kpis">
+                  <div class="p03-kpi" id="p03-k1">
+                    <div class="p03-kpi-val" id="p03-v1">0</div>
+                    <div class="p03-kpi-label">Revenue</div>
+                    <div class="p03-kpi-delta p03-delta-up" id="p03-d1">&#8593; 0%</div>
+                  </div>
+                  <div class="p03-kpi" id="p03-k2">
+                    <div class="p03-kpi-val" id="p03-v2">0</div>
+                    <div class="p03-kpi-label">Records</div>
+                    <div class="p03-kpi-delta p03-delta-up" id="p03-d2">&#8593; 0%</div>
+                  </div>
+                  <div class="p03-kpi" id="p03-k3">
+                    <div class="p03-kpi-val" id="p03-v3">0%</div>
+                    <div class="p03-kpi-label">Accuracy</div>
+                    <div class="p03-kpi-delta p03-delta-up" id="p03-d3">&#8593; 0%</div>
+                  </div>
+                </div>
+                <div class="p03-w4-chart" id="p03-chart"></div>
+                <div class="p03-monitor" id="p03-m1">
+                  <div class="p03-mon-dot"></div>
+                  <span class="p03-mon-label">Pipeline health</span>
+                  <span class="p03-mon-val" id="p03-mv1">checking...</span>
+                </div>
+                <div class="p03-monitor" id="p03-m2">
+                  <div class="p03-mon-dot"></div>
+                  <span class="p03-mon-label">Data freshness</span>
+                  <span class="p03-mon-val" id="p03-mv2">checking...</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 4 -->
+      <div class="svc-panel">
+        <div class="svc-panel-bg-accent"></div>
+        <div class="svc-panel-left">
+          <div class="svc-ghost-num" aria-hidden="true">04</div>
+          <div class="svc-panel-num">04 &mdash; Service</div>
+          <h2 class="svc-panel-title">Embedded Technical Partnership</h2>
+          <p class="svc-panel-desc">Finding the right technical partner is hard. We get that. We're good at shipping fast, but this is about more than delivery — we stay in your corner for as long as you need, because the best results come from partners who actually know your business.</p>
+        </div>
+        <div class="svc-panel-right svc-panel-right--widgets">
+          <div class="p04-grid" id="p04Widgets">
+
+            <!-- W1: Technical Leadership Activity Feed -->
+            <div class="p04-widget" id="p04-w1">
+              <div class="p04-wlabel">Technical leadership &amp; team guidance</div>
+              <div class="p04-feed">
+                <div class="p04-entry" id="p04-e1">
+                  <div class="p04-avatar p04-av-blue">JZ</div>
+                  <div class="p04-entry-body">
+                    <div class="p04-entry-text"><span class="p04-action">Code review</span> &mdash; <span class="p04-highlight">auth module</span> approved with 3 suggestions</div>
+                    <div class="p04-entry-time">2h ago</div>
+                  </div>
+                  <div class="p04-badge p04-badge-review">Review</div>
+                </div>
+                <div class="p04-entry" id="p04-e2">
+                  <div class="p04-avatar p04-av-purple">JZ</div>
+                  <div class="p04-entry-body">
+                    <div class="p04-entry-text"><span class="p04-action">Architecture decision</span> &mdash; migrating to <span class="p04-highlight">microservices</span> by Q3</div>
+                    <div class="p04-entry-time">Yesterday</div>
+                  </div>
+                  <div class="p04-badge p04-badge-arch">Arch</div>
+                </div>
+                <div class="p04-entry" id="p04-e3">
+                  <div class="p04-avatar p04-av-teal">JZ</div>
+                  <div class="p04-entry-body">
+                    <div class="p04-entry-text"><span class="p04-action">Sprint planning</span> &mdash; <span class="p04-highlight">12 stories</span> scoped for Sprint 14</div>
+                    <div class="p04-entry-time">2 days ago</div>
+                  </div>
+                  <div class="p04-badge p04-badge-sprint">Sprint</div>
+                </div>
+                <div class="p04-entry" id="p04-e4">
+                  <div class="p04-avatar p04-av-green">JZ</div>
+                  <div class="p04-entry-body">
+                    <div class="p04-entry-text"><span class="p04-action">Incident resolved</span> &mdash; <span class="p04-highlight">DB timeout</span> fixed in 14 min</div>
+                    <div class="p04-entry-time">3 days ago</div>
+                  </div>
+                  <div class="p04-badge p04-badge-fix">Fix</div>
+                </div>
+                <div class="p04-entry" id="p04-e5">
+                  <div class="p04-avatar p04-av-blue">JZ</div>
+                  <div class="p04-entry-body">
+                    <div class="p04-entry-text"><span class="p04-action">Strategy call</span> &mdash; <span class="p04-highlight">Q2 roadmap</span> aligned with leadership</div>
+                    <div class="p04-entry-time">1 week ago</div>
+                  </div>
+                  <div class="p04-badge p04-badge-call">Call</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- W2: Infrastructure Oversight -->
+            <div class="p04-widget" id="p04-w2">
+              <div class="p04-wlabel">Managed hosting &amp; infrastructure</div>
+              <div class="p04-infra">
+                <div class="p04-nodes">
+                  <div class="p04-node" id="p04-n1"><div class="p04-node-dot"></div><span class="p04-node-label">Web App</span><span class="p04-node-uptime">99.9%</span></div>
+                  <div class="p04-node" id="p04-n2"><div class="p04-node-dot"></div><span class="p04-node-label">API Layer</span><span class="p04-node-uptime">100%</span></div>
+                  <div class="p04-node" id="p04-n3"><div class="p04-node-dot"></div><span class="p04-node-label">Database</span><span class="p04-node-uptime">99.7%</span></div>
+                  <div class="p04-node" id="p04-n4"><div class="p04-node-dot"></div><span class="p04-node-label">Storage</span><span class="p04-node-uptime">74%</span></div>
+                </div>
+                <div class="p04-resources">
+                  <div class="p04-res-row" id="p04-r1">
+                    <span class="p04-res-label">CPU</span>
+                    <div class="p04-res-bar-bg"><div class="p04-res-fill p04-fill-blue" id="p04-f1" data-w="42%"></div></div>
+                    <span class="p04-res-pct">42%</span>
+                  </div>
+                  <div class="p04-res-row" id="p04-r2">
+                    <span class="p04-res-label">Memory</span>
+                    <div class="p04-res-bar-bg"><div class="p04-res-fill p04-fill-teal" id="p04-f2" data-w="67%"></div></div>
+                    <span class="p04-res-pct">67%</span>
+                  </div>
+                  <div class="p04-res-row" id="p04-r3">
+                    <span class="p04-res-label">Storage</span>
+                    <div class="p04-res-bar-bg"><div class="p04-res-fill p04-fill-amber" id="p04-f3" data-w="74%"></div></div>
+                    <span class="p04-res-pct">74%</span>
+                  </div>
+                </div>
+                <div class="p04-alert" id="p04-alert">
+                  <div class="p04-alert-dot"></div>
+                  <span id="p04-alert-text">&#9888; Storage at 74% &mdash; expansion scheduled</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- W3: Solution Lifecycle (full-width) -->
+            <div class="p04-widget p04-widget-full" id="p04-w3">
+              <div class="p04-wlabel">Maintenance &amp; evolution of existing solutions</div>
+              <div class="p04-lifecycle">
+                <div class="p04-track">
+                  <div class="p04-track-line"></div>
+                  <div class="p04-track-progress" id="p04-progress"></div>
+                  <div class="p04-vnode" id="p04-v1"><div class="p04-vnode-dot"></div><span class="p04-vnode-label">v1.0</span><span class="p04-vnode-date">Jan</span></div>
+                  <div class="p04-vnode" id="p04-v2"><div class="p04-vnode-dot"></div><span class="p04-vnode-label">v1.1</span><span class="p04-vnode-date">Mar</span></div>
+                  <div class="p04-vnode" id="p04-v3"><div class="p04-vnode-dot"></div><span class="p04-vnode-label">v1.2</span><span class="p04-vnode-date">May</span></div>
+                  <div class="p04-vnode" id="p04-v4"><div class="p04-vnode-dot"></div><span class="p04-vnode-label">v1.5</span><span class="p04-vnode-date">Aug</span></div>
+                  <div class="p04-vnode" id="p04-v5"><div class="p04-vnode-dot"></div><span class="p04-vnode-label">v2.0</span><span class="p04-vnode-date">Now</span></div>
+                </div>
+                <div class="p04-changelog">
+                  <div class="p04-cl-card" id="p04-c1">
+                    <div class="p04-cl-version">v1.0</div>
+                    <div class="p04-cl-items">
+                      <div class="p04-cl-item" id="p04-ci1"><span class="p04-cl-type p04-type-feat">feat</span>Initial deploy</div>
+                      <div class="p04-cl-item" id="p04-ci2"><span class="p04-cl-type p04-type-feat">feat</span>Core modules</div>
+                    </div>
+                  </div>
+                  <div class="p04-cl-card" id="p04-c2">
+                    <div class="p04-cl-version">v1.1</div>
+                    <div class="p04-cl-items">
+                      <div class="p04-cl-item" id="p04-ci3"><span class="p04-cl-type p04-type-fix">fix</span>Auth bug patch</div>
+                      <div class="p04-cl-item" id="p04-ci4"><span class="p04-cl-type p04-type-perf">perf</span>Query speed &times;3</div>
+                    </div>
+                  </div>
+                  <div class="p04-cl-card" id="p04-c3">
+                    <div class="p04-cl-version">v1.2</div>
+                    <div class="p04-cl-items">
+                      <div class="p04-cl-item" id="p04-ci5"><span class="p04-cl-type p04-type-feat">feat</span>Dashboard v2</div>
+                      <div class="p04-cl-item" id="p04-ci6"><span class="p04-cl-type p04-type-sec">sec</span>Audit logging</div>
+                    </div>
+                  </div>
+                  <div class="p04-cl-card" id="p04-c4">
+                    <div class="p04-cl-version">v1.5</div>
+                    <div class="p04-cl-items">
+                      <div class="p04-cl-item" id="p04-ci7"><span class="p04-cl-type p04-type-feat">feat</span>API v2 launch</div>
+                      <div class="p04-cl-item" id="p04-ci8"><span class="p04-cl-type p04-type-perf">perf</span>Cloud migration</div>
+                    </div>
+                  </div>
+                  <div class="p04-cl-card current" id="p04-c5">
+                    <div class="p04-cl-version">v2.0 &#9679;</div>
+                    <div class="p04-cl-items">
+                      <div class="p04-cl-item" id="p04-ci9"><span class="p04-cl-type p04-type-feat">feat</span>AI automation</div>
+                      <div class="p04-cl-item" id="p04-ci10"><span class="p04-cl-type p04-type-feat">feat</span>Real-time sync</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p04-status-row" id="p04-status">
+                  <div class="p04-status-left">
+                    <div class="p04-status-dot"></div>
+                    v2.0 live &middot; 14 months of continuous improvement
+                  </div>
+                  <div class="p04-status-right">Next: v2.1 planned Q3 &rarr;</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 5 -->
+      <div class="svc-panel">
+        <div class="svc-panel-bg-accent"></div>
+        <div class="svc-panel-left">
+          <div class="svc-ghost-num" aria-hidden="true">05</div>
+          <div class="svc-panel-num">05 &mdash; Service</div>
+          <h2 class="svc-panel-title">AI &amp; Agentic Automation</h2>
+          <p class="svc-panel-desc">The gap between how enterprise companies are using AI and where most growing businesses stand is widening every day. We've seen this before — and we know what it costs to wait. We help you build the strategy, policy, and automated workflows to get ahead of it — responsibly.</p>
+        </div>
+        <div class="svc-panel-right svc-panel-right--widgets">
+          <div class="p05-grid" id="p05Widgets">
+
+            <!-- W1: AI Framework Hub -->
+            <div class="p05-widget" id="p05-w1">
+              <div class="p05-wlabel">Responsible AI adoption framework</div>
+              <div class="p05-hub-wrap">
+                <svg class="p05-w1-svg" viewBox="0 0 200 160" id="p05-w1-svg" aria-hidden="true">
+                  <defs>
+                    <radialGradient id="p05hubGrad" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="rgba(59,130,246,0.35)"/>
+                      <stop offset="100%" stop-color="rgba(59,130,246,0.1)"/>
+                    </radialGradient>
+                  </defs>
+                  <circle class="p05-orbit-ring" id="p05-orbit" cx="100" cy="80" r="58"/>
+                  <line class="p05-spoke" id="p05-sp0" x1="100" y1="80" x2="100" y2="22"/>
+                  <line class="p05-spoke" id="p05-sp1" x1="100" y1="80" x2="150" y2="51"/>
+                  <line class="p05-spoke" id="p05-sp2" x1="100" y1="80" x2="150" y2="109"/>
+                  <line class="p05-spoke" id="p05-sp3" x1="100" y1="80" x2="100" y2="138"/>
+                  <line class="p05-spoke" id="p05-sp4" x1="100" y1="80" x2="50" y2="109"/>
+                  <line class="p05-spoke" id="p05-sp5" x1="100" y1="80" x2="50" y2="51"/>
+                  <circle class="p05-spoke-pulse" id="p05-pp0" cx="100" cy="51" r="2.5"/>
+                  <circle class="p05-spoke-pulse" id="p05-pp1" cx="125" cy="65" r="2.5"/>
+                  <circle class="p05-spoke-pulse" id="p05-pp2" cx="125" cy="95" r="2.5"/>
+                  <circle class="p05-spoke-pulse" id="p05-pp3" cx="100" cy="109" r="2.5"/>
+                  <circle class="p05-spoke-pulse" id="p05-pp4" cx="75" cy="95" r="2.5"/>
+                  <circle class="p05-spoke-pulse" id="p05-pp5" cx="75" cy="65" r="2.5"/>
+                  <g class="p05-hub-center" id="p05-hub">
+                    <circle class="p05-hub-glow" cx="100" cy="80" r="26"/>
+                    <circle class="p05-hub-inner" cx="100" cy="80" r="20" fill="url(#p05hubGrad)"/>
+                    <text class="p05-hub-text" x="100" y="77">AI</text>
+                    <text class="p05-hub-sub" x="100" y="87">HUB</text>
+                  </g>
+                  <g class="p05-spoke-node p05-sn-active" id="p05-sn0">
+                    <circle cx="100" cy="22" r="16"/>
+                    <text class="p05-spoke-icon" x="100" y="18">&#128203;</text>
+                    <text class="p05-spoke-num" x="100" y="26">00</text>
+                    <text class="p05-spoke-label" x="100" y="35">Readiness</text>
+                  </g>
+                  <g class="p05-spoke-node p05-sn-active" id="p05-sn1">
+                    <circle cx="150" cy="51" r="16"/>
+                    <text class="p05-spoke-icon" x="150" y="47">&#9889;</text>
+                    <text class="p05-spoke-num" x="150" y="55">01</text>
+                    <text class="p05-spoke-label" x="150" y="64">Workflows</text>
+                  </g>
+                  <g class="p05-spoke-node p05-sn-active" id="p05-sn2">
+                    <circle cx="150" cy="109" r="16"/>
+                    <text class="p05-spoke-icon" x="150" y="105">&#128737;</text>
+                    <text class="p05-spoke-num" x="150" y="113">02</text>
+                    <text class="p05-spoke-label" x="150" y="122">Governance</text>
+                  </g>
+                  <g class="p05-spoke-node p05-sn-active" id="p05-sn3">
+                    <circle cx="100" cy="138" r="16"/>
+                    <text class="p05-spoke-icon" x="100" y="134">&#128452;</text>
+                    <text class="p05-spoke-num" x="100" y="142">03</text>
+                    <text class="p05-spoke-label" x="100" y="151">Data</text>
+                  </g>
+                  <g class="p05-spoke-node p05-sn-active" id="p05-sn4">
+                    <circle cx="50" cy="109" r="16"/>
+                    <text class="p05-spoke-icon" x="50" y="105">&#128101;</text>
+                    <text class="p05-spoke-num" x="50" y="113">04</text>
+                    <text class="p05-spoke-label" x="50" y="122">People</text>
+                  </g>
+                  <g class="p05-spoke-node p05-sn-active" id="p05-sn5">
+                    <circle cx="50" cy="51" r="16"/>
+                    <text class="p05-spoke-icon" x="50" y="47">&#128200;</text>
+                    <text class="p05-spoke-num" x="50" y="55">05</text>
+                    <text class="p05-spoke-label" x="50" y="64">ROI</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- W2: AI Readiness Assessment -->
+            <div class="p05-widget" id="p05-w2">
+              <div class="p05-wlabel">AI readiness assessment</div>
+              <div class="p05-report">
+                <div class="p05-score-row">
+                  <div class="p05-score-ring">
+                    <svg class="p05-ring-svg" viewBox="0 0 50 50" aria-hidden="true">
+                      <circle class="p05-ring-bg" cx="25" cy="25" r="19"/>
+                      <circle class="p05-ring-fill" id="p05-ring" cx="25" cy="25" r="19"/>
+                    </svg>
+                    <div class="p05-score-num" id="p05-score">0</div>
+                  </div>
+                  <div class="p05-score-info">
+                    <div class="p05-score-title">AI Readiness Score</div>
+                    <div class="p05-score-sub" id="p05-level">Calculating...</div>
+                  </div>
+                </div>
+                <div class="p05-dims">
+                  <div class="p05-dim" id="p05-d1">
+                    <span class="p05-dim-label">Data quality</span>
+                    <div class="p05-dim-bar-bg"><div class="p05-dim-fill p05-fg" id="p05-f1" data-w="78%"></div></div>
+                    <span class="p05-dim-score p05-dim-score--good">78</span>
+                  </div>
+                  <div class="p05-dim" id="p05-d2">
+                    <span class="p05-dim-label">Process maturity</span>
+                    <div class="p05-dim-bar-bg"><div class="p05-dim-fill p05-fa" id="p05-f2" data-w="52%"></div></div>
+                    <span class="p05-dim-score p05-dim-score--warn">52</span>
+                  </div>
+                  <div class="p05-dim" id="p05-d3">
+                    <span class="p05-dim-label">Team readiness</span>
+                    <div class="p05-dim-bar-bg"><div class="p05-dim-fill p05-fr" id="p05-f3" data-w="34%"></div></div>
+                    <span class="p05-dim-score p05-dim-score--poor">34</span>
+                  </div>
+                  <div class="p05-dim" id="p05-d4">
+                    <span class="p05-dim-label">Infrastructure</span>
+                    <div class="p05-dim-bar-bg"><div class="p05-dim-fill p05-fb" id="p05-f4" data-w="71%"></div></div>
+                    <span class="p05-dim-score p05-dim-score--info">71</span>
+                  </div>
+                </div>
+                <div class="p05-actions">
+                  <div class="p05-action" id="p05-a1">
+                    <span class="p05-action-num">01</span>
+                    <span class="p05-action-text">Establish data governance policy before AI rollout</span>
+                  </div>
+                  <div class="p05-action" id="p05-a2">
+                    <span class="p05-action-num">02</span>
+                    <span class="p05-action-text">Prioritize effort by clear ROI</span>
+                  </div>
+                </div>
+                <div class="p05-cta" id="p05-cta">&#10022; Take your free AI readiness assessment &rarr;</div>
+              </div>
+            </div>
+
+            <!-- W3: Agentic Flow Diagram -->
+            <div class="p05-widget" id="p05-w3">
+              <div class="p05-wlabel">Agentic workflow design &amp; deployment</div>
+              <div class="p05-flow">
+                <svg class="p05-w3-svg" viewBox="0 0 220 180" id="p05-w3-svg" aria-hidden="true">
+                  <defs>
+                    <marker id="p05arr-blue"  markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(59,130,246,0.6)"/></marker>
+                    <marker id="p05arr-teal"  markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(20,184,166,0.5)"/></marker>
+                    <marker id="p05arr-amber" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(245,158,11,0.5)"/></marker>
+                    <marker id="p05arr-green" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(34,197,94,0.5)"/></marker>
+                    <marker id="p05arr-dim"   markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(255,255,255,0.15)"/></marker>
+                  </defs>
+                  <g class="p05-fnode p05-node-trigger" id="p05-fn-trigger">
+                    <rect x="75" y="2" width="70" height="22" rx="5"/>
+                    <text class="p05-fnode-label" x="110" y="10">&#9889; Trigger</text>
+                    <text class="p05-fnode-sub" x="110" y="19">event received</text>
+                  </g>
+                  <line class="p05-fconn p05-fconn-blue" id="p05-fc0" x1="110" y1="24" x2="110" y2="36" marker-end="url(#p05arr-blue)"/>
+                  <g class="p05-fnode p05-node-llm" id="p05-fn-llm">
+                    <rect x="65" y="36" width="90" height="26" rx="6"/>
+                    <text class="p05-fnode-label p05-llm-label" x="110" y="47">&#129504; LLM Decider</text>
+                    <text class="p05-fnode-sub" x="110" y="57">reasons &middot; plans &middot; routes</text>
+                  </g>
+                  <circle class="p05-node-status" id="p05-ns-llm" cx="148" cy="40" r="3" fill="#3b82f6"/>
+                  <line class="p05-fconn p05-fconn-teal" id="p05-fc1" x1="75"  y1="62" x2="35"  y2="82" marker-end="url(#p05arr-teal)"/>
+                  <line class="p05-fconn p05-fconn-teal" id="p05-fc2" x1="110" y1="62" x2="110" y2="82" marker-end="url(#p05arr-teal)"/>
+                  <line class="p05-fconn p05-fconn-teal" id="p05-fc3" x1="145" y1="62" x2="185" y2="82" marker-end="url(#p05arr-teal)"/>
+                  <g class="p05-fnode p05-node-tool" id="p05-fn-pa">
+                    <rect x="5" y="82" width="60" height="22" rx="5"/>
+                    <text class="p05-fnode-label" x="35" y="90">&#128269; Search</text>
+                    <text class="p05-fnode-sub" x="35" y="99">web / docs</text>
+                  </g>
+                  <g class="p05-fnode p05-node-tool" id="p05-fn-pb">
+                    <rect x="80" y="82" width="60" height="22" rx="5"/>
+                    <text class="p05-fnode-label" x="110" y="90">&#128452; Database</text>
+                    <text class="p05-fnode-sub" x="110" y="99">query / write</text>
+                  </g>
+                  <g class="p05-fnode p05-node-tool" id="p05-fn-pc">
+                    <rect x="155" y="82" width="60" height="22" rx="5"/>
+                    <text class="p05-fnode-label" x="185" y="90">&#128268; API Call</text>
+                    <text class="p05-fnode-sub" x="185" y="99">external svc</text>
+                  </g>
+                  <line class="p05-fconn p05-fconn-amber" id="p05-fc4" x1="35"  y1="104" x2="90"  y2="120" marker-end="url(#p05arr-amber)"/>
+                  <line class="p05-fconn p05-fconn-amber" id="p05-fc5" x1="110" y1="104" x2="110" y2="120" marker-end="url(#p05arr-amber)"/>
+                  <line class="p05-fconn p05-fconn-amber" id="p05-fc6" x1="185" y1="104" x2="130" y2="120" marker-end="url(#p05arr-amber)"/>
+                  <g class="p05-fnode p05-node-human" id="p05-fn-human">
+                    <rect x="75" y="120" width="70" height="22" rx="5"/>
+                    <text class="p05-fnode-label" x="110" y="128">&#128100; Human</text>
+                    <text class="p05-fnode-sub" x="110" y="137">review if needed</text>
+                  </g>
+                  <line class="p05-fconn p05-fconn-green" id="p05-fc7" x1="110" y1="142" x2="110" y2="154" marker-end="url(#p05arr-green)"/>
+                  <g class="p05-fnode p05-node-output" id="p05-fn-out">
+                    <rect x="75" y="154" width="70" height="22" rx="5"/>
+                    <text class="p05-fnode-label" x="110" y="162">&#10003; Outcome</text>
+                    <text class="p05-fnode-sub" x="110" y="171">action executed</text>
+                  </g>
+                  <g class="p05-fnode p05-node-log" id="p05-fn-log">
+                    <rect x="5" y="130" width="52" height="46" rx="5"/>
+                    <text class="p05-fnode-label p05-log-label" x="31" y="142">Task Log</text>
+                    <g class="p05-log-entry" id="p05-le1">
+                      <rect x="9" y="148" width="30" height="3" rx="1" fill="rgba(59,130,246,0.4)"/>
+                      <rect x="40" y="148" width="10" height="3" rx="1" fill="rgba(34,197,94,0.4)"/>
+                    </g>
+                    <g class="p05-log-entry" id="p05-le2">
+                      <rect x="9" y="154" width="25" height="3" rx="1" fill="rgba(59,130,246,0.3)"/>
+                      <rect x="35" y="154" width="10" height="3" rx="1" fill="rgba(34,197,94,0.4)"/>
+                    </g>
+                    <g class="p05-log-entry" id="p05-le3">
+                      <rect x="9" y="160" width="28" height="3" rx="1" fill="rgba(59,130,246,0.3)"/>
+                      <rect x="38" y="160" width="8"  height="3" rx="1" fill="rgba(245,158,11,0.5)"/>
+                    </g>
+                    <g class="p05-log-entry" id="p05-le4">
+                      <rect x="9" y="166" width="20" height="3" rx="1" fill="rgba(59,130,246,0.2)"/>
+                      <rect x="30" y="166" width="12" height="3" rx="1" fill="rgba(139,92,246,0.4)"/>
+                    </g>
+                  </g>
+                  <path class="p05-fconn p05-fconn-dim" id="p05-fc8" d="M75,165 Q50,165 57,155" marker-end="url(#p05arr-dim)" stroke-dasharray="3 3"/>
+                  <g class="p05-fnode" id="p05-fn-loop" style="opacity:0">
+                    <circle cx="200" cy="20" r="10" fill="rgba(59,130,246,0.08)" stroke="rgba(59,130,246,0.2)" stroke-width="1"/>
+                    <text x="200" y="21" font-size="10" text-anchor="middle" dominant-baseline="middle" fill="#60a5fa">&#8635;</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- W4: Team Enablement -->
+            <div class="p05-widget" id="p05-w4">
+              <div class="p05-wlabel">AI tools training &amp; team enablement</div>
+              <div class="p05-enablement">
+                <div class="p05-chart-wrap">
+                  <svg class="p05-chart-svg" viewBox="0 0 220 70" id="p05-chart-svg" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="p05areaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="rgba(59,130,246,0.15)"/>
+                        <stop offset="100%" stop-color="rgba(59,130,246,0)"/>
+                      </linearGradient>
+                    </defs>
+                    <line x1="0" y1="60" x2="220" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                    <line x1="0" y1="40" x2="220" y2="40" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    <line x1="0" y1="20" x2="220" y2="20" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    <text x="0"   y="65" class="p05-axis-label">Wk1</text>
+                    <text x="50"  y="65" class="p05-axis-label">Wk4</text>
+                    <text x="100" y="65" class="p05-axis-label">Wk8</text>
+                    <text x="150" y="65" class="p05-axis-label">Wk12</text>
+                    <text x="196" y="65" class="p05-axis-label">Now</text>
+                    <path class="p05-area" id="p05-area"
+                      d="M0,58 C20,55 40,50 60,42 C80,34 100,28 120,20 C140,14 160,10 180,8 C195,6 208,5 215,5 L215,60 L0,60 Z"/>
+                    <path class="p05-curve" id="p05-curve"
+                      d="M0,58 C20,55 40,50 60,42 C80,34 100,28 120,20 C140,14 160,10 180,8 C195,6 208,5 215,5"/>
+                    <circle class="p05-endpoint" id="p05-dot" cx="215" cy="5" r="3"/>
+                    <text class="p05-endpoint-label" id="p05-elabel" x="200" y="2">94%</text>
+                  </svg>
+                </div>
+                <div class="p05-team">
+                  <div class="p05-member" id="p05-tm1">
+                    <div class="p05-member-av p05-av1">MK</div>
+                    <span class="p05-member-name">Marketing</span>
+                    <div class="p05-member-bar-bg"><div class="p05-member-fill p05-member-fill--green" id="p05-mf1" data-w="92%"></div></div>
+                    <span class="p05-member-level p05-member-level--green">Advanced</span>
+                  </div>
+                  <div class="p05-member" id="p05-tm2">
+                    <div class="p05-member-av p05-av2">OPS</div>
+                    <span class="p05-member-name">Operations</span>
+                    <div class="p05-member-bar-bg"><div class="p05-member-fill p05-member-fill--blue" id="p05-mf2" data-w="78%"></div></div>
+                    <span class="p05-member-level p05-member-level--blue">Proficient</span>
+                  </div>
+                  <div class="p05-member" id="p05-tm3">
+                    <div class="p05-member-av p05-av3">FIN</div>
+                    <span class="p05-member-name">Finance</span>
+                    <div class="p05-member-bar-bg"><div class="p05-member-fill p05-member-fill--teal" id="p05-mf3" data-w="85%"></div></div>
+                    <span class="p05-member-level p05-member-level--teal">Advanced</span>
+                  </div>
+                </div>
+                <div class="p05-team-status" id="p05-tstatus">
+                  <div class="p05-tstatus-dot"></div>
+                  <span class="p05-tstatus-text">Team AI-ready &middot; 12 weeks to full adoption</span>
+                  <span class="p05-tstatus-val">&#8593; 94% avg</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.svc-track -->
+  </div><!-- /.svc-sticky -->
+</div><!-- /.svc-scroll-root -->
+
+<!-- Service Tiers: Tabbed Interface (mobile <1024px) -->
+<section class="svc-tab-root py-20 bg-gray-50 dark:bg-gray-900 z-services-section">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="z-wrap">
+
       <div class="z-body">
 
-        <!-- LEFT: content panels -->
+        <!-- SIDEBAR: tab navigation -->
+        <div class="z-sidebar">
+          <div class="z-tab-indicator" id="z-indicator" aria-hidden="true"></div>
+          <div class="z-tabs" role="tablist" aria-label="Service categories">
+            <button class="z-tab z-tab-active" role="tab" aria-selected="true"  aria-controls="panel-0" id="tab-0" onclick="zSwitch(0)">Technology Roadmap &amp; Planning</button>
+            <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-1" id="tab-1" onclick="zSwitch(1)">Solution Architecture &amp; Implementation</button>
+            <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" onclick="zSwitch(2)">Data Engineering &amp; Automation</button>
+            <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" onclick="zSwitch(3)">Embedded Technical Partnership</button>
+            <button class="z-tab"              role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" onclick="zSwitch(4)">AI &amp; Agentic Automation</button>
+          </div>
+        </div>
+
+        <!-- MIDDLE: content panels -->
         <div class="z-left">
 
           <div class="z-content-panel z-panel-active" id="panel-0" role="tabpanel" aria-labelledby="tab-0">
-            <div class="z-num">01</div>
             <div class="z-service-title">Technology Roadmap &amp; Planning</div>
             <div class="z-service-desc">You don't need more tools. You need to know which ones are worth your time and money. We assess where you are, identify what's holding you back, and build a roadmap you can actually execute.</div>
-            <ul class="z-bullets">
-              <li><span class="z-bullet-dot"></span>Current state review &amp; gap analysis</li>
-              <li><span class="z-bullet-dot"></span>Technology stack evaluation</li>
-              <li><span class="z-bullet-dot"></span>Vendor shortlisting &amp; selection guidance</li>
-              <li><span class="z-bullet-dot"></span>90-day actionable roadmap</li>
-            </ul>
           </div>
 
           <div class="z-content-panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1" hidden>
-            <div class="z-num">02</div>
             <div class="z-service-title">Solution Architecture &amp; Implementation</div>
             <div class="z-service-desc">End-to-end design, build, deploy and maintenance. We architect your solution, write the code, deploy it, and own the outcome — with the rigor of enterprise engineering.</div>
-            <ul class="z-bullets">
-              <li><span class="z-bullet-dot"></span>Custom software development</li>
-              <li><span class="z-bullet-dot"></span>System integration</li>
-              <li><span class="z-bullet-dot"></span>Cloud architecture &amp; migration</li>
-              <li><span class="z-bullet-dot"></span>API design &amp; development</li>
-            </ul>
           </div>
 
           <div class="z-content-panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>
-            <div class="z-num">03</div>
             <div class="z-service-title">Data Engineering &amp; Automation</div>
             <div class="z-service-desc">Incorrect data management practices and manual processes are two sides of the same problem. We clean up the first, eliminate the second, and build the pipelines and workflows that keep your operations running without constant intervention.</div>
-            <ul class="z-bullets">
-              <li><span class="z-bullet-dot"></span>Workflow analysis, redesign &amp; automation</li>
-              <li><span class="z-bullet-dot"></span>Data pipeline development &amp; integration</li>
-              <li><span class="z-bullet-dot"></span>Azure Data Factory &amp; SSIS implementation</li>
-              <li><span class="z-bullet-dot"></span>Analytics, reporting &amp; monitoring</li>
-            </ul>
           </div>
 
           <div class="z-content-panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden>
-            <div class="z-num">04</div>
             <div class="z-service-title">Embedded Technical Partnership</div>
             <div class="z-service-desc">Finding the right technical partner is hard. We get that. We're good at shipping fast, but this is about more than delivery — we stay in your corner for as long as you need, because the best results come from partners who actually know your business.</div>
-            <ul class="z-bullets">
-              <li><span class="z-bullet-dot"></span>Technical leadership &amp; team guidance</li>
-              <li><span class="z-bullet-dot"></span>Managed hosting &amp; infrastructure oversight</li>
-              <li><span class="z-bullet-dot"></span>Maintenance &amp; evolution of existing solutions</li>
-            </ul>
           </div>
 
           <div class="z-content-panel" id="panel-4" role="tabpanel" aria-labelledby="tab-4" hidden>
-            <div class="z-num">05</div>
             <div class="z-service-title">AI &amp; Agentic Automation</div>
             <div class="z-service-desc">The gap between how enterprise companies are using AI and where most growing businesses stand is widening every day. We've seen this before — and we know what it costs to wait. We help you build the strategy, policy, and automated workflows to get ahead of it — responsibly.</div>
-            <ul class="z-bullets">
-              <li><span class="z-bullet-dot"></span>AI readiness assessment</li>
-              <li><span class="z-bullet-dot"></span>Responsible AI adoption framework</li>
-              <li><span class="z-bullet-dot"></span>Agentic workflow design, automation &amp; deployment</li>
-              <li><span class="z-bullet-dot"></span>AI tools training &amp; team enablement</li>
-            </ul>
           </div>
 
         </div><!-- /.z-left -->
 
-        <!-- RIGHT: visual panels (decorative, aria-hidden) -->
+        <!-- RIGHT: deliverables panels (decorative, aria-hidden) -->
         <div class="z-right" aria-hidden="true">
 
-          <!-- Visual 1: Roadmap steps -->
+          <!-- Deliverables 1: Roadmap & Planning -->
           <div class="z-visual z-vis-active" id="vis-0">
-            <div class="vis-roadmap">
-              <div class="roadmap-steps">
-                <div class="roadmap-step">
-                  <div class="step-connector">
-                    <div class="step-circle">01</div>
-                    <div class="step-line"></div>
-                  </div>
-                  <div class="step-info">
-                    <div class="step-label">Current state review</div>
-                    <div class="step-sub">Where are you today?</div>
-                  </div>
-                </div>
-                <div class="roadmap-step">
-                  <div class="step-connector">
-                    <div class="step-circle">02</div>
-                    <div class="step-line"></div>
-                  </div>
-                  <div class="step-info">
-                    <div class="step-label">Gap analysis &amp; stack evaluation</div>
-                    <div class="step-sub">What's holding you back?</div>
-                  </div>
-                </div>
-                <div class="roadmap-step">
-                  <div class="step-connector">
-                    <div class="step-circle">03</div>
-                    <div class="step-line"></div>
-                  </div>
-                  <div class="step-info">
-                    <div class="step-label">Vendor shortlisting</div>
-                    <div class="step-sub">Which tools actually fit?</div>
-                  </div>
-                </div>
-                <div class="roadmap-step">
-                  <div class="step-connector">
-                    <div class="step-circle">04</div>
-                  </div>
-                  <div class="step-info">
-                    <div class="step-label">90-day actionable roadmap</div>
-                    <div class="step-sub">A plan you can execute</div>
-                  </div>
-                </div>
-              </div>
+            <div class="vis-bullets-panel">
+<ul class="vis-bullets-list">
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Current state review &amp; gap analysis</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Technology stack evaluation</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Vendor shortlisting &amp; selection guidance</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>90-day actionable roadmap</span></li>
+              </ul>
             </div>
           </div>
 
-          <!-- Visual 2: Architecture blocks -->
+          <!-- Deliverables 2: Architecture & Build -->
           <div class="z-visual" id="vis-1">
-            <div class="vis-arch">
-              <div class="arch-grid">
-                <div class="arch-block">
-                  <div class="arch-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                  </div>
-                  <div class="arch-label">Architecture</div>
-                  <div class="arch-sub">System design &amp; planning</div>
-                </div>
-                <div class="arch-block">
-                  <div class="arch-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
-                  </div>
-                  <div class="arch-label">Development</div>
-                  <div class="arch-sub">Custom software build</div>
-                </div>
-                <div class="arch-block">
-                  <div class="arch-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg>
-                  </div>
-                  <div class="arch-label">Cloud &amp; APIs</div>
-                  <div class="arch-sub">Migration &amp; integration</div>
-                </div>
-                <div class="arch-block">
-                  <div class="arch-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
-                  </div>
-                  <div class="arch-label">Integration</div>
-                  <div class="arch-sub">Systems connected</div>
-                </div>
-                <div class="arch-block arch-block-wide">
-                  <div class="arch-label arch-label-accent">Enterprise engineering rigor — right-sized for your business</div>
-                </div>
-              </div>
+            <div class="vis-bullets-panel">
+<ul class="vis-bullets-list">
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Custom software development</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>System integration</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Cloud architecture &amp; migration</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>API design &amp; development</span></li>
+              </ul>
             </div>
           </div>
 
-          <!-- Visual 3: Data pipeline -->
+          <!-- Deliverables 3: Data & Automation -->
           <div class="z-visual" id="vis-2">
-            <div class="vis-data">
-              <div class="pipeline">
-                <div class="pipeline-row">
-                  <div class="pipeline-source">SQL Server / VM</div>
-                  <div class="pipeline-arrow"></div>
-                  <div class="pipeline-dest">Data Pipeline</div>
-                </div>
-                <div class="pipeline-row">
-                  <div class="pipeline-source">Azure Data Factory</div>
-                  <div class="pipeline-arrow"></div>
-                  <div class="pipeline-dest">Analytics Layer</div>
-                </div>
-                <div class="pipeline-row">
-                  <div class="pipeline-source">Manual Workflows</div>
-                  <div class="pipeline-arrow"></div>
-                  <div class="pipeline-dest">Automation</div>
-                </div>
-                <div class="pipeline-row">
-                  <div class="pipeline-source">Raw Data</div>
-                  <div class="pipeline-arrow"></div>
-                  <div class="pipeline-dest">Dashboards</div>
-                </div>
-              </div>
+            <div class="vis-bullets-panel">
+<ul class="vis-bullets-list">
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Workflow analysis, redesign &amp; automation</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Data pipeline development &amp; integration</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Azure Data Factory &amp; SSIS implementation</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Analytics, reporting &amp; monitoring</span></li>
+              </ul>
             </div>
           </div>
 
-          <!-- Visual 4: Partnership metrics -->
+          <!-- Deliverables 4: Technical Partnership -->
           <div class="z-visual" id="vis-3">
-            <div class="vis-partner">
-              <div class="partner-metric">
-                <div class="partner-metric-left">
-                  <div class="partner-metric-label">Technical leadership</div>
-                  <div class="partner-bar-wrap"><div class="partner-bar z-bar-animate" style="--bar-w:90%"></div></div>
-                </div>
-                <div class="partner-metric-val">Embedded</div>
-              </div>
-              <div class="partner-metric">
-                <div class="partner-metric-left">
-                  <div class="partner-metric-label">Infrastructure oversight</div>
-                  <div class="partner-bar-wrap"><div class="partner-bar z-bar-animate" style="--bar-w:75%"></div></div>
-                </div>
-                <div class="partner-metric-val">Managed</div>
-              </div>
-              <div class="partner-metric">
-                <div class="partner-metric-left">
-                  <div class="partner-metric-label">Solution evolution</div>
-                  <div class="partner-bar-wrap"><div class="partner-bar z-bar-animate" style="--bar-w:60%"></div></div>
-                </div>
-                <div class="partner-metric-val">Ongoing</div>
-              </div>
+            <div class="vis-bullets-panel">
+<ul class="vis-bullets-list">
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Technical leadership &amp; team guidance</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Managed hosting &amp; infrastructure oversight</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Maintenance &amp; evolution of existing solutions</span></li>
+              </ul>
             </div>
           </div>
 
-          <!-- Visual 5: AI adoption stages -->
+          <!-- Deliverables 5: AI & Agentic -->
           <div class="z-visual" id="vis-4">
-            <div class="vis-ai">
-              <div class="ai-stage">
-                <div class="ai-stage-dot dot-green"></div>
-                <div class="ai-stage-label">AI readiness assessment</div>
-                <div class="ai-stage-pill pill-done">Complete</div>
-              </div>
-              <div class="ai-stage">
-                <div class="ai-stage-dot dot-green"></div>
-                <div class="ai-stage-label">Adoption framework &amp; policy</div>
-                <div class="ai-stage-pill pill-done">Complete</div>
-              </div>
-              <div class="ai-stage">
-                <div class="ai-stage-dot dot-blue"></div>
-                <div class="ai-stage-label">Agentic workflow deployment</div>
-                <div class="ai-stage-pill pill-active">In progress</div>
-              </div>
-              <div class="ai-stage">
-                <div class="ai-stage-dot dot-gray"></div>
-                <div class="ai-stage-label">Team training &amp; enablement</div>
-                <div class="ai-stage-pill pill-next">Up next</div>
-              </div>
+            <div class="vis-bullets-panel">
+<ul class="vis-bullets-list">
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI readiness assessment</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Responsible AI adoption framework</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Agentic workflow design, automation &amp; deployment</span></li>
+                <li class="vis-bullet-item"><svg class="vis-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI tools training &amp; team enablement</span></li>
+              </ul>
             </div>
           </div>
 
@@ -281,66 +1062,153 @@
       </div><!-- /.z-body -->
     </div><!-- /.z-wrap -->
   </div>
-</section>
+</section><!-- /.svc-tab-root -->
 
-<!-- Engagement Process -->
-<section class="py-20 bg-gray-50 dark:bg-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-14">
-      <p class="section-label text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2" data-aos="fade-up">From First Call to Delivery</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white" data-aos="fade-up" data-aos-delay="100">How We Work</h2>
+<!-- Engagement Process / What to Expect -->
+<section class="wte-section" id="whatToExpect">
+  <div class="wte-inner">
+
+    <div class="wte-header">
+      <div class="wte-eyebrow" id="wteEyebrow">
+        <div class="wte-eyebrow-line"></div>
+        <span class="wte-eyebrow-text">From first call to delivery</span>
+        <div class="wte-eyebrow-line"></div>
+      </div>
+      <h2 class="wte-title" id="wteTitle">What to Expect</h2>
     </div>
-    <div class="process-steps-wrapper grid md:grid-cols-4 gap-8" id="process-steps">
-      <div class="text-center" data-aos="fade-up" data-aos-delay="100">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">1</div>
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Discovery Call</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">Free 30-minute conversation to understand your challenges and goals.</p>
+
+    <div class="wte-timeline" id="wteTimeline">
+
+      <!-- Track -->
+      <div class="wte-track">
+        <div class="wte-progress" id="wteProgress"></div>
       </div>
-      <div class="text-center" data-aos="fade-up" data-aos-delay="200">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">2</div>
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Assessment</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">We evaluate your current state and define a clear scope of work.</p>
+
+      <!-- Step 1: Discovery Call -->
+      <div class="wte-step">
+        <div class="wte-node" id="wteNode1"><span class="wte-node-num">1</span></div>
+        <div class="wte-connector" id="wteConn1"></div>
+        <div class="wte-content" id="wteContent1">
+          <div class="wte-tag">Week 1</div>
+          <div class="wte-step-title">Discovery Call</div>
+          <div class="wte-desc">A free 60-minute conversation. No pitch — just an honest look at your challenges, your stack, and whether we're the right fit.</div>
+        </div>
       </div>
-      <div class="text-center" data-aos="fade-up" data-aos-delay="300">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">3</div>
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Execution</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">We deliver the work in focused sprints with regular check-ins.</p>
+
+      <!-- Step 2: Assessment -->
+      <div class="wte-step">
+        <div class="wte-node" id="wteNode2"><span class="wte-node-num">2</span></div>
+        <div class="wte-connector" id="wteConn2"></div>
+        <div class="wte-content" id="wteContent2">
+          <div class="wte-tag">Week 1–2</div>
+          <div class="wte-step-title">Assessment</div>
+          <div class="wte-desc">We map your current state, identify the gaps that matter most, and define a clear scope — so you know exactly what you're getting before work begins.</div>
+        </div>
       </div>
-      <div class="text-center" data-aos="fade-up" data-aos-delay="400">
-        <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-600/30">4</div>
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Handoff</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">Full documentation, knowledge transfer, and ongoing support as needed.</p>
+
+      <!-- Step 3: Execution -->
+      <div class="wte-step">
+        <div class="wte-node" id="wteNode3"><span class="wte-node-num">3</span></div>
+        <div class="wte-connector" id="wteConn3"></div>
+        <div class="wte-content" id="wteContent3">
+          <div class="wte-tag">Ongoing</div>
+          <div class="wte-step-title">Execution</div>
+          <div class="wte-desc">We build in focused sprints with regular check-ins. You get access to a shared project board — progress is visible in real time, not just at the end. We don't disappear after kickoff.</div>
+        </div>
       </div>
+
+      <!-- Step 4: Deliver & Evolve -->
+      <div class="wte-step">
+        <div class="wte-node" id="wteNode4"><span class="wte-node-num">4</span></div>
+        <div class="wte-content" id="wteContent4">
+          <div class="wte-tag">Delivery &amp; Beyond</div>
+          <div class="wte-step-title">Deliver &amp; Evolve</div>
+          <div class="wte-desc">Full documentation and knowledge transfer at delivery. For clients who want to keep building — we stay embedded as long as you need us.</div>
+          <div class="wte-badge" id="wteBadge">
+            <div class="wte-badge-dot"></div>
+            Continues into Technical Partnership
+          </div>
+        </div>
+      </div>
+
     </div>
-    <script>
-      (function () {
-        var el = document.getElementById('process-steps');
-        if (!el) return;
-        var obs = new IntersectionObserver(function (entries) {
-          if (entries[0].isIntersecting) {
-            el.classList.add('connector-visible');
-            obs.disconnect();
+  </div>
+
+  <script>
+    (function () {
+      var section = document.getElementById('whatToExpect');
+      if (!section) return;
+      var animated = false;
+      var obs = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting && !animated) {
+          animated = true;
+          obs.disconnect();
+          runWTEAnimation();
+        }
+      }, { threshold: 0.3 });
+      obs.observe(section);
+
+      function runWTEAnimation() {
+        var eyebrow  = document.getElementById('wteEyebrow');
+        var title    = document.getElementById('wteTitle');
+        var progress = document.getElementById('wteProgress');
+
+        eyebrow.classList.add('wte-visible');
+        setTimeout(function () { title.classList.add('wte-visible'); }, 150);
+
+        var steps = [
+          { node: 'wteNode1', conn: 'wteConn1', content: 'wteContent1', delay: 400 },
+          { node: 'wteNode2', conn: 'wteConn2', content: 'wteContent2', delay: 900 },
+          { node: 'wteNode3', conn: 'wteConn3', content: 'wteContent3', delay: 1400 },
+          { node: 'wteNode4', conn: null,        content: 'wteContent4', delay: 1900, badge: 'wteBadge' },
+        ];
+
+        steps.forEach(function (step, i) {
+          // Advance progress line to this node
+          setTimeout(function () {
+            var pct = i === 0 ? 0 : (i / 3) * 100;
+            progress.style.transition = 'width 0.4s ease';
+            progress.style.width = pct + '%';
+          }, step.delay - 200);
+
+          // Pop node in, then activate (turn blue)
+          setTimeout(function () {
+            var node = document.getElementById(step.node);
+            node.classList.add('wte-node-visible');
+            setTimeout(function () { node.classList.add('wte-node-active'); }, 200);
+          }, step.delay);
+
+          // Connector dot between nodes
+          if (step.conn) {
+            setTimeout(function () {
+              document.getElementById(step.conn).classList.add('wte-visible');
+            }, step.delay + 300);
           }
-        }, { threshold: 0.4 });
-        obs.observe(el);
-      })();
-    </script>
-  </div>
+
+          // Fade content up
+          setTimeout(function () {
+            document.getElementById(step.content).classList.add('wte-visible');
+          }, step.delay + 250);
+
+          // Badge on last step
+          if (step.badge) {
+            setTimeout(function () {
+              document.getElementById(step.badge).classList.add('wte-visible');
+            }, step.delay + 600);
+          }
+        });
+
+        // Complete line to the last node
+        setTimeout(function () {
+          progress.style.transition = 'width 0.5s ease';
+          progress.style.width = '100%';
+        }, 2100);
+      }
+    })();
+  </script>
 </section>
 
-<!-- Pricing Signal -->
-<section class="py-12 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
-    <p class="text-gray-500 dark:text-gray-400 text-sm mb-3 uppercase tracking-wider font-medium">Pricing</p>
-    <p class="text-gray-700 dark:text-gray-300 text-lg">
-      Every engagement starts with a <span class="font-semibold text-gray-900 dark:text-white">free 30-minute discovery call</span> — no obligation.
-      Proposals are scoped and priced based on your specific needs.
-    </p>
-    <a href="{% url 'booking:book' %}" class="inline-flex items-center mt-6 text-indigo-600 dark:text-indigo-400 font-semibold hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
-      Book your free call to get a quote &rarr;
-    </a>
-  </div>
-</section>
+
 
 <!-- FAQ -->
 <section class="py-20 dark:bg-gray-900">
@@ -353,39 +1221,52 @@
       <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="100">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900 dark:text-white">How is Zimplixio different from a typical consulting firm?</span>
-          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="faq-content hidden px-5 pb-5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-          We're a small team of senior engineers and architects — not a staffing agency. Every engagement is led by someone with 15+ years of experience at companies like IBM, HPE, and Systems X. You get enterprise expertise without the enterprise overhead.
+          Most consulting firms send a team you've never met, built around whoever is available. At Zimplixio, every engagement is led directly by our founding team — senior engineers and architects with 15+ years of experience at companies like PayPal, HPE, IBM and Intel. We don't advise from the sidelines. We build, implement, and stay until it works.
         </div>
       </div>
       <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="150">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900 dark:text-white">What size companies do you work with?</span>
-          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="faq-content hidden px-5 pb-5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-          We primarily work with small-to-medium businesses that are ready to level up their technology — typically companies with 10 to 500 employees. If you've outgrown ad-hoc solutions but aren't ready for a full internal engineering team, we're a great fit.
+          We work with small-to-medium businesses — typically 10 to 500 employees — that have outgrown ad-hoc solutions but aren't ready for a full internal engineering team. If technology is starting to slow you down instead of move you forward, that's exactly the situation we're built for.
         </div>
       </div>
       <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="200">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900 dark:text-white">How long does a typical engagement last?</span>
-          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="faq-content hidden px-5 pb-5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-          It varies by scope. A strategy assessment might take 2-3 weeks. A full implementation project could be 2-6 months. Our ongoing partnership retainers are open-ended. We'll scope everything clearly during the discovery call.
+          It varies by scope. A strategy assessment typically takes 1–2 weeks. A full implementation project runs 2–6 months. We work in clearly defined phases — each one produces a tangible deliverable and requires explicit approval before the next begins. You're never locked into more than you've agreed to.
         </div>
       </div>
       <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="250">
         <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" aria-expanded="false">
           <span class="font-semibold text-gray-900 dark:text-white">Do you work with specific technologies?</span>
-          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="faq-content hidden px-5 pb-5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-          We're technology-agnostic — we recommend the right tool for the job, not our favorite stack. That said, we have deep expertise across cloud platforms (AWS, Azure, GCP), modern web frameworks, data engineering, and enterprise integrations.
+          We're technology-agnostic — our job is to recommend what's right for your situation, not push our preferred tools. We have hands-on expertise across backend and frontend frameworks, relational and cloud databases, major cloud platforms, data engineering tools, and agentic AI. The full stack, in other words.
+          More importantly, we start every engagement by understanding what you already have — and we build on it wherever it makes sense. Replacing working systems just to introduce new ones isn't how we operate.
         </div>
       </div>
+
+    <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" data-aos="fade-up" data-aos-delay="250">
+        <button class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" aria-expanded="false">
+          <span class="font-semibold text-gray-900 dark:text-white">Do you work with companies outside the US?</span>
+          <svg class="faq-chevron w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-content hidden px-5 pb-5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+          Yes. We've worked with clients across North America, Latin America, and Europe. Our team operates remotely by default, which means geography has never been a barrier. If you're outside the US and need enterprise-grade technology expertise right-sized for your business, we're a fit.
+        </div>
+      </div>
+
+
     </div>
   </div>
 </section>
@@ -395,6 +1276,17 @@
 
 {% block extra_js %}
 <script>
+function zMoveIndicator(index) {
+  var sidebar = document.querySelector('.z-sidebar');
+  var indicator = document.getElementById('z-indicator');
+  var tab = document.querySelectorAll('.z-tab')[index];
+  if (!sidebar || !indicator || !tab) return;
+  var sidebarRect = sidebar.getBoundingClientRect();
+  var tabRect = tab.getBoundingClientRect();
+  indicator.style.top = (tabRect.top - sidebarRect.top + sidebar.scrollTop) + 'px';
+  indicator.style.height = tabRect.height + 'px';
+}
+
 function zSwitch(index) {
   document.querySelectorAll('.z-tab').forEach(function(t, i) {
     t.classList.toggle('z-tab-active', i === index);
@@ -408,14 +1300,704 @@ function zSwitch(index) {
   document.querySelectorAll('.z-visual').forEach(function(v, i) {
     v.classList.toggle('z-vis-active', i === index);
   });
-  if (index === 3) {
-    document.querySelectorAll('#vis-3 .partner-bar').forEach(function(bar) {
-      bar.classList.remove('z-bar-animate');
-      void bar.offsetWidth;
-      bar.classList.add('z-bar-animate');
-    });
-  }
+  zMoveIndicator(index);
+  // On mobile (horizontal tabs), scroll active tab into view
+  var activeTab = document.querySelectorAll('.z-tab')[index];
+  if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 }
+
+document.addEventListener('DOMContentLoaded', function() { zMoveIndicator(0); });
 </script>
 <script src="{% static 'js/faq-accordion.js' %}"></script>
+<script src="{% static 'js/services-scroll.js' %}"></script>
+<script>
+/* ── Panel 01 widget animations ──────────────────────────── */
+(function () {
+  'use strict';
+
+  function buildWeeks(id, count) {
+    var c = document.getElementById(id);
+    if (!c) return;
+    for (var i = 0; i < count; i++) {
+      var w = document.createElement('div');
+      w.className = 'p01-week';
+      w.id = id + '-w' + i;
+      c.appendChild(w);
+    }
+  }
+
+  function delay(ms) { return new Promise(function(res) { setTimeout(res, ms); }); }
+
+  function resetP01() {
+    document.querySelectorAll('.p01-widget').forEach(function(w) { w.classList.remove('p01-visible'); });
+    var scan = document.getElementById('p01-scan');
+    if (scan) { scan.classList.remove('p01-scanning'); scan.style.opacity = '0'; }
+    document.querySelectorAll('.p01-item').forEach(function(el) { el.classList.remove('p01-revealed'); });
+    var r1 = document.getElementById('p01-r1'), r2 = document.getElementById('p01-r2');
+    if (r1) r1.classList.remove('p01-scroll-left');
+    if (r2) r2.classList.remove('p01-scroll-right');
+    document.querySelectorAll('.p01-score-fill').forEach(function(b) { b.style.width = '0'; });
+    document.querySelectorAll('.p01-vcard, .p01-crit').forEach(function(el) { el.classList.remove('p01-revealed'); });
+    var rec = document.getElementById('p01-rec');
+    if (rec) rec.classList.remove('p01-revealed');
+    document.querySelectorAll('.p01-phase').forEach(function(p) { p.classList.remove('p01-revealed'); });
+    document.querySelectorAll('.p01-bar-fill').forEach(function(b) { b.style.width = '0'; });
+    document.querySelectorAll('.p01-week').forEach(function(w) { w.classList.remove('p01-aw'); });
+    document.querySelectorAll('.p01-milestone').forEach(function(m) { m.classList.remove('p01-revealed'); });
+  }
+
+  async function animateW1() {
+    var scan = document.getElementById('p01-scan');
+    if (!scan) return;
+    scan.classList.add('p01-scanning');
+    scan.style.opacity = '1';
+    var ids = ['p01-i1','p01-i2','p01-i3','p01-i4','p01-i5','p01-g1','p01-g2','p01-g3','p01-g4','p01-g5'];
+    for (var i = 0; i < ids.length; i++) {
+      await delay(i * 110);
+      var el = document.getElementById(ids[i]);
+      if (el) el.classList.add('p01-revealed');
+    }
+  }
+
+  async function animateW2() {
+    var r1 = document.getElementById('p01-r1'), r2 = document.getElementById('p01-r2');
+    if (r1) r1.classList.add('p01-scroll-left');
+    if (r2) r2.classList.add('p01-scroll-right');
+    await delay(400);
+    document.querySelectorAll('.p01-score-fill').forEach(function(bar) {
+      bar.style.width = bar.getAttribute('data-w');
+    });
+  }
+
+  async function animateW3() {
+    var cards = ['p01-vc1','p01-vc2','p01-vc3'];
+    for (var i = 0; i < cards.length; i++) {
+      await delay(i * 140);
+      var el = document.getElementById(cards[i]);
+      if (el) el.classList.add('p01-revealed');
+    }
+    await delay(180);
+    var crits = [
+      'p01-c1-cr1','p01-c2-cr1','p01-c3-cr1',
+      'p01-c1-cr2','p01-c2-cr2','p01-c3-cr2',
+      'p01-c1-cr3','p01-c2-cr3','p01-c3-cr3',
+      'p01-c1-cr4','p01-c2-cr4','p01-c3-cr4'
+    ];
+    for (var j = 0; j < crits.length; j++) {
+      await delay(j * 70);
+      var cr = document.getElementById(crits[j]);
+      if (cr) cr.classList.add('p01-revealed');
+    }
+    await delay(280);
+    var rec = document.getElementById('p01-rec');
+    if (rec) rec.classList.add('p01-revealed');
+  }
+
+  async function animateW4() {
+    var p1 = document.getElementById('p01-p1'); if (!p1) return;
+    p1.classList.add('p01-revealed');
+    await delay(180);
+    var b1 = document.getElementById('p01-b1'); if (b1) b1.style.width = b1.getAttribute('data-w');
+    for (var i = 0; i < 4; i++) { await delay(i * 160); var w = document.getElementById('p01-wr1-w'+i); if (w) w.classList.add('p01-aw'); }
+    await delay(180); var m1 = document.getElementById('p01-m1'); if (m1) m1.classList.add('p01-revealed');
+
+    await delay(280);
+    var p2 = document.getElementById('p01-p2'); if (p2) p2.classList.add('p01-revealed');
+    await delay(180);
+    var b2 = document.getElementById('p01-b2'); if (b2) b2.style.width = b2.getAttribute('data-w');
+    for (var j = 0; j < 5; j++) { await delay(j * 130); var w2 = document.getElementById('p01-wr2-w'+j); if (w2) w2.classList.add('p01-aw'); }
+    await delay(180); var m2 = document.getElementById('p01-m2'); if (m2) m2.classList.add('p01-revealed');
+
+    await delay(280);
+    var p3 = document.getElementById('p01-p3'); if (p3) p3.classList.add('p01-revealed');
+    await delay(180);
+    var b3 = document.getElementById('p01-b3'); if (b3) b3.style.width = b3.getAttribute('data-w');
+    for (var k = 0; k < 4; k++) { await delay(k * 160); var w3 = document.getElementById('p01-wr3-w'+k); if (w3) w3.classList.add('p01-aw'); }
+    await delay(180); var m3 = document.getElementById('p01-m3'); if (m3) m3.classList.add('p01-revealed');
+  }
+
+  async function triggerP01() {
+    resetP01();
+    await delay(80);
+    var widgets = document.querySelectorAll('.p01-widget');
+    widgets.forEach(function(w, i) { setTimeout(function() { w.classList.add('p01-visible'); }, i * 90); });
+    await delay(250);
+    animateW1(); animateW2(); animateW3(); animateW4();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    buildWeeks('p01-wr1', 4);
+    buildWeeks('p01-wr2', 5);
+    buildWeeks('p01-wr3', 4);
+  });
+
+  window.addEventListener('svcPanelChange', function(e) {
+    if (e.detail.index === 0) triggerP01();
+  });
+}());
+</script>
+<script>
+/* ── Panel 02 widget animations ──────────────────────────── */
+(function () {
+  'use strict';
+
+  function delay(ms) { return new Promise(function(res) { setTimeout(res, ms); }); }
+
+  function resetP02() {
+    document.querySelectorAll('.p02-widget').forEach(function(w) { w.classList.remove('p02-visible'); });
+    document.querySelectorAll('.p02-line').forEach(function(l) { l.classList.remove('p02-revealed'); });
+    var bb = document.getElementById('p02-build-bar');
+    if (bb) bb.classList.remove('p02-revealed');
+    document.querySelectorAll('.p02-node').forEach(function(n) { n.classList.remove('p02-revealed'); });
+    document.querySelectorAll('.p02-connector').forEach(function(c) { c.classList.remove('p02-connected'); });
+    document.querySelectorAll('.p02-pulse').forEach(function(p) { p.classList.remove('p02-active'); });
+    ['p02-onprem','p02-cloud','p02-s1','p02-s2','p02-s3','p02-s4'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('p02-revealed', 'p02-migrated');
+    });
+    var al = document.getElementById('p02-arrline');
+    if (al) al.classList.remove('p02-revealed');
+    document.querySelectorAll('.p02-prog-row').forEach(function(r) { r.classList.remove('p02-revealed'); });
+    document.querySelectorAll('.p02-prog-fill').forEach(function(f) { f.style.width = '0'; });
+    document.querySelectorAll('.p02-req').forEach(function(r) { r.classList.remove('p02-revealed'); });
+    document.querySelectorAll('.p02-api-badge').forEach(function(s) { s.classList.remove('p02-revealed'); });
+    document.querySelectorAll('.p02-response').forEach(function(r) { r.classList.remove('p02-revealed'); });
+  }
+
+  async function animateP02W1() {
+    var lines = ['p02-l1','p02-l2','p02-l3','p02-l4','p02-l5','p02-l6','p02-l7','p02-l8'];
+    for (var i = 0; i < lines.length; i++) {
+      await delay(i * 110);
+      var el = document.getElementById(lines[i]);
+      if (el) el.classList.add('p02-revealed');
+    }
+    await delay(300);
+    var bb = document.getElementById('p02-build-bar');
+    if (bb) bb.classList.add('p02-revealed');
+  }
+
+  async function animateP02W2() {
+    await delay(200);
+    var hub = document.getElementById('p02-n-hub');
+    if (hub) hub.classList.add('p02-revealed');
+    var nodes = ['p02-n-crm','p02-n-erp','p02-n-db','p02-n-ext'];
+    for (var i = 0; i < nodes.length; i++) {
+      await delay(i * 150);
+      var el = document.getElementById(nodes[i]);
+      if (el) el.classList.add('p02-revealed');
+    }
+    await delay(200);
+    var conns = ['p02-c-crm','p02-c-erp','p02-c-db','p02-c-ext'];
+    for (var j = 0; j < conns.length; j++) {
+      await delay(j * 120);
+      var c = document.getElementById(conns[j]);
+      if (c) c.classList.add('p02-connected');
+    }
+    await delay(400);
+    ['p02-p1','p02-p2','p02-p3','p02-p4'].forEach(function(id, idx) {
+      setTimeout(function() {
+        var el = document.getElementById(id);
+        if (el) { el.classList.add('p02-active'); el.style.animationDelay = (idx * 0.4) + 's'; }
+      }, idx * 200);
+    });
+  }
+
+  async function animateP02W3() {
+    var op = document.getElementById('p02-onprem');
+    if (op) op.classList.add('p02-revealed');
+    await delay(300);
+    var al = document.getElementById('p02-arrline');
+    if (al) al.classList.add('p02-revealed');
+    await delay(600);
+    var cl = document.getElementById('p02-cloud');
+    if (cl) cl.classList.add('p02-revealed');
+    var svcs = ['p02-s1','p02-s2','p02-s3','p02-s4'];
+    for (var i = 0; i < svcs.length; i++) {
+      await delay(i * 150);
+      (function(el) {
+        if (el) { el.classList.add('p02-revealed'); setTimeout(function() { el.classList.add('p02-migrated'); }, 400); }
+      })(document.getElementById(svcs[i]));
+    }
+    await delay(400);
+    var rows = ['p02-pr1','p02-pr2','p02-pr3'], fills = ['p02-pf1','p02-pf2','p02-pf3'];
+    for (var j = 0; j < rows.length; j++) {
+      await delay(j * 180);
+      var row = document.getElementById(rows[j]);
+      if (row) row.classList.add('p02-revealed');
+      (function(fid) { setTimeout(function() { var f = document.getElementById(fid); if (f) f.style.width = f.getAttribute('data-w'); }, 100); })(fills[j]);
+    }
+  }
+
+  async function animateP02W4() {
+    var reqs  = ['p02-r1','p02-r2','p02-r3','p02-r4'];
+    var stats = ['p02-st1','p02-st2','p02-st3','p02-st4'];
+    var resps = ['p02-resp1','p02-resp2','p02-resp3'];
+    for (var i = 0; i < reqs.length; i++) {
+      await delay(i * 380);
+      var req = document.getElementById(reqs[i]); if (req) req.classList.add('p02-revealed');
+      await delay(220);
+      var st = document.getElementById(stats[i]); if (st) st.classList.add('p02-revealed');
+      if (resps[i]) { await delay(120); var rsp = document.getElementById(resps[i]); if (rsp) rsp.classList.add('p02-revealed'); }
+    }
+  }
+
+  async function triggerP02() {
+    resetP02();
+    await delay(80);
+    document.querySelectorAll('.p02-widget').forEach(function(w, i) { setTimeout(function() { w.classList.add('p02-visible'); }, i * 90); });
+    await delay(250);
+    animateP02W1(); animateP02W2(); animateP02W3(); animateP02W4();
+  }
+
+  window.addEventListener('svcPanelChange', function(e) {
+    if (e.detail.index === 1) triggerP02();
+  });
+}());
+</script>
+<script>
+/* ── Panel 03 widget animations ──────────────────────────── */
+(function () {
+  'use strict';
+
+  function delay(ms) { return new Promise(function(res) { setTimeout(res, ms); }); }
+
+  var chartData03 = [
+    { label: 'Q1', val: 62, color: 'rgba(59,130,246,0.5)' },
+    { label: 'Q2', val: 78, color: 'rgba(59,130,246,0.6)' },
+    { label: 'Q3', val: 55, color: 'rgba(59,130,246,0.4)' },
+    { label: 'Q4', val: 91, color: 'rgba(59,130,246,0.8)' },
+    { label: 'Q1', val: 84, color: 'rgba(20,184,166,0.6)' },
+    { label: 'Q2', val: 97, color: 'rgba(20,184,166,0.8)' }
+  ];
+
+  function buildChart03() {
+    var chartEl = document.getElementById('p03-chart');
+    if (!chartEl) return;
+    chartData03.forEach(function(d, i) {
+      var wrap = document.createElement('div');
+      wrap.className = 'p03-bar-wrap';
+      var bar = document.createElement('div');
+      bar.className = 'p03-bar';
+      bar.id = 'p03-bar-' + i;
+      bar.style.background = d.color;
+      bar.setAttribute('data-h', d.val);
+      var lbl = document.createElement('div');
+      lbl.className = 'p03-bar-label';
+      lbl.textContent = d.label;
+      wrap.appendChild(bar);
+      wrap.appendChild(lbl);
+      chartEl.appendChild(wrap);
+    });
+  }
+
+  function countUp03(el, target, suffix, duration) {
+    var steps = 30, current = 0, inc = target / steps, interval = duration / steps;
+    var timer = setInterval(function() {
+      current = Math.min(current + inc, target);
+      el.textContent = (Math.round(current * 10) / 10) + suffix;
+      if (current >= target) clearInterval(timer);
+    }, interval);
+  }
+
+  function resetP03() {
+    document.querySelectorAll('.p03-widget').forEach(function(w) { w.classList.remove('p03-visible'); });
+    ['p03-b1','p03-b2','p03-b3','p03-b4','p03-a1','p03-a2','p03-a3','p03-a4'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.classList.remove('p03-revealed');
+    });
+    var arr = document.getElementById('p03-arr'); if (arr) arr.classList.remove('p03-revealed');
+    var sav = document.getElementById('p03-savings'); if (sav) sav.classList.remove('p03-revealed');
+    ['p03-s1','p03-s2','p03-s3','p03-s4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p03-revealed'); });
+    ['p03-af1','p03-af2','p03-af3','p03-af4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p03-revealed'); });
+    ['p03-sh1','p03-sh2','p03-sh3','p03-sh4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('active'); });
+    ['p03-cn1','p03-cn2','p03-cn3','p03-cn4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p03-revealed'); });
+    var total = document.getElementById('p03-w2-total'); if (total) total.classList.remove('p03-revealed');
+    ['p03-n1','p03-n2','p03-n3','p03-n4','p03-n5'].forEach(function(id) {
+      var n = document.getElementById(id); if (n) n.classList.remove('p03-revealed','running','success','waiting');
+    });
+    ['p03-ac1','p03-ac2','p03-ac3','p03-ac4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('active'); });
+    ['p03-sb1','p03-sb2','p03-sb3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p03-revealed'); });
+    var ft = document.getElementById('p03-w3-footer'); if (ft) ft.classList.remove('p03-revealed');
+    ['p03-k1','p03-k2','p03-k3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p03-revealed'); });
+    var v1 = document.getElementById('p03-v1'); if (v1) v1.textContent = '0';
+    var v2 = document.getElementById('p03-v2'); if (v2) v2.textContent = '0';
+    var v3 = document.getElementById('p03-v3'); if (v3) v3.textContent = '0%';
+    ['p03-d1','p03-d2','p03-d3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = '\u2191 0%'; });
+    chartData03.forEach(function(d, i) { var bar = document.getElementById('p03-bar-' + i); if (bar) bar.style.height = '0'; });
+    ['p03-m1','p03-m2'].forEach(function(id) { var m = document.getElementById(id); if (m) m.classList.remove('p03-revealed','healthy'); });
+    var mv1 = document.getElementById('p03-mv1'); if (mv1) mv1.textContent = 'checking...';
+    var mv2 = document.getElementById('p03-mv2'); if (mv2) mv2.textContent = 'checking...';
+  }
+
+  async function animateP03W1() {
+    var before = ['p03-b1','p03-b2','p03-b3','p03-b4'];
+    var after  = ['p03-a1','p03-a2','p03-a3','p03-a4'];
+    for (var i = 0; i < before.length; i++) {
+      await delay(i * 120);
+      var el = document.getElementById(before[i]); if (el) el.classList.add('p03-revealed');
+    }
+    await delay(200);
+    var arr = document.getElementById('p03-arr'); if (arr) arr.classList.add('p03-revealed');
+    await delay(300);
+    for (var j = 0; j < after.length; j++) {
+      await delay(j * 120);
+      var el2 = document.getElementById(after[j]); if (el2) el2.classList.add('p03-revealed');
+    }
+    await delay(300);
+    var sav = document.getElementById('p03-savings'); if (sav) sav.classList.add('p03-revealed');
+  }
+
+  async function animateP03W2() {
+    var stages = ['p03-s1','p03-s2','p03-s3','p03-s4'];
+    var fills  = ['p03-af1','p03-af2','p03-af3','p03-af4'];
+    var shims  = ['p03-sh1','p03-sh2','p03-sh3','p03-sh4'];
+    var counts = ['p03-cn1','p03-cn2','p03-cn3','p03-cn4'];
+    for (var i = 0; i < stages.length; i++) {
+      await delay(i * 300);
+      var s = document.getElementById(stages[i]); if (s) s.classList.add('p03-revealed');
+      await delay(100);
+      var f = document.getElementById(fills[i]); if (f) f.classList.add('p03-revealed');
+      var sh = document.getElementById(shims[i]); if (sh) sh.classList.add('active');
+      await delay(300);
+      var c = document.getElementById(counts[i]); if (c) c.classList.add('p03-revealed');
+      (function(shimId) { setTimeout(function() { var s2 = document.getElementById(shimId); if (s2) s2.classList.remove('active'); }, 1500); })(shims[i]);
+    }
+    await delay(400);
+    var total = document.getElementById('p03-w2-total'); if (total) total.classList.add('p03-revealed');
+  }
+
+  async function animateP03W3() {
+    var nodes  = ['p03-n1','p03-n2','p03-n3','p03-n4','p03-n5'];
+    var conns  = ['p03-ac1','p03-ac2','p03-ac3','p03-ac4'];
+    var badges = ['p03-sb1','p03-sb2','p03-sb3'];
+    var states = ['running','success','waiting','running','success'];
+    for (var i = 0; i < nodes.length; i++) {
+      await delay(i * 150);
+      var n = document.getElementById(nodes[i]);
+      if (n) { n.classList.add('p03-revealed'); n.classList.add(states[i]); }
+    }
+    await delay(200);
+    for (var j = 0; j < conns.length; j++) {
+      await delay(j * 180);
+      var conn = document.getElementById(conns[j]); if (conn) conn.classList.add('active');
+    }
+    await delay(200);
+    for (var k = 0; k < badges.length; k++) {
+      await delay(k * 120);
+      var b = document.getElementById(badges[k]); if (b) b.classList.add('p03-revealed');
+    }
+    await delay(200);
+    var ft = document.getElementById('p03-w3-footer'); if (ft) ft.classList.add('p03-revealed');
+  }
+
+  async function animateP03W4() {
+    var kpis = ['p03-k1','p03-k2','p03-k3'];
+    for (var i = 0; i < kpis.length; i++) {
+      await delay(i * 150);
+      var k = document.getElementById(kpis[i]); if (k) k.classList.add('p03-revealed');
+    }
+    await delay(200);
+    var v1 = document.getElementById('p03-v1'); if (v1) countUp03(v1, 2.4, 'M', 800);
+    var v2 = document.getElementById('p03-v2'); if (v2) countUp03(v2, 98, 'k', 800);
+    var v3 = document.getElementById('p03-v3'); if (v3) countUp03(v3, 99, '%', 800);
+    setTimeout(function() {
+      var d1 = document.getElementById('p03-d1'); if (d1) d1.textContent = '\u2191 18%';
+      var d2 = document.getElementById('p03-d2'); if (d2) d2.textContent = '\u2191 34%';
+      var d3 = document.getElementById('p03-d3'); if (d3) d3.textContent = '\u2191 4.2%';
+    }, 900);
+    await delay(300);
+    chartData03.forEach(function(d, i) {
+      setTimeout(function() { var bar = document.getElementById('p03-bar-' + i); if (bar) bar.style.height = d.val + '%'; }, i * 100);
+    });
+    await delay(800);
+    var m1 = document.getElementById('p03-m1'); if (m1) m1.classList.add('p03-revealed');
+    var m2 = document.getElementById('p03-m2'); if (m2) m2.classList.add('p03-revealed');
+    await delay(600);
+    if (m1) m1.classList.add('healthy');
+    var mv1 = document.getElementById('p03-mv1'); if (mv1) mv1.textContent = '\u2713 All pipelines OK';
+    await delay(300);
+    if (m2) m2.classList.add('healthy');
+    var mv2 = document.getElementById('p03-mv2'); if (mv2) mv2.textContent = '\u2713 4min ago';
+  }
+
+  async function triggerP03() {
+    resetP03();
+    await delay(80);
+    document.querySelectorAll('.p03-widget').forEach(function(w, i) { setTimeout(function() { w.classList.add('p03-visible'); }, i * 90); });
+    await delay(250);
+    animateP03W1(); animateP03W2(); animateP03W3(); animateP03W4();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() { buildChart03(); });
+
+  window.addEventListener('svcPanelChange', function(e) {
+    if (e.detail.index === 2) triggerP03();
+  });
+}());
+</script>
+<script>
+/* ── Panel 04 widget animations ──────────────────────────── */
+(function () {
+  'use strict';
+
+  function delay(ms) { return new Promise(function(res) { setTimeout(res, ms); }); }
+
+  function resetP04() {
+    document.querySelectorAll('.p04-widget').forEach(function(w) { w.classList.remove('p04-visible'); });
+    ['p04-e1','p04-e2','p04-e3','p04-e4','p04-e5'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.classList.remove('p04-revealed');
+    });
+    ['p04-n1','p04-n2','p04-n3','p04-n4'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.classList.remove('p04-revealed','healthy','warning');
+    });
+    ['p04-r1','p04-r2','p04-r3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p04-revealed'); });
+    ['p04-f1','p04-f2','p04-f3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.style.width = '0'; });
+    var alertEl = document.getElementById('p04-alert');
+    if (alertEl) alertEl.classList.remove('p04-revealed','resolved');
+    var alertText = document.getElementById('p04-alert-text');
+    if (alertText) alertText.textContent = '\u26a0 Storage at 74% \u2014 expansion scheduled';
+    ['p04-v1','p04-v2','p04-v3','p04-v4','p04-v5'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.classList.remove('p04-revealed','done','active');
+    });
+    var prog = document.getElementById('p04-progress');
+    if (prog) { prog.style.transition = 'none'; prog.style.width = '0'; setTimeout(function() { prog.style.transition = 'width 2s cubic-bezier(0.4,0,0.2,1)'; }, 50); }
+    ['p04-c1','p04-c2','p04-c3','p04-c4','p04-c5'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p04-revealed'); });
+    for (var i = 1; i <= 10; i++) { var ci = document.getElementById('p04-ci' + i); if (ci) ci.classList.remove('p04-revealed'); }
+    var status = document.getElementById('p04-status'); if (status) status.classList.remove('p04-revealed');
+  }
+
+  async function animateP04W1() {
+    var entries = ['p04-e1','p04-e2','p04-e3','p04-e4','p04-e5'];
+    for (var i = 0; i < entries.length; i++) {
+      await delay(i * 200);
+      var el = document.getElementById(entries[i]); if (el) el.classList.add('p04-revealed');
+    }
+  }
+
+  async function animateP04W2() {
+    var nodes = ['p04-n1','p04-n2','p04-n3','p04-n4'];
+    for (var i = 0; i < nodes.length; i++) {
+      await delay(i * 120);
+      var n = document.getElementById(nodes[i]);
+      if (n) {
+        n.classList.add('p04-revealed');
+        await delay(300);
+        n.classList.add(i < 3 ? 'healthy' : 'warning');
+      }
+    }
+    await delay(200);
+    var rows  = ['p04-r1','p04-r2','p04-r3'];
+    var fills = ['p04-f1','p04-f2','p04-f3'];
+    for (var j = 0; j < rows.length; j++) {
+      await delay(j * 150);
+      var r = document.getElementById(rows[j]); if (r) r.classList.add('p04-revealed');
+      (function(fid) { setTimeout(function() { var f = document.getElementById(fid); if (f) f.style.width = f.getAttribute('data-w'); }, 100); })(fills[j]);
+    }
+    await delay(400);
+    var alertEl = document.getElementById('p04-alert'); if (alertEl) alertEl.classList.add('p04-revealed');
+    await delay(1800);
+    if (alertEl) alertEl.classList.add('resolved');
+    var alertText = document.getElementById('p04-alert-text'); if (alertText) alertText.textContent = '\u2713 Storage expansion scheduled for tonight';
+  }
+
+  async function animateP04W3() {
+    var nodes  = ['p04-v1','p04-v2','p04-v3','p04-v4','p04-v5'];
+    var states = ['done','done','done','done','active'];
+    for (var i = 0; i < nodes.length; i++) {
+      await delay(i * 180);
+      var n = document.getElementById(nodes[i]);
+      if (n) { n.classList.add('p04-revealed'); await delay(200); n.classList.add(states[i]); }
+    }
+    await delay(100);
+    var prog = document.getElementById('p04-progress'); if (prog) prog.style.width = '100%';
+    await delay(300);
+    var cards = ['p04-c1','p04-c2','p04-c3','p04-c4','p04-c5'];
+    for (var j = 0; j < cards.length; j++) {
+      await delay(j * 150);
+      var c = document.getElementById(cards[j]); if (c) c.classList.add('p04-revealed');
+    }
+    await delay(300);
+    for (var k = 1; k <= 10; k++) {
+      await delay((k - 1) * 80);
+      var ci = document.getElementById('p04-ci' + k); if (ci) ci.classList.add('p04-revealed');
+    }
+    await delay(300);
+    var status = document.getElementById('p04-status'); if (status) status.classList.add('p04-revealed');
+  }
+
+  async function triggerP04() {
+    resetP04();
+    await delay(80);
+    document.querySelectorAll('.p04-widget').forEach(function(w, i) { setTimeout(function() { w.classList.add('p04-visible'); }, i * 90); });
+    await delay(250);
+    animateP04W1(); animateP04W2(); animateP04W3();
+  }
+
+  window.addEventListener('svcPanelChange', function(e) {
+    if (e.detail.index === 3) triggerP04();
+  });
+}());
+</script>
+<script>
+/* ── Panel 05 widget animations ──────────────────────────── */
+(function () {
+  'use strict';
+
+  function delay(ms) { return new Promise(function(res) { setTimeout(res, ms); }); }
+
+  function countUp05(el, target, suffix, duration) {
+    var steps = 30, current = 0, inc = target / steps, interval = duration / steps;
+    var timer = setInterval(function() {
+      current = Math.min(current + inc, target);
+      el.textContent = Math.round(current) + suffix;
+      if (current >= target) clearInterval(timer);
+    }, interval);
+  }
+
+  function resetP05() {
+    document.querySelectorAll('.p05-widget').forEach(function(w) { w.classList.remove('p05-visible'); });
+    // W1
+    var hub = document.getElementById('p05-hub'); if (hub) hub.classList.remove('p05-revealed');
+    var orb = document.getElementById('p05-orbit'); if (orb) orb.classList.remove('p05-revealed');
+    for (var i = 0; i < 6; i++) {
+      var sp = document.getElementById('p05-sp' + i); if (sp) sp.classList.remove('p05-revealed');
+      var sn = document.getElementById('p05-sn' + i); if (sn) sn.classList.remove('p05-revealed');
+      var pp = document.getElementById('p05-pp' + i); if (pp) { pp.classList.remove('p05-pulse-active'); pp.style.animationDelay = ''; }
+    }
+    // W2
+    var ring = document.getElementById('p05-ring');
+    if (ring) { ring.style.transition = 'none'; ring.style.strokeDashoffset = '120'; setTimeout(function() { ring.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)'; }, 50); }
+    var sc = document.getElementById('p05-score'); if (sc) sc.textContent = '0';
+    var lv = document.getElementById('p05-level'); if (lv) lv.textContent = 'Calculating...';
+    ['p05-d1','p05-d2','p05-d3','p05-d4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p05-revealed'); });
+    ['p05-f1','p05-f2','p05-f3','p05-f4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.style.width = '0'; });
+    ['p05-a1','p05-a2','p05-cta'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p05-revealed'); });
+    // W3
+    ['p05-fn-trigger','p05-fn-llm','p05-fn-pa','p05-fn-pb','p05-fn-pc','p05-fn-human','p05-fn-out','p05-fn-log'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.classList.remove('p05-revealed');
+    });
+    for (var j = 0; j <= 8; j++) { var fc = document.getElementById('p05-fc' + j); if (fc) fc.classList.remove('p05-revealed'); }
+    ['p05-le1','p05-le2','p05-le3','p05-le4'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p05-revealed'); });
+    var loop = document.getElementById('p05-fn-loop'); if (loop) loop.style.opacity = '0';
+    var nsllm = document.getElementById('p05-ns-llm'); if (nsllm) nsllm.classList.remove('p05-revealed','p05-running');
+    // W4
+    var curve = document.getElementById('p05-curve');
+    if (curve) { curve.style.transition = 'none'; curve.style.strokeDashoffset = '300'; setTimeout(function() { curve.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.4,0,0.2,1)'; }, 50); }
+    var area = document.getElementById('p05-area'); if (area) area.style.opacity = '0';
+    var dot  = document.getElementById('p05-dot');  if (dot)  dot.style.opacity = '0';
+    var lbl  = document.getElementById('p05-elabel'); if (lbl) lbl.style.opacity = '0';
+    ['p05-tm1','p05-tm2','p05-tm3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('p05-revealed'); });
+    ['p05-mf1','p05-mf2','p05-mf3'].forEach(function(id) { var el = document.getElementById(id); if (el) el.style.width = '0'; });
+    var ts = document.getElementById('p05-tstatus'); if (ts) ts.classList.remove('p05-revealed');
+  }
+
+  async function animateP05W1() {
+    var hub = document.getElementById('p05-hub'); if (hub) hub.classList.add('p05-revealed');
+    var orb = document.getElementById('p05-orbit'); if (orb) orb.classList.add('p05-revealed');
+    await delay(400);
+    for (var i = 0; i < 6; i++) {
+      await delay(i * 180);
+      var sp = document.getElementById('p05-sp' + i); if (sp) sp.classList.add('p05-revealed');
+      var sn = document.getElementById('p05-sn' + i); if (sn) sn.classList.add('p05-revealed');
+    }
+    await delay(400);
+    for (var j = 0; j < 6; j++) {
+      (function(idx) {
+        setTimeout(function() {
+          var pp = document.getElementById('p05-pp' + idx);
+          if (pp) { pp.classList.add('p05-pulse-active'); pp.style.animationDelay = (idx * 0.35) + 's'; }
+        }, idx * 150);
+      })(j);
+    }
+  }
+
+  async function animateP05W2() {
+    await delay(200);
+    var ring = document.getElementById('p05-ring'); if (ring) ring.style.strokeDashoffset = '45.6';
+    var sc   = document.getElementById('p05-score'); if (sc) countUp05(sc, 62, '', 1200);
+    setTimeout(function() { var lv = document.getElementById('p05-level'); if (lv) lv.textContent = 'Developing \u2014 gaps identified'; }, 1300);
+    await delay(500);
+    var dims  = ['p05-d1','p05-d2','p05-d3','p05-d4'];
+    var fills = ['p05-f1','p05-f2','p05-f3','p05-f4'];
+    for (var i = 0; i < dims.length; i++) {
+      await delay(i * 150);
+      var d = document.getElementById(dims[i]); if (d) d.classList.add('p05-revealed');
+      (function(fid) { setTimeout(function() { var f = document.getElementById(fid); if (f) f.style.width = f.getAttribute('data-w'); }, 100); })(fills[i]);
+    }
+    await delay(400);
+    var a1 = document.getElementById('p05-a1'); if (a1) a1.classList.add('p05-revealed');
+    await delay(200);
+    var a2 = document.getElementById('p05-a2'); if (a2) a2.classList.add('p05-revealed');
+    await delay(300);
+    var cta = document.getElementById('p05-cta'); if (cta) cta.classList.add('p05-revealed');
+  }
+
+  async function animateP05W3() {
+    var seq = [
+      { node: 'p05-fn-trigger', conn: null },
+      { node: null, conn: 'p05-fc0' },
+      { node: 'p05-fn-llm', conn: null, status: 'p05-ns-llm' },
+      { node: null, conn: 'p05-fc1' },
+      { node: null, conn: 'p05-fc2' },
+      { node: null, conn: 'p05-fc3' },
+      { node: 'p05-fn-pa', conn: null },
+      { node: 'p05-fn-pb', conn: null },
+      { node: 'p05-fn-pc', conn: null },
+      { node: null, conn: 'p05-fc4' },
+      { node: null, conn: 'p05-fc5' },
+      { node: null, conn: 'p05-fc6' },
+      { node: 'p05-fn-human', conn: null },
+      { node: null, conn: 'p05-fc7' },
+      { node: 'p05-fn-out', conn: null },
+      { node: 'p05-fn-log', conn: 'p05-fc8' }
+    ];
+    for (var i = 0; i < seq.length; i++) {
+      await delay(220);
+      var step = seq[i];
+      if (step.node) { var n = document.getElementById(step.node); if (n) n.classList.add('p05-revealed'); }
+      if (step.conn) { var c = document.getElementById(step.conn); if (c) c.classList.add('p05-revealed'); }
+      if (step.status) {
+        var s = document.getElementById(step.status);
+        if (s) { s.classList.add('p05-revealed'); s.classList.add('p05-running'); (function(el) { setTimeout(function() { el.classList.remove('p05-running'); }, 800); })(s); }
+      }
+    }
+    await delay(200);
+    ['p05-le1','p05-le2','p05-le3','p05-le4'].forEach(function(id, idx) {
+      setTimeout(function() { var el = document.getElementById(id); if (el) el.classList.add('p05-revealed'); }, idx * 150);
+    });
+    await delay(400);
+    var loop = document.getElementById('p05-fn-loop');
+    if (loop) { loop.style.transition = 'opacity 0.4s ease'; loop.style.opacity = '1'; }
+  }
+
+  async function animateP05W4() {
+    await delay(300);
+    var curve = document.getElementById('p05-curve'); if (curve) curve.style.strokeDashoffset = '0';
+    var area  = document.getElementById('p05-area');  if (area)  area.style.opacity = '1';
+    var dot   = document.getElementById('p05-dot');   if (dot)   dot.style.opacity = '1';
+    var lbl   = document.getElementById('p05-elabel'); if (lbl)  lbl.style.opacity = '1';
+    await delay(600);
+    var members = ['p05-tm1','p05-tm2','p05-tm3'];
+    var fills   = ['p05-mf1','p05-mf2','p05-mf3'];
+    for (var i = 0; i < members.length; i++) {
+      await delay(i * 180);
+      var m = document.getElementById(members[i]); if (m) m.classList.add('p05-revealed');
+      (function(fid) { setTimeout(function() { var f = document.getElementById(fid); if (f) f.style.width = f.getAttribute('data-w'); }, 100); })(fills[i]);
+    }
+    await delay(500);
+    var ts = document.getElementById('p05-tstatus'); if (ts) ts.classList.add('p05-revealed');
+  }
+
+  async function triggerP05() {
+    resetP05();
+    await delay(80);
+    document.querySelectorAll('.p05-widget').forEach(function(w, i) { setTimeout(function() { w.classList.add('p05-visible'); }, i * 90); });
+    await delay(250);
+    animateP05W1(); animateP05W2(); animateP05W3(); animateP05W4();
+  }
+
+  window.addEventListener('svcPanelChange', function(e) {
+    if (e.detail.index === 4) triggerP05();
+  });
+}());
+</script>
 {% endblock %}

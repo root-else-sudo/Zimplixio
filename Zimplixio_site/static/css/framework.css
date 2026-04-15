@@ -2,6 +2,83 @@
    Framework-specific styles
    ========================================================================== */
 
+/* --- Stage Node Icon Animations --- */
+
+@keyframes iconScanSweep {
+  0%   { stroke-dashoffset: 0;   opacity: 0.4; }
+  50%  { stroke-dashoffset: -14; opacity: 1;   }
+  100% { stroke-dashoffset: 0;   opacity: 0.4; }
+}
+
+@keyframes iconStreamFlow {
+  from { stroke-dashoffset: 0;  }
+  to   { stroke-dashoffset: -8; }
+}
+
+@keyframes iconTracePulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1;   }
+}
+
+@keyframes iconNodePulse {
+  0%, 100% { opacity: 0.65; }
+  50%      { opacity: 1;    }
+}
+
+@keyframes iconTrendDraw {
+  from { stroke-dashoffset: 80; opacity: 0.4; }
+  to   { stroke-dashoffset: 0;  opacity: 1;   }
+}
+
+/* Readiness — scan line sweeps */
+.stage-node-circle:hover .icon-scan-line {
+  animation: iconScanSweep 1.1s ease-in-out infinite;
+}
+
+/* Readiness / Governance — circuit traces light up */
+.stage-node-circle:hover .icon-trace {
+  animation: iconTracePulse 1.2s ease-in-out infinite;
+}
+.stage-node-circle:hover .icon-trace-dot {
+  animation: iconTracePulse 1s ease-in-out infinite;
+}
+
+/* Workflows — flow nodes pulse */
+.stage-node-circle:hover .icon-flow-node {
+  animation: iconNodePulse 0.85s ease-in-out infinite;
+}
+.stage-node-circle:hover .icon-leaf {
+  animation: iconTracePulse 1s ease-in-out infinite;
+}
+
+/* Data Protection — streams flow inward */
+.stage-node-circle:hover .icon-data-stream {
+  animation: iconStreamFlow 0.55s linear infinite;
+}
+.stage-node-circle:hover .icon-keyhole {
+  animation: iconTracePulse 0.75s ease-in-out infinite;
+}
+
+/* People — connection dashes & outer nodes pulse */
+.stage-node-circle:hover .icon-person-node {
+  animation: iconNodePulse 0.9s ease-in-out infinite;
+}
+.stage-node-circle:hover .icon-connection {
+  animation: iconTracePulse 0.8s ease-in-out infinite;
+}
+
+/* ROI — trend redraws on hover */
+.icon-trend-line {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 0;
+}
+.stage-node-circle:hover .icon-trend-line {
+  animation: iconTrendDraw 0.75s ease-out forwards;
+}
+.stage-node-circle:hover .icon-data-point {
+  animation: iconTracePulse 0.65s ease-in-out infinite;
+}
+
 /* --- Callout Boxes --- */
 .framework-callout {
   border-left: 3px solid #F59E0B;
@@ -314,7 +391,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #9CA3AF;
+  color: #6B7280;
   margin-bottom: 0.75rem;
 }
 

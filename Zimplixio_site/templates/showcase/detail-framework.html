@@ -21,7 +21,7 @@
   </div>
   <div id="hero-particles" aria-hidden="true"></div>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <a href="{% url 'showcase:gallery' %}" class="inline-flex items-center text-indigo-200 hover:text-white mb-6 transition-colors text-sm" data-aos="fade-right" data-aos-duration="600">
+    <a href="{% url 'showcase:gallery' %}" class="inline-flex items-center text-indigo-200 hover:text-white mb-6 transition-colors text-sm focus:outline-none focus:ring-1 focus:ring-white/60 focus:rounded" data-aos="fade-right" data-aos-duration="600">
       <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
       Back to Showcase
     </a>
@@ -31,7 +31,7 @@
       Responsible AI Adoption
     </h1>
     <p class="text-xl md:text-2xl text-indigo-200 mb-4 font-body font-medium" data-aos="fade-up" data-aos-delay="100">
-      For Small & Mid-Sized Businesses
+      Built for growing businesses navigating AI without a dedicated tech team.
     </p>
     {% if project.tech_tags.all %}
     <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
@@ -48,11 +48,11 @@
 
 <!-- Core Philosophy -->
 <section class="py-16 bg-gray-50 dark:bg-gray-800" data-aos="fade-up">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Core Philosophy</p>
-    <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+    <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed text-center">
       AI adoption is not a technology challenge — it is an organizational change challenge.
-      Most SMBs approach AI as a tooling decision. This framing almost always leads to underperformance.
+      Most SMBs approach AI as a tooling decision. This framing almost always leads to disappointing results.
       The real work is organizational: aligning people, processes, and governance around a new way of working.
     </p>
   </div>
@@ -63,7 +63,7 @@
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-14" data-aos="fade-up">
       <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">The 6-Stage Framework</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">From Assessment to Measurable ROI</h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white font-display">From Assessment to Measurable ROI</h2>
     </div>
 
     <div id="framework-root"></div>
@@ -72,11 +72,11 @@
 
 <!-- Closing Philosophy -->
 <section class="py-16 bg-gray-50 dark:bg-gray-800" data-aos="fade-up">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed italic font-display">
       "The SMBs that will win with AI are not the ones who move fastest — they are the ones who build
       durable internal capability, protect their clients and their data, and create measurable business
-      value rather than impressive demos."
+      value. Not the ones who caught the hype, acquired tools they couldn't explain, and called it a strategy."
     </p>
   </div>
 </section>
@@ -88,10 +88,13 @@
   </div>
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
     <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 font-display">See Where Your Company Stands</h2>
-    <p class="text-indigo-200 text-lg mb-8">
-      Answer 8 questions and receive a personalized AI readiness report for your organization — powered by the framework above.
+    <p class="text-indigo-200 text-lg mb-3">
+      You've seen the framework. Now answer 8 questions and see exactly where your organization stands.
     </p>
-    <button id="start-assessment-btn" onclick="document.dispatchEvent(new CustomEvent('assessmentStart'))" class="px-8 py-4 bg-white text-indigo-700 font-bold rounded-lg hover:bg-indigo-50 transition-colors text-lg shadow-lg shadow-indigo-900/30 cursor-pointer">
+    <p class="text-indigo-100 text-base mb-8">
+      Your results are generated using the Responsible AI Adoption Framework — personalized to your business.
+    </p>
+    <button id="start-assessment-btn" onclick="document.dispatchEvent(new CustomEvent('assessmentStart'))" class="px-8 py-4 bg-white text-indigo-700 font-bold rounded-lg hover:bg-indigo-50 transition-colors text-lg shadow-lg shadow-indigo-900/30 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-700">
       Start Assessment
       <svg class="inline-block w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
     </button>

@@ -11,24 +11,29 @@ interface StageData {
   [key: string]: unknown;
 }
 
+const NODE_STEP: Record<string, string> = {
+  '0': '01',
+  '1': '02',
+  '2': '03',
+  '3': '04',
+  'P': '05',
+  'M': '06',
+};
+
 export function StageNode({ data }: NodeProps) {
   const { stage, active, onToggle, label, entranceDelay = 0 } = data as StageData;
   const isOngoing = stage.type === 'ongoing';
-  const size = isOngoing ? 134 : 152;
+  const size = 152;
 
   const Icon = STAGE_ICONS[stage.number];
-  const iconColor = active ? 'white' : '#2563eb';
-  const iconSize  = isOngoing ? 40 : 46;
+  const iconColor = active ? 'white' : '#60a5fa';
+  const iconSize  = 72;
 
-  // Color palette — ongoing uses purple-violet, steps use electric blue / navy
-  const accentColor  = isOngoing ? 'rgba(124,58,237,' : 'rgba(37,99,235,';
-  const inactiveBorder = isOngoing ? '1.5px dashed #A78BFA' : '1.5px solid #bfdbfe';
-  const inactiveBg     = isOngoing
-    ? 'linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%)'
-    : 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)';
-  const activeBg = isOngoing
-    ? 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)'
-    : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+  // Color palette — deep navy inactive, electric blue active
+  const accentColor   = 'rgba(37,99,235,';
+  const inactiveBorder = '1.5px solid rgba(37,99,235,0.4)';
+  const inactiveBg    = '#0f1628';
+  const activeBg      = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
 
   // Decorative ring dimensions — centered via top/left offset inside overflow:visible container
   const orbitSize = size + 16;
@@ -93,6 +98,7 @@ export function StageNode({ data }: NodeProps) {
 
       {/* ── Main circle ── */}
       <div
+        className="stage-node-circle"
         style={{
           width: size,
           height: size,
@@ -100,13 +106,13 @@ export function StageNode({ data }: NodeProps) {
           border: active ? 'none' : inactiveBorder,
           background: active ? activeBg : inactiveBg,
           boxShadow: active
-            ? `0 0 20px ${accentColor}0.5), 0 4px 12px rgba(0,0,0,0.1)`
-            : `0 2px 8px ${accentColor}0.1)`,
+            ? `0 0 20px ${accentColor}0.6), 0 4px 12px rgba(0,0,0,0.2)`
+            : `0 0 12px ${accentColor}0.25), 0 4px 16px rgba(0,0,0,0.4)`,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 3,
+          gap: 8,
           cursor: 'pointer',
           transition: 'all 0.3s ease',
           transform: active ? 'scale(1.1)' : 'scale(1)',
@@ -143,16 +149,18 @@ export function StageNode({ data }: NodeProps) {
         </div>
 
         {/* Number badge */}
-        <div style={{
-          fontSize: 15,
-          fontFamily: 'DM Sans, sans-serif',
-          fontWeight: 700,
-          letterSpacing: '0.04em',
-          color: active ? 'rgba(255,255,255,0.85)' : (isOngoing ? '#7C3AED' : '#2563eb'),
+        <span style={{
+          fontSize: 22,
+          fontFamily: 'DM Sans, ui-sans-serif, system-ui, sans-serif',
+          fontWeight: 800,
+          letterSpacing: '-0.02em',
           lineHeight: 1,
+          color: active
+            ? 'rgba(255,255,255,0.95)'
+            : (isOngoing ? '#A78BFA' : '#60a5fa'),
         }}>
-          {isOngoing ? stage.number : `0${stage.number}`}
-        </div>
+          {NODE_STEP[stage.number] ?? stage.number}
+        </span>
       </div>
 
       {/* Label below */}
@@ -162,9 +170,9 @@ export function StageNode({ data }: NodeProps) {
         left: '50%',
         transform: 'translateX(-50%)',
         whiteSpace: 'nowrap',
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: 'DM Sans, sans-serif',
-        fontWeight: active ? 600 : 500,
+        fontWeight: active ? 700 : 600,
         color: active ? (isOngoing ? '#7C3AED' : '#2563eb') : '#6B7280',
         pointerEvents: 'none',
         letterSpacing: '0.01em',

@@ -11,12 +11,12 @@ interface StageModalProps {
 }
 
 const STAGE_BADGE: Record<string, string> = {
-  '0': 'Stage 0',
-  '1': 'Stage 1',
-  '2': 'Stage 2',
-  '3': 'Stage 3',
-  'P': 'Ongoing',
-  'M': 'Ongoing',
+  '0': 'Step 1',
+  '1': 'Step 2',
+  '2': 'Step 3',
+  '3': 'Step 4',
+  'P': 'Step 5',
+  'M': 'Step 6',
 };
 
 export function StageModal({ stage, onClose }: StageModalProps) {

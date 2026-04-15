@@ -38,7 +38,7 @@ export const STAGES: Stage[] = [
     subtitle: 'Before you invest, know what you are investing into',
     intro:
       'This step is often skipped — and its absence is the most common reason AI pilots fail. ' +
-      'The assessment is not about gatekeeping; it is about honest scoping. Before committing budget ' +
+      'The assessment is not about gatekeeping - it is about honest scoping. Before committing budget ' +
       'to any AI initiative, you need a clear-eyed view of where the organization actually stands — ' +
       'not where leadership hopes it stands.',
     columns: {
@@ -71,7 +71,7 @@ export const STAGES: Stage[] = [
   },
   {
     number: '1',
-    name: 'Workflows',
+    name: 'Workflows Prioritization',
     type: 'step',
     keyQuestion: 'Where will AI create the most value — and for whom?',
     subtitle: 'The first strategic decision',
@@ -125,7 +125,7 @@ export const STAGES: Stage[] = [
   },
   {
     number: '2',
-    name: 'Guardians: Governance & Cost Control',
+    name: 'Governance & Cost Control',
     type: 'step',
     keyQuestion: 'How do we keep AI safe, scoped, and cost-efficient?',
     subtitle: 'Keep AI safe, scoped, and cost-efficient',
@@ -138,7 +138,7 @@ export const STAGES: Stage[] = [
       left: {
         heading: 'Model Choice',
         items: [
-          'Right model for the right task — not every query needs GPT-4 class capability',
+          'Right model for the right task — not every query needs OpenAI, Claude or Gemini class capability',
           'Use smaller, faster models for classification, routing, and structured extraction',
           'Reserve frontier models for reasoning-intensive or high-stakes outputs',
         ],
@@ -228,18 +228,23 @@ export const STAGES: Stage[] = [
     },
     callouts: [
       {
-        label: 'Security Practices',
+        label: 'Real-World Example',
         text:
-          'Treat user inputs as untrusted — validate and sanitize before model ingestion (prompt injection). ' +
-          'Rotate credentials, scope by service, never hard-code API keys. AI capabilities should respect ' +
-          'the same RBAC as the rest of the platform. Evaluate third-party AI providers against your security standards.',
+          'A business owner used an AI coding tool to build an internal dashboard over a weekend — no developer involved. ' +
+          'The app worked. It also had hard-coded API keys in the frontend, no input validation, and a direct database ' +
+          'connection with admin credentials. Nobody noticed until a routine security review flagged it three months later. ' +
+          'This is the new failure mode: AI makes building easy. It does not make building secure. User inputs were never ' +
+          'validated — a prompt injection waiting to happen. Credentials were never rotated or scoped by service. The ' +
+          'third-party AI provider\'s data retention policy was never reviewed. And the AI capabilities had broader system ' +
+          'access than any other component on the platform. Without the right technical oversight, none of that gets caught. ' +
+          'The code runs fine — until it doesn\'t.',
       },
     ],
   },
   {
     number: 'P',
     name: 'People & Change Management',
-    type: 'ongoing',
+    type: 'step',
     keyQuestion: 'How do we build lasting internal AI competency?',
     subtitle: 'The pillar that is consistently the most underfunded',
     intro:
@@ -261,16 +266,15 @@ export const STAGES: Stage[] = [
         items: [
           'Train for the workflow, not the tool — contextual training outperforms generic AI literacy programs',
           'Manage resistance explicitly: name the fears (job loss, skill obsolescence, extra work) and address them directly',
-          'Leverage diverse strengths — your best engineer and your most experienced domain expert will have opposite strengths',
+          'Leverage diverse strengths — the people who know the tools and the people who know the business are rarely the same person. Use both',
         ],
       },
     },
     callouts: [
       {
-        label: 'Practical Note',
+        label: 'Real-World Signal',
         text:
-          'AI fluency is not uniform. Your best engineer and your most experienced domain expert will have ' +
-          'opposite strengths. Design adoption programs that leverage both — the engineer brings prompting ' +
+          'AI fluency is not uniform. Design adoption programs that leverage both — the engineer brings prompting ' +
           'discipline and tool intuition, the domain expert brings context that no model has.',
       },
     ],
@@ -278,7 +282,7 @@ export const STAGES: Stage[] = [
   {
     number: 'M',
     name: 'Measurement & ROI',
-    type: 'ongoing',
+    type: 'step',
     keyQuestion: 'How do we know it is working?',
     subtitle: 'Define success metrics before deployment — not after',
     intro:

@@ -13,67 +13,90 @@
   <div id="hero-particles" aria-hidden="true"></div>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
     <p class="section-label label-visible text-indigo-300 font-medium tracking-wider uppercase text-sm mb-4" data-aos="fade-down">Our Work</p>
-    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6" data-aos="fade-up">Solution Showcase</h1>
-    <p class="text-xl text-indigo-100" data-aos="fade-up" data-aos-delay="200">Real problems. Real solutions. Real results.</p>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6" data-aos="fade-up">Built for businesses like yours</h1>
+    <p class="text-xl text-indigo-100" data-aos="fade-up" data-aos-delay="200">Every project here started with a real business problem. Here's what we built — and what it changed</p>
   </div>
 </section>
-
-<!-- Disclaimer Banner -->
-<div class="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 text-center text-sm text-amber-800 dark:text-amber-300">
-    Case studies use synthetic data to protect client confidentiality. The scenarios, approaches, and outcomes reflect real engagement patterns.
-  </div>
-</div>
 
 <!-- Filter -->
-<section class="py-8 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+<section class="py-8 bg-white dark:bg-gray-900">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-wrap gap-2 justify-center" data-aos="fade-up">
-      <a href="{% url 'showcase:gallery' %}"
-         class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if not current_industry %}bg-indigo-600 text-white shadow-lg shadow-indigo-600/20{% else %}bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %}">
-        All Industries
-      </a>
-      {% for value, label in industry_choices %}
-      <a href="{% url 'showcase:gallery' %}?industry={{ value }}"
-         class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if current_industry == value %}bg-indigo-600 text-white shadow-lg shadow-indigo-600/20{% else %}bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %}">
-        {{ label }}
-      </a>
-      {% endfor %}
+    <div class="flex justify-center" data-aos="fade-up">
+      <div class="inline-flex flex-wrap justify-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1.5">
+        <a href="{% url 'showcase:gallery' %}"
+           class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 {% if not current_industry %}bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow font-semibold{% else %}text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200{% endif %}">
+          All Industries
+        </a>
+        {% for value, label in industry_choices %}
+        <a href="{% url 'showcase:gallery' %}?industry={{ value }}"
+           class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 {% if current_industry == value %}bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow font-semibold{% else %}text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200{% endif %}">
+          {{ label }}
+        </a>
+        {% endfor %}
+      </div>
     </div>
+    <p class="mt-4 text-center text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-1.5" data-aos="fade-up" data-aos-delay="100">
+      <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      Your solution will never appear here. These are representative samples — built to demonstrate our approach, not to expose client work. The actual work we deliver belongs entirely to you.
+    </p>
   </div>
 </section>
 
-<!-- Gallery Grid -->
+<!-- Gallery Carousel -->
 <section class="py-20 dark:bg-gray-900">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {% if projects %}
-    <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-      {% for project in projects %}
-      <a href="{% url 'showcase:detail' project.slug %}" class="showcase-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 group" data-aos="zoom-custom" data-aos-delay="{{ forloop.counter0|add:1 }}00">
-        {% if project.thumbnail %}
-        <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="w-full h-48 object-contain bg-gray-50 dark:bg-gray-700 p-2" loading="lazy" width="400" height="192">
-        {% else %}
-        <div class="w-full h-48 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900/40 dark:to-indigo-800/40 flex items-center justify-center">
-          <span class="text-indigo-400 text-sm">No image</span>
-        </div>
-        {% endif %}
-        <div class="p-6">
-          <div class="flex flex-wrap gap-2 mb-3">
-            <span class="inline-block px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded">{{ project.get_industry_display }}</span>
-            {% if project.live_demo_url %}
-            <span class="inline-block px-2 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-semibold rounded">Live Demo</span>
-            {% endif %}
+    <div class="showcase-carousel" data-autoplay="5000" data-aos="fade-up">
+      <!-- Left arrow -->
+      <button class="showcase-arrow showcase-arrow-left" aria-label="Previous project">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+
+      <!-- Carousel viewport -->
+      <div class="showcase-viewport">
+        <div class="showcase-track">
+          {% for project in projects %}
+          <div class="showcase-slide">
+            <a href="{% url 'showcase:detail' project.slug %}" class="showcase-card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 group">
+              <div class="showcase-card-img relative">
+                {% if project.thumbnail %}
+                <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="w-full h-48 object-contain bg-gray-50 dark:bg-gray-700 p-2" loading="lazy" width="400" height="192">
+                {% else %}
+                <div class="w-full h-48 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900/40 dark:to-indigo-800/40 flex items-center justify-center">
+                  <svg class="w-10 h-10 text-indigo-300 dark:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                {% endif %}
+                <div class="showcase-card-fade" aria-hidden="true"></div>
+                <div class="showcase-card-overlay" aria-hidden="true">
+                  <span class="text-white text-sm font-semibold">View case study &rarr;</span>
+                </div>
+                {% if project.live_demo_url or project.slug == 'ai-adoption-framework' %}
+                <span class="absolute top-3 right-3 z-10 inline-flex items-center gap-1 px-2 py-1 bg-emerald-500/90 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
+                  <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                  Live Demo
+                </span>
+                {% endif %}
+              </div>
+              <div class="p-6">
+                <span class="inline-block px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded mb-3">{{ project.get_industry_display }}</span>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2">{{ project.title }}</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">{{ project.summary }}</p>
+                <div class="mt-4 flex flex-wrap gap-1.5">
+                  {% for tag in project.tech_tags.all %}
+                  <span class="showcase-tag">{{ tag.name }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </a>
           </div>
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2">{{ project.title }}</h3>
-          <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3">{{ project.summary }}</p>
-          <div class="mt-4 flex flex-wrap gap-1">
-            {% for tag in project.tech_tags.all %}
-            <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded">{{ tag.name }}</span>
-            {% endfor %}
-          </div>
+          {% endfor %}
         </div>
-      </a>
-      {% endfor %}
+      </div>
+
+      <!-- Right arrow -->
+      <button class="showcase-arrow showcase-arrow-right" aria-label="Next project">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
     </div>
     {% else %}
     <div class="text-center py-12" data-aos="fade-up">
@@ -90,4 +113,8 @@
 </section>
 
 {% include "partials/_cta_section.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/showcase-carousel.js' %}"></script>
 {% endblock %}

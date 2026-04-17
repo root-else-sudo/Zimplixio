@@ -21,7 +21,7 @@ class ContactForm(forms.ModelForm):
             }),
             'message': forms.Textarea(attrs={
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
-                'placeholder': 'Tell us about your project or challenge...',
+                'placeholder': "Tell us what you're trying to solve.",
                 'rows': 5,
             }),
         }

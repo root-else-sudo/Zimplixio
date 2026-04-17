@@ -33,18 +33,35 @@
     <p class="text-xl md:text-2xl text-indigo-200 mb-4 font-body font-medium" data-aos="fade-up" data-aos-delay="100">
       Built for growing businesses navigating AI without a dedicated tech team.
     </p>
+  </div>
+</section>
+
+<!-- Quick Facts strip -->
+<div class="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-start gap-x-10">
+    <div class="shrink-0">
+      <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Industry</p>
+      <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ project.get_industry_display }}</p>
+    </div>
     {% if project.tech_tags.all %}
-    <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-      <p class="text-indigo-300 font-medium tracking-wider uppercase text-xs mb-2">Demo Tech Stack</p>
-      <div class="flex flex-wrap gap-2">
+    <div class="min-w-0">
+      <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Tech Stack</p>
+      <div class="flex flex-wrap gap-1">
         {% for tag in project.tech_tags.all %}
-        <span class="px-3 py-1 bg-white/10 text-indigo-100 text-sm rounded-full">{{ tag.name }}</span>
+        <span class="showcase-tag text-xs">{{ tag.name }}</span>
         {% endfor %}
       </div>
     </div>
     {% endif %}
+    <div class="shrink-0">
+      <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Live Demo</p>
+      <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+        Available
+      </span>
+    </div>
   </div>
-</section>
+</div>
 
 <!-- Core Philosophy -->
 <section class="py-16 bg-gray-50 dark:bg-gray-800" data-aos="fade-up">

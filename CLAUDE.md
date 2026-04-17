@@ -66,7 +66,7 @@ python manage.py check --deploy
 | `/cookie-policy/` | pages | CookiePolicyView |
 | `/services/` | services | ServicesPageView |
 | `/showcase/` | showcase | ShowcaseGalleryView |
-| `/showcase/<slug>/` | showcase | ShowcaseDetailView (slug `ai-adoption-framework` uses custom template `detail-framework.html`) |
+| `/showcase/<slug>/` | showcase | ShowcaseDetailView — template routed by slug map in `get_template_names()`: `e-commerce` → `detail.html`, `simple-forecast` → `detail-simple-forecast.html`, `ai-adoption-framework` → `detail-framework.html`, unknown slugs → `detail-base.html` |
 | `/results/` | metrics | NPSResultsView |
 | `/book/` | booking | BookCallView |
 | `/book/success/` | booking | BookingSuccessView |
@@ -129,12 +129,36 @@ All pages follow a consistent design language. When creating new pages, follow t
 - **CTA buttons**: `bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20`
 - **Dark mode**: Tailwind `darkMode: 'class'` — the `dark` class is toggled on `<html>` by `dark-mode.js`. Preference is persisted in `localStorage` and applied on page load (inline script in `<head>`) to prevent FOUC. Use `dark:` variants on all new UI elements. Common pairings: `bg-white dark:bg-gray-900`, `text-gray-900 dark:text-white`, `border-gray-200 dark:border-gray-700`, `bg-gray-50 dark:bg-gray-800`. Toggle button uses `.dark-mode-toggle` class; icons use `.dark-mode-moon` (visible in light) and `.dark-mode-sun` (visible in dark, starts `hidden`).
 
-### Showcase Detail Page — Interactive Demos
+### Showcase Detail Page — Template Architecture
 
-The showcase detail page (`templates/showcase/detail.html`) supports interactive iframe demos:
+Detail pages use a Django template inheritance system for per-project flexibility without duplication:
 
-- **Conditional rendering**: The iframe section only appears when `live_demo_url` is set on a `ShowcaseProject`
-- **Toggle buttons**: "Live App" (default) + "System Design" (only if `system_design_url` is set), styled like gallery filter pills
+- **`templates/showcase/detail-base.html`** — single structural source of truth. Contains the full page layout (hero, Quick Facts strip, all content sections, iframe demo, CTA) with `{% block %}` tags for every customizable string. Generic defaults are used so any unknown future project renders sensibly.
+- **`templates/showcase/detail.html`** — thin e-commerce (recomares) override. Extends `detail-base.html` and overrides section title/label blocks only.
+- **`templates/showcase/detail-simple-forecast.html`** — thin simple-forecast override. Extends `detail-base.html` and overrides only the blocks it needs.
+- **`templates/showcase/detail-framework.html`** — fully custom template for AI Adoption Framework. Does not extend `detail-base.html` — the framework page has a completely different structure (React components, assessment wizard, no standard content sections).
+- **Template routing**: `ShowcaseDetailView.get_template_names()` uses a `slug_map` dict. Add a new entry to the map + create `detail-{slug}.html` for any new project needing custom titles.
+
+**Available `{% block %}` tags in `detail-base.html`** (with generic defaults):
+
+| Block | Default |
+|-------|---------|
+| `hero_subtitle` | *(empty)* |
+| `section_problem_label` | `The Challenge` |
+| `section_problem_heading` | `The Scenario` |
+| `section_decision_label` | `Our Strategy` |
+| `section_decision_heading` | `The Approach` |
+| `section_solution_label` | `What We Built` |
+| `section_solution_heading` | `The Solution` |
+| `section_results_label` | `The Impact` |
+| `section_results_heading` | `The Outcome` |
+| `demo_hint` | *(empty)* — text below toggle buttons in iframe section |
+
+**Quick Facts strip**: All detail pages (including `detail-framework.html`) show a strip below the hero with Industry, Tech Stack pills, and Live Demo availability on a single row (`flex items-start gap-x-10`, no wrapping). `detail-framework.html` hardcodes the Live Demo indicator since the framework project has no `live_demo_url`.
+
+**Interactive iframe demos**:
+- The iframe section only appears when `live_demo_url` is set on a `ShowcaseProject`
+- **Toggle buttons**: "Live App" (default) + "System Design" (only if `system_design_url` is set)
 - **Iframe sandbox**: `allow-scripts allow-same-origin allow-forms allow-popups` for security
 - **Loading overlay**: Spinner shown until iframe fires `load` event, driven by `static/js/demo-iframe.js`
 - **Gallery badge**: Projects with `live_demo_url` show a green "Live Demo" badge on gallery cards
@@ -164,7 +188,12 @@ templates/
 │   └── _cta_section.html      # Reusable CTA block with gradient bg
 ├── pages/                     # home, about, contact, contact_success, privacy/cookie policy
 ├── services/                  # services page with tabbed interface + FAQ accordion
-├── showcase/                  # gallery (filterable) + detail pages
+├── showcase/
+│   ├── gallery.html           # filterable project gallery
+│   ├── detail-base.html       # BASE template — full layout with {% block %} tags, generic defaults
+│   ├── detail.html            # e-commerce (recomares) override — extends detail-base.html
+│   ├── detail-simple-forecast.html  # simple-forecast override — extends detail-base.html
+│   └── detail-framework.html  # AI framework — fully custom, does NOT extend detail-base.html
 ├── metrics/                   # NPS results page
 ├── booking/                   # book form + booking_success
 ├── emails/                    # transactional HTML email templates
@@ -325,3 +354,6 @@ Atlanta GA, Miami FL, Houston TX, Los Angeles CA, Detroit MI, New York NY, Chica
 - **Services page — no Pricing Signal section**: The pricing signal section was removed. Do not re-add it.
 - **About page no longer has `timeline.js`**: The interactive career timeline section ("The Journey") was removed. `static/js/timeline.js` is no longer loaded in `about.html` and is not referenced anywhere. The file still exists on disk but is unused.
 - **Founder cards have no `--reverse` variant**: Both founder cards (Joseph and Maria Jose) use the same photo-left layout. There is no `.founder-card--reverse` class in the HTML or CSS — it was removed when the layout switched from full-width stacked to side-by-side mini horizontal.
+- **Showcase detail templates — inheritance, not conditionals**: Do not add slug-based `{% if project.slug == ... %}` conditionals inside `detail-base.html` for per-project copy. The correct pattern is to override `{% block %}` tags in the project's own template (e.g. `detail-simple-forecast.html`). Add a new entry to `slug_map` in `ShowcaseDetailView.get_template_names()` when adding a new project template.
+- **`detail-framework.html` does not extend `detail-base.html`**: The framework page has a completely different structure and is a standalone template. Do not attempt to refactor it to extend the base — the two templates share no meaningful structure.
+- **Stray characters in project-specific templates**: When editing `detail-simple-forecast.html` or `detail.html` manually, watch for stray characters outside `{% block %}` tags — they will be silently rendered into the page.

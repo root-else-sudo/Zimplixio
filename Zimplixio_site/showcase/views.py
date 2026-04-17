@@ -24,16 +24,19 @@ class ShowcaseGalleryView(ListView):
 
 class ShowcaseDetailView(DetailView):
     model = ShowcaseProject
-    template_name = 'showcase/detail.html'
+    template_name = 'showcase/detail-base.html'
     context_object_name = 'project'
 
     def get_queryset(self):
         return ShowcaseProject.objects.filter(is_published=True).prefetch_related('tech_tags', 'screenshots')
 
     def get_template_names(self):
-        if self.object.slug == 'ai-adoption-framework':
-            return ['showcase/detail-framework.html']
-        return [self.template_name]
+        slug_map = {
+            'ai-adoption-framework': 'showcase/detail-framework.html',
+            'e-commerce':            'showcase/detail.html',
+            'simple-forecast':       'showcase/detail-simple-forecast.html',
+        }
+        return [slug_map.get(self.object.slug, self.template_name)]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.build]
+cmds = [
+  "cd frontend && npm ci && npm run build",
+  "cd Zimplixio_site && DJANGO_SETTINGS_MODULE=Zimplixio_site.settings.prod python manage.py collectstatic --noinput"
+]

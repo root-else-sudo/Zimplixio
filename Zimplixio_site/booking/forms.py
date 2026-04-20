@@ -28,5 +28,5 @@ class BookingForm(forms.ModelForm):
             }),
         }
 
-    def __init__(self, *args, available_times=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

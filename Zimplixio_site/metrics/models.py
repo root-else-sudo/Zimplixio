@@ -1,5 +1,8 @@
+from django.core.cache import cache
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+
+NPS_CACHE_KEY = 'nps_metric_active'
 
 
 class NPSMetric(models.Model):
@@ -22,3 +25,4 @@ class NPSMetric(models.Model):
         if self.is_active:
             NPSMetric.objects.filter(is_active=True).exclude(pk=self.pk).update(is_active=False)
         super().save(*args, **kwargs)
+        cache.delete(NPS_CACHE_KEY)

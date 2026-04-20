@@ -9,7 +9,7 @@ class ShowcaseGalleryView(ListView):
     context_object_name = 'projects'
 
     def get_queryset(self):
-        qs = ShowcaseProject.objects.filter(is_published=True).prefetch_related('tech_tags')
+        qs = ShowcaseProject.objects.published()
         industry = self.request.GET.get('industry')
         if industry and industry in dict(ShowcaseProject.INDUSTRY_CHOICES):
             qs = qs.filter(industry=industry)
@@ -28,7 +28,7 @@ class ShowcaseDetailView(DetailView):
     context_object_name = 'project'
 
     def get_queryset(self):
-        return ShowcaseProject.objects.filter(is_published=True).prefetch_related('tech_tags', 'screenshots')
+        return ShowcaseProject.objects.published().prefetch_related('screenshots')
 
     def get_template_names(self):
         slug_map = {

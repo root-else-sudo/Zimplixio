@@ -188,7 +188,7 @@
     }
     const html = slots.map(function (s) {
       return '<button type="button" data-value="' + s.value + '" data-label="' + s.label + '" ' +
-        'class="slot-pill px-4 py-3 rounded-lg border-2 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 font-medium text-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-500 transition-colors text-center">' +
+        'class="slot-pill px-4 py-3 rounded-lg border-2 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 font-medium text-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-500 transition-colors text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">' +
         s.label + '</button>';
     }).join('');
     slotContainer.innerHTML = '<div class="grid grid-cols-3 gap-3">' + html + '</div>';

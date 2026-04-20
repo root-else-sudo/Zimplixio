@@ -23,7 +23,7 @@
     {% if metric %}
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-3xl p-8 md:p-12 text-center mb-16 shadow-sm" data-aos="fade-up" data-aos-duration="800">
       <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-4">Net Promoter Score</p>
-      <p class="text-7xl md:text-8xl font-bold text-gray-900 mb-4" style="background: linear-gradient(135deg, #4338ca, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ metric.score }}</p>
+      <p class="nps-score-number text-7xl md:text-8xl font-bold mb-4">{{ metric.score }}</p>
       <p class="text-gray-500 dark:text-gray-400">Based on {{ metric.total_responses }} client responses</p>
       <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Last updated: {{ metric.last_updated|date:"F Y" }}</p>
     </div>

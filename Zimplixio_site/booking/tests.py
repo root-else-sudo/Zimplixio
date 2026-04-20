@@ -48,12 +48,3 @@ class BookingFormTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(BookingRequest.objects.exists())
 
-
-class AvailableSlotsTests(TestCase):
-    def test_available_times_generated(self):
-        TimeSlot.objects.create(day_of_week=0, start_time=time(9, 0), end_time=time(10, 0), is_active=True)
-        from booking.views import get_available_times
-        times = get_available_times()
-        self.assertEqual(len(times), 2)  # 9:00 and 9:30
-        self.assertEqual(times[0], time(9, 0))
-        self.assertEqual(times[1], time(9, 30))

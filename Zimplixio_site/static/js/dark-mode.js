@@ -13,6 +13,9 @@
     document.querySelectorAll('.dark-mode-moon').forEach(function (el) {
       el.classList.toggle('hidden', isDark);
     });
+    document.querySelectorAll('.dark-mode-toggle').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {

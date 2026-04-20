@@ -93,7 +93,6 @@
     var el = document.getElementById('world-map-container');
     if (!el) return;
     if (typeof d3 === 'undefined' || typeof topojson === 'undefined') {
-      console.warn('WorldMap: D3 or TopoJSON not loaded');
       return;
     }
     init(el);
@@ -151,9 +150,7 @@
       fetch(el.dataset.usUrl).then(function (r) { return r.json(); }),
     ]).then(function (results) {
       drawWorld(results[0], results[1], ctx, el);
-    }).catch(function (err) {
-      console.warn('WorldMap: failed to load geodata', err);
-    });
+    }).catch(function () {});
 
     var resizeTimer;
     window.addEventListener('resize', function () {

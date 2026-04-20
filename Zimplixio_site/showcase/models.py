@@ -11,7 +11,13 @@ class TechTag(models.Model):
         return self.name
 
 
+class ShowcaseProjectQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(is_published=True).prefetch_related('tech_tags')
+
+
 class ShowcaseProject(models.Model):
+    objects = ShowcaseProjectQuerySet.as_manager()
     INDUSTRY_CHOICES = [
         ('automotive', 'Automotive'),
         ('healthcare', 'Healthcare'),

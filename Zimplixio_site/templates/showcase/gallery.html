@@ -24,12 +24,12 @@
     <div class="flex justify-center" data-aos="fade-up">
       <div class="inline-flex flex-wrap justify-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1.5">
         <a href="{% url 'showcase:gallery' %}"
-           class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 {% if not current_industry %}bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow font-semibold{% else %}text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200{% endif %}">
+           class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 {% if not current_industry %}bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow font-semibold{% else %}text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200{% endif %}">
           All Industries
         </a>
         {% for value, label in industry_choices %}
         <a href="{% url 'showcase:gallery' %}?industry={{ value }}"
-           class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 {% if current_industry == value %}bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow font-semibold{% else %}text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200{% endif %}">
+           class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 {% if current_industry == value %}bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow font-semibold{% else %}text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200{% endif %}">
           {{ label }}
         </a>
         {% endfor %}
@@ -48,8 +48,8 @@
     {% if projects %}
     <div class="showcase-carousel" data-autoplay="5000" data-aos="fade-up">
       <!-- Left arrow -->
-      <button class="showcase-arrow showcase-arrow-left" aria-label="Previous project">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <button class="showcase-arrow showcase-arrow-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2" aria-label="Previous project">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
 
       <!-- Carousel viewport -->
@@ -57,7 +57,7 @@
         <div class="showcase-track">
           {% for project in projects %}
           <div class="showcase-slide">
-            <a href="{% url 'showcase:detail' project.slug %}" class="showcase-card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 group">
+            <a href="{% url 'showcase:detail' project.slug %}" class="showcase-card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:rounded-2xl">
               <div class="showcase-card-img relative">
                 {% if project.thumbnail %}
                 <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="w-full h-48 object-contain bg-gray-50 dark:bg-gray-700 p-2" loading="lazy" width="400" height="192">
@@ -94,8 +94,8 @@
       </div>
 
       <!-- Right arrow -->
-      <button class="showcase-arrow showcase-arrow-right" aria-label="Next project">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      <button class="showcase-arrow showcase-arrow-right focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2" aria-label="Next project">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"/></svg>
       </button>
     </div>
     {% else %}

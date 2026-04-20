@@ -12,8 +12,8 @@
   </div>
   <div id="hero-particles" aria-hidden="true"></div>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <a href="{% url 'showcase:gallery' %}" class="inline-flex items-center text-indigo-200 hover:text-white mb-6 transition-colors text-sm" data-aos="fade-right" data-aos-duration="600">
-      <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    <a href="{% url 'showcase:gallery' %}" class="inline-flex items-center text-indigo-200 hover:text-white mb-6 transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:rounded" data-aos="fade-right" data-aos-duration="600">
+      <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
       Back to Showcase
     </a>
     <span class="inline-block px-3 py-1 bg-white/20 text-white text-sm font-semibold rounded mb-4" data-aos="fade-up" data-aos-duration="600">{{ project.get_industry_display }}</span>
@@ -153,11 +153,11 @@
       <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-sm mb-2">Try it yourself</p>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Interactive Demo</h2>
       <div class="flex flex-wrap gap-2 justify-center">
-        <button class="demo-toggle px-4 py-2 rounded-full text-sm font-medium transition-colors bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" data-url="{{ project.live_demo_url }}">
+        <button class="demo-toggle px-5 py-3 rounded-full text-sm font-medium transition-colors bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2" data-url="{{ project.live_demo_url }}">
           Live App
         </button>
         {% if project.system_design_url %}
-        <button class="demo-toggle px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600" data-url="{{ project.system_design_url }}">
+        <button class="demo-toggle px-5 py-3 rounded-full text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2" data-url="{{ project.system_design_url }}">
           System Design
         </button>
         {% endif %}

@@ -46,7 +46,6 @@ Implementation quirks, removed features, and non-obvious constraints. Read this 
 
 ## About Page
 
-- **`timeline.js` is unused**: The "The Journey" section was removed. `static/js/timeline.js` is no longer loaded in `about.html`. File exists on disk but serves no purpose.
 - **Founder cards have no `--reverse` variant**: Both cards use photo-left layout. There is no `.founder-card--reverse` class in the HTML or CSS.
 - **Values flip cards — hover + click both trigger flip**: CSS `:hover` (desktop) AND JS `.is-flipped` class (click/tap). Do not remove either — hover gives instant desktop response; `.is-flipped` makes it work on touch.
 

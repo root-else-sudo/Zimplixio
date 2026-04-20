@@ -3,6 +3,8 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, CreateView
 from django_ratelimit.decorators import ratelimit
+
+from showcase.models import ShowcaseProject
 from .forms import ContactForm
 
 
@@ -11,17 +13,16 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        from showcase.models import ShowcaseProject
-        context['featured_projects'] = (
-            ShowcaseProject.objects
-            .filter(is_published=True)
-            .prefetch_related('tech_tags')[:10]
-        )
+        context['featured_projects'] = ShowcaseProject.objects.published()[:10]
         return context
 
 
 class AboutPageView(TemplateView):
     template_name = 'pages/about.html'
+
+
+class ServicesPageView(TemplateView):
+    template_name = 'services/services.html'
 
 
 class ContactView(CreateView):

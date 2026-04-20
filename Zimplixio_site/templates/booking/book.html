@@ -56,13 +56,13 @@
             <!-- Month navigation -->
             <div class="flex items-center justify-between mb-4">
               <button id="cal-prev" type="button" aria-label="Previous month"
-                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
               </button>
               <span id="cal-title" class="font-semibold text-gray-900 dark:text-white text-base"></span>
               <button id="cal-next" type="button" aria-label="Next month"
-                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
               </button>
             </div>
 
@@ -79,9 +79,9 @@
           <!-- ── Step 2: Pick a time ── -->
           <div id="booking-step-2" class="hidden px-6 pb-8">
             <div class="flex items-center gap-3 mb-5">
-              <button id="back-to-step1" type="button"
-                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              <button id="back-to-step1" type="button" aria-label="Back to date selection"
+                class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
               </button>
               <div>
                 <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-xs">Step 2 of 3</p>
@@ -97,9 +97,9 @@
           <!-- ── Step 3: Contact details ── -->
           <div id="booking-step-3" class="hidden px-6 pb-8">
             <div class="flex items-center gap-3 mb-4">
-              <button id="back-to-step2" type="button"
-                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              <button id="back-to-step2" type="button" aria-label="Back to time selection"
+                class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
               </button>
               <div>
                 <p class="text-indigo-600 dark:text-indigo-400 font-medium tracking-wider uppercase text-xs">Step 3 of 3</p>
@@ -125,7 +125,7 @@
               <!-- Name -->
               <div>
                 <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Name <span class="text-red-500">*</span>
+                  Name <span class="text-red-500" aria-label="required">*</span>
                 </label>
                 {{ form.name }}
                 {% if form.name.errors %}<p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.name.errors.0 }}</p>{% endif %}
@@ -134,7 +134,7 @@
               <!-- Email -->
               <div>
                 <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Email <span class="text-red-500">*</span>
+                  Email <span class="text-red-500" aria-label="required">*</span>
                 </label>
                 {{ form.email }}
                 {% if form.email.errors %}<p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.email.errors.0 }}</p>{% endif %}

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Zimplixio is a Django 6.0.3 web application using Python 3.14 for an SMB technology consulting firm. The site includes a homepage, about page (with consultant bios, values flip cards, and an interactive world map), services page, solution showcase gallery (with live iframe demos of recomares.com and simple-forecast.com), NPS results page, contact form, booking system, and legal pages. A technical specification document exists at the repo root (`Zimplixio_Technical_Development_Specification.docx`). A `README.md` also exists at the repo root for public-facing documentation.
+Zimplixio is a Django 6.0.3 web application using Python 3.14 for an SMB technology consulting firm. The site includes a homepage, about page (with consultant bios, values flip cards, and an interactive world map), services page, solution showcase gallery (with live iframe demos of recomares.com and simple-forecast.com), NPS results page, contact form, booking system, and legal pages. A `README.md` exists at the repo root for public-facing documentation.
 
 ## Development Commands
 
@@ -35,20 +35,20 @@ python manage.py check --deploy
 ## Architecture
 
 - **Django project package**: `Zimplixio_site/Zimplixio_site/` — settings, root URL conf, WSGI/ASGI entry points
-- **Database**: SQLite3 (`Zimplixio_site/db.sqlite3`)
+- **Database**: PostgreSQL (configured via `DATABASE_URL` in `.env`)
 - **Templates**: Project-level `Zimplixio_site/templates/` (shared across all apps)
 - **Static files**: `Zimplixio_site/static/` (css, js, images)
 - **Media uploads**: `Zimplixio_site/media/`
-- **Environment config**: `Zimplixio_site/.env` (django-environ)
-- **Deployment**: `Procfile` at repo root (Heroku — gunicorn + migrate on release)
+- **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored). Copy from `Zimplixio_site/.env.example` when setting up locally.
+- **Settings**: Split into `settings/base.py` (shared), `settings/dev.py` (local), `settings/prod.py` (Railway — enforces HSTS, SSL redirect, secure cookies). Controlled by `DJANGO_SETTINGS_MODULE` in `.env`.
+- **Deployment**: `Procfile` at repo root (Railway — gunicorn + migrate on release)
 
 ### Apps
 
 | App | Directory | Purpose |
 |-----|-----------|---------|
 | `core` | `Zimplixio_site/core/` | Context processors, CSP middleware, sitemaps |
-| `pages` | `Zimplixio_site/pages/` | Homepage, About, Contact, Privacy/Cookie Policy |
-| `services` | `Zimplixio_site/services/` | Services page (template-only, no models) |
+| `pages` | `Zimplixio_site/pages/` | Homepage, About, Services, Contact, Privacy/Cookie Policy |
 | `showcase` | `Zimplixio_site/showcase/` | Solution showcase gallery & detail pages |
 | `metrics` | `Zimplixio_site/metrics/` | NPS score tracking & results page |
 | `booking` | `Zimplixio_site/booking/` | Discovery call booking system |
@@ -64,7 +64,7 @@ python manage.py check --deploy
 | `/contact/success/` | pages | ContactSuccessView |
 | `/privacy-policy/` | pages | PrivacyPolicyView |
 | `/cookie-policy/` | pages | CookiePolicyView |
-| `/services/` | services | ServicesPageView |
+| `/services/` | pages | ServicesPageView |
 | `/showcase/` | showcase | ShowcaseGalleryView |
 | `/showcase/<slug>/` | showcase | ShowcaseDetailView — template routed by slug map in `get_template_names()`: `e-commerce` → `detail.html`, `simple-forecast` → `detail-simple-forecast.html`, `ai-adoption-framework` → `detail-framework.html`, unknown slugs → `detail-base.html` |
 | `/results/` | metrics | NPSResultsView |
@@ -168,9 +168,8 @@ Detail pages use a Django template inheritance system for per-project flexibilit
 
 The About page (`templates/pages/about.html`) has unique components beyond the standard design system:
 
-- **Founder cards** (`/* === Founder Cards === */` block in `main.css`): Two side-by-side mini horizontal cards displayed in a `grid grid-cols-1 md:grid-cols-2 gap-6` layout inside `max-w-7xl`. Each card uses CSS grid (`grid-template-columns: 260px 1fr`) — photo on the left (fixed `260px` column, `object-fit: cover`, fills the full card height), content on the right. The content panel (`founder-content-panel`) contains: name/title (`founder-meta-block`), LinkedIn button (`founder-linkedin-btn`), story-driven bio (`founder-bio`), and a blue left-border accent quote (`founder-accent`). No `.founder-card--reverse` variant — both cards use the same photo-left layout. Photos at `static/images/joseph.jpg` and `static/images/maria-jose.png`. Full light/dark mode support. AOS `fade-up` staggered entrance.
-- **Values flip cards** (`/* === Values Flip Cards === */` block in `main.css`): Three 3D flip cards in a `values-grid` (`repeat(3, 1fr)`) below a timeline track with animated connecting line. Front face shows a faded large number, category tag label, value title, and "Click to reveal" hint. Back face shows an indigo gradient with eyebrow, bold headline, and description body. Interaction: CSS `:hover` + JS `.is-flipped` class toggle on click/tap. Keyboard accessible (`tabindex="0"`, `role="button"`, Enter/Space triggers flip, `:focus-visible` ring). `aria-hidden` toggled on back face. `prefers-reduced-motion` shows/hides faces without animation. Mobile: single column, `height: 300px`, timeline track hidden. Three icon nodes above the cards (eye, trophy, shield SVGs) animate with glow + pulse ring when the corresponding card is hovered or clicked — JS `.is-hovered` class controlled by `mouseenter`/`mouseleave` on cards and nodes.
-- Real data from Joseph Ugalde's resume (HPE, IBM, PayPal, Intel career path). Maria Jose Espinoza (Co-Founder & Process Optimization and Automation Consultant) is the second founder card.
+- **Founder cards** (`/* === Founder Cards === */` in `main.css`): CSS grid layout (`grid-template-columns: 260px 1fr`), photo left, content right. Both cards use the same photo-left layout — no reverse variant. Photos at `static/images/joseph.jpg` and `static/images/maria-jose.png`.
+- **Values flip cards** (`/* === Values Flip Cards === */` in `main.css`): Three 3D flip cards. CSS `:hover` + JS `.is-flipped` toggle on click/tap. Keyboard accessible (`tabindex="0"`, `role="button"`, Enter/Space triggers flip). `prefers-reduced-motion` disables animation. Icon nodes above cards animate via `.is-hovered` class on `mouseenter`/`mouseleave`.
 - **Interactive world map**: See "About Page — World Map" section below.
 
 ### Template Structure
@@ -178,6 +177,8 @@ The About page (`templates/pages/about.html`) has unique components beyond the s
 ```
 templates/
 ├── base.html                  # HTML5 skeleton, Tailwind CDN, AOS global, Schema.org JSON-LD
+├── 404.html                   # Custom "Page not found" error page
+├── 500.html                   # Custom "Server error" page (self-contained — no context processors)
 ├── robots.txt
 ├── partials/
 │   ├── _header.html           # Sticky nav with hamburger menu
@@ -199,7 +200,8 @@ templates/
 ├── emails/                    # transactional HTML email templates
 │   ├── booking_visitor_received.html    # sent on form submit (acknowledgement)
 │   ├── booking_admin_notification.html  # sent to admin on new booking
-│   └── booking_visitor_confirmed.html   # sent when admin confirms a booking
+│   ├── booking_visitor_confirmed.html   # sent when admin confirms a booking
+│   └── framework_lead_notification.html # sent to admin when an AI assessment lead is captured
 └── framework/                 # AI adoption framework page + assessment
 ```
 
@@ -215,24 +217,22 @@ templates/
 | `static/js/header-scroll.js` | Adds `.header-elevated` box-shadow to `<header>` when `scrollY > 20` |
 | `static/js/logo-magnetic.js` | Magnetic cursor effect on `.logo-magnetic` elements (logo + Book a Call button) — lerp-based rAF loop, STRENGTH=0.28, EASE=0.1 |
 | `static/js/hero-text.js` | Word-by-word H1 reveal on `[data-word-reveal]` elements — splits into `<span class="word-reveal-item">` with staggered CSS animation |
-| `static/js/counter-anim.js` | IntersectionObserver counter animation on `[data-counter]` elements — ease-out-cubic count from 0 to `data-target`. Supports `data-pad` for zero-padded output and `data-suffix`. Handles both `DOMContentLoaded` and already-loaded states (safe to load at end of body). Used on about page stats. |
 | `static/js/particles-hero.js` | **Twisted Particle Stream** — custom canvas ImageData animation (no WebGL, no external lib). 20,000 particles across 6 twisted ribbon surfaces with perspective projection simulating 3D depth. Mouse movement tilts the camera (±1.2 rad Y, ±0.65 rad X). Present on all hero sections. |
 | `static/js/booking-wizard.js` | Calendly-like 3-step booking wizard — state machine driving calendar grid (step 1), time pills (step 2), and contact form (step 3). Fetches available days and slots from JSON API endpoints. Populates hidden `requested_date`/`requested_time` inputs before form submission. |
 | `static/js/showcase-carousel.js` | Netflix-style infinite-loop carousel for Featured Solutions on homepage. Vanilla JS IIFE — clones first/last N slides for seamless wrapping, `translateX` percentage-based positioning, CSS transitions. Auto-play (5s, pauses on hover/focus), left/right arrow + keyboard navigation. Responsive: 1 card mobile, 2 tablet, 3 desktop. Rebuilds clones on resize. `prefers-reduced-motion` disables auto-play. |
 | `static/js/world-map.js` | Interactive world map on the About page — D3 v7 + TopoJSON IIFE. Three-state machine: `'world'` (orthographic globe), `'flat'` (Natural Earth world map), `'us'` (US bounding-box zoom). See "About Page — World Map" section. |
-| `static/js/timeline.js` | **Unused — do not load.** Legacy interactive career timeline for the About page. The "The Journey" section was removed; `timeline.js` is no longer referenced in any template. File kept on disk but serves no purpose. |
 | `static/js/services-scroll.js` | Horizontal scroll-pinned panel controller for the services page (desktop ≥1024px only). Translates vertical scroll into `translateX` on `#svcPanelsTrack`. Includes snap-after-pause: after 220ms of no scrolling, `snapToNearest()` smoothly scrolls to the nearest panel. Uses `isSnapping` guard to prevent feedback loops during programmatic scroll. `goToPanel(index)` is called by nav dot clicks. Does not initialize on mobile — the tabbed layout takes over instead. |
 
 ### Other Static Files
 
 | File | Purpose |
 |------|---------|
-| `static/css/main.css` | Custom styles — see inline `/* === Section Name === */` comments for component groupings. Covers hero animations, showcase cards/carousel, PDCA section, founder cards, values flip cards, services tabbed interface, services scroll panels, services widget grids (p01–p05), What to Expect timeline, world map, credential logos, and dark mode form inputs. |
+| `static/css/main.css` | Custom styles — see inline `/* === Section Name === */` comments for component groupings. Covers hero animations, showcase cards/carousel, PDCA section, about page transitions and gradients, NPS score number, founder cards, values flip cards, services tabbed interface, services scroll panels, services widget grids (p01–p05), What to Expect timeline, world map, credential logos, and dark mode form inputs. |
 | `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules, stage node icon hover animations (`icon-trace`, `icon-scan-line`, `icon-flow-node`, `icon-data-stream`, `icon-trend-line`, etc.), `prefers-reduced-motion` overrides |
 | `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
 | `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
 | `static/images/logo.svg` | Zimplixio banner logo — used in `_header.html` nav. ViewBox cropped to content area; fixed width/height removed so CSS controls sizing (`h-14 w-auto` in nav) |
-| `static/images/favicon.png` | Site favicon — circular icon PNG with transparent background, sourced from `cropped_circle_image.png`. Linked in `base.html` as `<link rel="icon" type="image/png">` |
+| `static/images/favicon.png` | Site favicon — circular icon PNG with transparent background. Linked in `base.html` as `<link rel="icon" type="image/png">` |
 | `static/images/Paypal.svg` | PayPal logo SVG — used in homepage credentials section |
 | `static/images/IBM.svg` | IBM logo SVG — used in homepage credentials section |
 | `static/images/HPE.svg` | HPE logo SVG (white text, green icon) — used in homepage credentials section |
@@ -254,19 +254,16 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 
 - **Custom template routing**: `ShowcaseDetailView.get_template_names()` returns `detail-framework.html` when `slug == 'ai-adoption-framework'`; `get_context_data()` injects `api_available`
 - **Page structure**: Hero (with "Try the Assessment" scroll button) → Core Philosophy → Framework Accordion (6 stages, React Flow) → Closing Quote → CTA Panel → Assessment wizard
-- **Framework accordion**: React + React Flow component mounted on `<div id="framework-root">`. Hub-and-spoke diagram with `HubNode` (center AI circle, pulse/orbit animations), `StageNode` (6 stage circles with icons, idle animations), `GradientEdge` (animated dot spokes). Clicking a node opens a `StageModal` portal overlay with full stage content. Tech stack: React, Vite, `@xyflow/react` v12.
-- **StageNode design**: All 6 nodes are 152px fixed circles. Inactive state: `#0f1628` navy bg, `rgba(37,99,235,0.4)` border. Active state: blue gradient + scale(1.1). Icon color: `#60a5fa` inactive, `white` active. Below each node: stage name label at 16px, weight 600 (700 when active). Inside the circle: icon (72px) + sequential number (`01`–`06`) via `NODE_STEP` map — no "STEP" eyebrow, no text-shadow glow. Orbit/pulse rings shown only when inactive; float animation on icon when inactive.
-- **StageIcons design**: All icons use `viewBox="0 0 36 36"`, derive `primary/secondary/accent/fill` from a `color` prop via `deriveColors()` helper. Icons: `IconReadiness` (circuit clipboard + scan line), `IconWorkflows` (branching pipeline), `IconGovernance` (shield + circuit grid), `IconDataProtection` (lock + data streams), `IconPeople` (network of person nodes), `IconROI` (3 ascending columns + spark line + upward arrow). CSS hover animations on `.stage-node-circle:hover .icon-*` classes defined in `framework.css`.
-- **StageModal header labels**: `STAGE_BADGE` map in `StageModal.tsx` — `'0':'Step 1'`, `'1':'Step 2'`, `'2':'Step 3'`, `'3':'Step 4'`, `'P':'Step 5'`, `'M':'Step 6'`.
-- **React source**: `frontend/src/` — diagram components: `FlowHub.tsx`, `HubNode.tsx`, `StageNode.tsx`, `StageIcons.tsx`, `GradientEdge.tsx`, `StageModal.tsx`, `FrameworkAccordion.tsx`. Modal sub-components: `DualColumn.tsx`, `Callout.tsx`, `ComparisonTable.tsx`. Assessment wizard components: `AssessmentWizard.tsx`, `WizardQuestion.tsx`, `LoadingScreen.tsx`, `ContactForm.tsx`, `AssessmentReport.tsx`. Hook: `frontend/src/hooks/useIsMobile.ts`. Data: `frontend/src/data/stages.ts` (diagram), `frontend/src/data/questions.ts` (8 wizard questions). Types: `frontend/src/types/assessment.ts`. Build with `cd frontend && npm run build`.
+- **Framework accordion**: React + React Flow component mounted on `<div id="framework-root">`. Hub-and-spoke diagram — `HubNode` (center), 6 `StageNode` circles, `GradientEdge` spokes. Clicking a node opens a `StageModal` portal. Tech stack: React 19, Vite, `@xyflow/react` v12. Build with `cd frontend && npm run build` — output goes to `static/dist/`.
+- **React source**: `frontend/src/` — all component, data, hook, and type files. Key data files: `data/stages.ts` (diagram content), `data/questions.ts` (8 assessment questions). All 6 stages use `type: 'step'` — the unused `'ongoing'` type triggers a purple palette in `StageNode`, do not use it.
 - **Fonts**: DM Serif Display + DM Sans loaded via Google Fonts in `{% block extra_head %}`
 - **Content source (React)**: `frontend/src/data/stages.ts` — canonical data for the React Flow component. Defines TypeScript interfaces (`Stage`, `Column`, `Callout`, `Table`) and the `STAGES` array with structured fields (`intro`, `columns`, `callouts`, `tables`). `StageModal` renders this structured data. All 6 stages use `type: 'step'` — the `'ongoing'` type is no longer used and would trigger a different (purple) color palette in `StageNode`.
-- **Assessment API**: `POST /framework/api/assessment/` — rate-limited 3/hr per IP, calls `claude-sonnet-4-6`, returns structured JSON report (`readiness_level`, `readiness_summary`, `priority_stage`, `top_risks`, `first_30_days`, `one_line_verdict`)
+- **Assessment API**: `POST /framework/api/assessment/` — rate-limited 10/hr per IP, calls `claude-sonnet-4-6`, returns structured JSON report (`readiness_level`, `readiness_summary`, `priority_stage`, `top_risks`, `first_30_days`, `one_line_verdict`)
 - **Assessment user flow**: 8-question wizard (React, mounted on `#assessment-root`) → loading screen (API call) → contact capture form (name + email) → lead saved + email notification sent → report revealed. The "Start Assessment" button dispatches a `assessmentStart` custom DOM event that the React wizard listens for.
-- **Lead capture**: `POST /framework/api/save-lead/` — rate-limited 10/h per IP, validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (`joe.ugalde@zimplixio.com`). Recipient is server-side only, never exposed to the client.
+- **Lead capture**: `POST /framework/api/save-lead/` — rate-limited 3/hr per IP, validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (set via env var, server-side only, never exposed to the client).
 - **Lead model**: `framework.AssessmentLead` — viewable at `/zm-admin/framework/assessmentlead/`
 - **Prompt engineering**: `framework/prompts.py` — `build_system_prompt()` encodes full framework + strict JSON schema; `build_user_prompt(answers)` interpolates 8 user answers
-- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal.
+- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications; `LEAD_NOTIFICATION_EMAIL` for the notification recipient; `ZOOM_MEETING_URL` for the Zoom link included in booking confirmation emails. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal. See `.env.example` for the full reference.
 - **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
 
 
@@ -275,17 +272,7 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 
 The "The gap we saw" section of the About page contains an interactive world map in the right `lg:col-span-3` of a `lg:grid-cols-4` layout inside `max-w-7xl`.
 
-**Files**
-
-| File | Role |
-|------|------|
-| `static/js/world-map.js` | Main IIFE component (~500 lines) |
-| `static/css/main.css` | Map styles appended at bottom (`/* === World Map === */`) |
-| `static/data/world-110m.json` | World TopoJSON (CC0, world-atlas v2) |
-| `static/data/us-10m.json` | US states TopoJSON (CC0, us-atlas v3) |
-| `templates/pages/about.html` | Section markup + `extra_js` block |
-
-CDN scripts in `extra_js`: D3 v7 and TopoJSON v3 from `unpkg.com`. Data URLs injected via `data-world-url` / `data-us-url` attributes on `#world-map-container` using `{% static %}` tags.
+**Files**: `static/js/world-map.js` (D3 v7 + TopoJSON IIFE), `static/data/world-110m.json`, `static/data/us-10m.json`. D3 and TopoJSON loaded via unpkg CDN in `extra_js`. Data URLs injected via `data-world-url` / `data-us-url` attributes on `#world-map-container`.
 
 **Three-state interaction**
 
@@ -295,28 +282,10 @@ CDN scripts in `extra_js`: D3 v7 and TopoJSON v3 from `unpkg.com`. Data URLs inj
 | Flat world map (Natural Earth) | `'flat'` | Morph animation completes | Click US country or US pin → zoom; or mouse-out (600ms) → globe |
 | US bounding-box zoom | `'us'` | Click US in flat state | Click outside US states → zoom back to flat; or mouse-out → globe |
 
-**Globe state details**
-- Drag SVG to rotate freely (drag handler on `ctx.svg`)
-- `globeVisible(proj, lon, lat)` great-circle check controls pin show/hide — never uses `clipAngle` return value alone (avoids edge-case ocean pins)
-- All 29 country pins are created on load; back-hemisphere pins hidden via `opacity:0` + `translate(-9999,-9999)`
-
-**Country pins (`CONTINENTAL` array — 29 entries)**
-Americas: United States, Canada, Mexico, Costa Rica, Argentina, Brasil  
-Europe: Belgium, France, Germany, Ireland, Netherlands, Romania, Spain, Switzerland, United Kingdom  
-Africa: Egypt, South Africa  
-Asia: India, Indonesia, Japan, Vietnam, Philippines, Bangladesh, UAE, Taiwan, Israel, Qatar, Singapore  
-Pacific: Australia
-
-**US city pins (`CITIES` array — 12 entries)**  
-Atlanta GA, Miami FL, Houston TX, Los Angeles CA, Detroit MI, New York NY, Chicago IL, New Orleans LA, Boston MA, Newark NJ, Charlotte NC, Portland OR
-
-**Key technical details**
-- `makeInterpolatedProjection(rawA, rawB)` blends `geoOrthographicRaw` and `geoNaturalEarth1Raw` via `alpha(t)` using `geoProjectionMutator`
-- `clipAngle(90)` set at globe init; `clipAngle(null)` called after flat morph completes; `clipAngle(90)` restored before reverse morph
-- Country paths redrawn with `ctx.g.selectAll('.map-country').attr('d', ctx.path)` after `clipAngle(null)` — required or polar countries stay clipped
-- `zoomToUS` uses hardcoded continental US corners (`[-125,50]` → `[-66,24]`) to compute the bounding box — **do not switch back to `path.bounds(nation)`** as Alaska + Hawaii inflate the box and produce a near-useless zoom
-- Pin shapes: `PIN_LG` (continental, tip at origin, ~19px tall) and `PIN_SM` (city, ~13px tall) — SVG path strings, filled red (`#ef4444`) via `.attr('fill', ...)`
-- `setupTouch` function was removed; touch and desktop share one unified `ctx.svg.on('click', ...)` handler in `drawWorld`
+**Critical constraints — do not change without reading `world-map.js` first**
+- `zoomToUS` uses hardcoded continental US corners (`[-125,50]` → `[-66,24]`) — **do not switch to `path.bounds(nation)`**: Alaska + Hawaii inflate the box and break the zoom
+- `clipAngle(90)` must be restored before the reverse morph; country paths must be redrawn after `clipAngle(null)` or polar countries stay clipped
+- 29 country pins (`CONTINENTAL` array) + 12 US city pins (`CITIES` array) — touch and desktop share one unified click handler in `drawWorld`
 
 ### Known Gotchas
 

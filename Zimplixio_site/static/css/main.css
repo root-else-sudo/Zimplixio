@@ -1215,6 +1215,42 @@ textarea:focus {
   .map-country, .map-state, .map-pin-icon, .map-tooltip { transition: none; }
 }
 
+/* === About Page === */
+.timeline-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.timeline-details:not(.hidden) {
+  max-height: 600px;
+}
+.timeline-node {
+  transition: all 0.3s ease;
+}
+.timeline-chevron {
+  transition: transform 0.3s ease;
+}
+
+/* === About Page — Gradients === */
+.timeline-line {
+  background: linear-gradient(to bottom, #2563eb, #60a5fa, #bfdbfe);
+}
+.dark .timeline-line {
+  background: linear-gradient(to bottom, #3b82f6, #93c5fd, #dbeafe);
+}
+.stat-number {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.dark .stat-number {
+  background: linear-gradient(135deg, #60a5fa, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* === Founder Cards === */
 .founder-card {
   display: grid;
@@ -1846,18 +1882,15 @@ textarea:focus {
    ========================================================================== */
 
 /* ── Responsive visibility ──────────────────────────────────── */
-.svc-scroll-root { display: block; }
-.svc-tab-root    { display: none; }
+.svc-scroll-root {
+  display: block;
+  position: relative; /* height set by JS: totalPanels × 80vh */
+}
+.svc-tab-root { display: none; }
 
 @media (max-width: 1023px) {
   .svc-scroll-root { display: none; }
   .svc-tab-root    { display: block; }
-}
-
-/* ── Outer wrapper — scroll distance container ──────────────── */
-.svc-scroll-root {
-  position: relative;
-  /* height set by JS: totalPanels × 80vh */
 }
 
 /* ── Sticky viewport lock ───────────────────────────────────── */
@@ -3704,4 +3737,18 @@ textarea:focus {
     animation: none;
   }
   .wte-badge-dot { animation: none; }
+}
+
+/* === NPS Results === */
+.nps-score-number {
+  background: linear-gradient(135deg, #4338ca, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.dark .nps-score-number {
+  background: linear-gradient(135deg, #818cf8, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

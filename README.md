@@ -13,8 +13,8 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 - **AI Adoption Framework** — 6-stage methodology navigator (React + React Flow) paired with an 8-question AI readiness assessment powered by Claude
 - **Booking System** — Calendly-style 3-step wizard (calendar → time slot → contact form) backed by admin-managed availability
 - **Contact Form** — Rate-limited submission pipeline with admin read-tracking
-- **About Page** — Consultant bio, interactive career timeline, and animated stat cards
-- **Services Page** — Tier cards and FAQ accordion
+- **About Page** — Founder bios, values flip cards, interactive world map, and career stats
+- **Services Page** — Scroll-pinned panel layout (desktop) with tabbed interface (mobile) and FAQ accordion
 - **NPS Results Page** — Live NPS metric display
 - **Dark Mode** — Full site dark mode toggle with FOUC prevention
 - **PWA** — Web app manifest for installability
@@ -25,8 +25,8 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Django 6.0.2, Python 3.14 |
-| Database | SQLite3 (dev) |
+| Backend | Django 6.0.3, Python 3.14 |
+| Database | PostgreSQL |
 | Frontend framework | Tailwind CSS (CDN), AOS animations |
 | React bundle | React 19, Vite, @xyflow/react v12 |
 | AI | Anthropic Claude (`claude-sonnet-4-6`) |
@@ -35,7 +35,7 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 | Image handling | Pillow |
 | Config | django-environ |
 | WSGI | Gunicorn |
-| Deployment | Heroku |
+| Deployment | Railway |
 
 ---
 
@@ -43,18 +43,23 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 
 ```
 Zimplixio/
-├── Procfile                        # Heroku release + web commands
+├── Procfile                        # Railway release + web commands
 ├── Pipfile                         # Python dependencies
+├── Pipfile.lock                    # Pinned dependency versions
 ├── frontend/                       # React source (Vite)
 │   └── src/
 │       ├── components/             # FlowHub, StageModal, AssessmentWizard, etc.
 │       └── data/                   # stages.ts, questions.ts
 └── Zimplixio_site/
     ├── manage.py
+    ├── .env.example                # Environment variable reference (copy to .env)
     ├── Zimplixio_site/             # Django project package (settings, urls, wsgi)
+    │   └── settings/
+    │       ├── base.py             # Shared settings
+    │       ├── dev.py              # Local development overrides
+    │       └── prod.py             # Production hardening (HSTS, SSL, etc.)
     ├── core/                       # Context processors, CSP middleware, sitemaps
-    ├── pages/                      # Homepage, About, Contact, legal pages
-    ├── services/                   # Services page
+    ├── pages/                      # Homepage, About, Services, Contact, legal pages
     ├── showcase/                   # Solution gallery & detail pages
     ├── metrics/                    # NPS score tracking
     ├── booking/                    # Discovery call booking wizard
@@ -72,7 +77,8 @@ Zimplixio/
 
 - Python 3.14
 - Pipenv
-- Node.js (for rebuilding the React bundle)
+- PostgreSQL (local instance)
+- Node.js (only needed to rebuild the React bundle)
 
 ### Local Setup
 
@@ -87,7 +93,7 @@ pipenv shell
 
 # 3. Configure environment
 cp Zimplixio_site/.env.example Zimplixio_site/.env
-# Edit .env — set SECRET_KEY, DEBUG=True, ANTHROPIC_API_KEY
+# Edit .env — fill in SECRET_KEY, DATABASE_URL, and ANTHROPIC_API_KEY at minimum
 
 # 4. Run migrations
 cd Zimplixio_site
@@ -127,12 +133,17 @@ python manage.py test showcase.tests.ShowcaseTests # Single class
 
 ## Environment Variables
 
+See `.env.example` for the full reference with descriptions and dev/prod guidance.
+
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `SECRET_KEY` | Yes | Django secret key |
+| `DJANGO_SETTINGS_MODULE` | Yes | `Zimplixio_site.settings.dev` locally, `Zimplixio_site.settings.prod` on Railway |
+| `SECRET_KEY` | Yes | Django secret key — generate a fresh one for production |
 | `DEBUG` | Yes | `True` for dev, `False` for prod |
 | `ALLOWED_HOSTS` | Yes | Comma-separated list of allowed hosts |
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
 | `ANTHROPIC_API_KEY` | No | Enables the AI readiness assessment (returns 503 if absent) |
+| `ZOOM_MEETING_URL` | No | Zoom link included in booking confirmation emails |
 | `EMAIL_BACKEND` | No | Defaults to console backend in dev |
 | `EMAIL_HOST` | No | SMTP host for transactional emails |
 | `EMAIL_HOST_USER` | No | SMTP username |
@@ -142,18 +153,18 @@ python manage.py test showcase.tests.ShowcaseTests # Single class
 
 ---
 
-## Deployment (Heroku)
+## Deployment (Railway)
 
 The `Procfile` handles the full release pipeline:
 
 ```
-release: cd frontend && npm ci && npm run build && cd ../Zimplixio_site && python manage.py migrate --noinput && python manage.py collectstatic --noinput
-web: cd Zimplixio_site && gunicorn Zimplixio_site.wsgi --bind 0.0.0.0:$PORT
+release: cd frontend && npm ci && npm run build && cd ../Zimplixio_site && DJANGO_SETTINGS_MODULE=Zimplixio_site.settings.prod python manage.py migrate --noinput && DJANGO_SETTINGS_MODULE=Zimplixio_site.settings.prod python manage.py collectstatic --noinput
+web: cd Zimplixio_site && DJANGO_SETTINGS_MODULE=Zimplixio_site.settings.prod gunicorn Zimplixio_site.wsgi --bind 0.0.0.0:$PORT
 ```
 
-On every deploy: frontend is rebuilt, migrations run, static files are collected, then Gunicorn starts.
+On every deploy: the React bundle is rebuilt, migrations run, static files are collected, then Gunicorn starts.
 
-> **Note:** `gunicorn` is declared in `Pipfile` and installed via `pipenv install`.
+All environment variables are configured in the Railway dashboard under **Variables** — no `.env` file is used on the server.
 
 ---
 

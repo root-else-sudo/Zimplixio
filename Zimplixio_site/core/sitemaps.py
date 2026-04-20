@@ -12,7 +12,7 @@ class StaticViewSitemap(Sitemap):
             'pages:home',
             'pages:about',
             'pages:contact',
-            'services:services',
+            'pages:services',
             'showcase:gallery',
             'metrics:results',
             'booking:book',
@@ -29,7 +29,7 @@ class ShowcaseSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return ShowcaseProject.objects.filter(is_published=True)
+        return ShowcaseProject.objects.published()
 
     def lastmod(self, obj):
         return obj.updated_at

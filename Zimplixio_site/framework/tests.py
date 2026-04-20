@@ -4,6 +4,7 @@ from unittest.mock import patch, MagicMock  # noqa: patch.dict used below
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from showcase.models import ShowcaseProject
 from .prompts import build_system_prompt, build_user_prompt
 
 
@@ -197,6 +198,20 @@ class PromptTests(TestCase):
 
 
 class ShowcaseIntegrationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        ShowcaseProject.objects.create(
+            title='AI Adoption Framework',
+            slug='ai-adoption-framework',
+            summary='A practical roadmap for integrating AI into SMB operations.',
+            business_problem='',
+            approach='',
+            solution_description='',
+            outcomes='',
+            is_published=True,
+            order=3,
+        )
+
     def test_gallery_contains_framework_card(self):
         response = self.client.get(reverse('showcase:gallery'))
         self.assertContains(response, 'AI Adoption Framework')

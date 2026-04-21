@@ -1,5 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs_20"]
-
-[start]
-cmd = "cd Zimplixio_site && python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn Zimplixio_site.wsgi:application --bind 0.0.0.0:$PORT --workers 2"

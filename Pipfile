@@ -12,6 +12,8 @@ django-ratelimit = "*"
 anthropic = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+django-storages = {extras = ["s3"], version = "*"}
+boto3 = "*"
 
 [dev-packages]
 

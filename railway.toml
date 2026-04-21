@@ -2,6 +2,6 @@
 buildCommand = "cd frontend && npm install && npm run build && /app/.venv/bin/python /app/Zimplixio_site/manage.py collectstatic --noinput"
 
 [deploy]
-startCommand = "/app/.venv/bin/python /app/Zimplixio_site/manage.py migrate --noinput && /app/.venv/bin/gunicorn --chdir /app/Zimplixio_site Zimplixio_site.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
+startCommand = "bash /app/start.sh"
 restartPolicyType = "on_failure"
 healthcheckPath = "/"

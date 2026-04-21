@@ -1,5 +1,5 @@
 [build]
-buildCommand = "cd frontend && npm ci && npm run build"
+buildCommand = "cd frontend && npm install && npm run build"
 
 [deploy]
 startCommand = "export DJANGO_SETTINGS_MODULE=Zimplixio_site.settings.prod && cd Zimplixio_site && python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn Zimplixio_site.wsgi:application --bind 0.0.0.0:$PORT --workers 2"

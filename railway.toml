@@ -3,5 +3,3 @@ buildCommand = "cd frontend && npm install && npm run build && /app/.venv/bin/py
 
 [deploy]
 startCommand = "bash /app/start.sh"
-restartPolicyType = "on_failure"
-healthcheckPath = "/"

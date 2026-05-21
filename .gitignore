@@ -24,8 +24,10 @@ media/
 *.swp
 *.swo
 
-# Claude Code local settings
+# Claude Code
 .claude/settings.local.json
+logs.*.json
+docs/superpowers/
 
 # OS
 .DS_Store

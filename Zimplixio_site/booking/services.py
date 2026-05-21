@@ -44,6 +44,8 @@ class BookingEmailService:
         context = BookingEmailService._build_context(booking)
         date_str = context['date_str']
         time_str = context['time_str']
+        site_url = getattr(settings, 'SITE_URL', '').rstrip('/')
+        context['admin_url'] = f'{site_url}/zm-admin/booking/bookingrequest/{booking.pk}/change/'
         try:
             html = render_to_string('emails/booking_admin_notification.html', context)
             send_mail(

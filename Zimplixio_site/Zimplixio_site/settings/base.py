@@ -97,6 +97,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@zimplixio.com')
 LEAD_NOTIFICATION_EMAIL = env('LEAD_NOTIFICATION_EMAIL', default='')
 ZOOM_MEETING_URL = env('ZOOM_MEETING_URL', default='')
+SITE_URL = env('SITE_URL', default='http://localhost:8000')
 
 LOGGING = {
     'version': 1,

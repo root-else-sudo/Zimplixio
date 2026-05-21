@@ -39,9 +39,9 @@ python manage.py check --deploy
 - **Templates**: Project-level `Zimplixio_site/templates/` (shared across all apps)
 - **Static files**: `Zimplixio_site/static/` (css, js, images)
 - **Media uploads**: `Zimplixio_site/media/`
-- **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored). Copy from `Zimplixio_site/.env.example` when setting up locally.
+- **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored).
 - **Settings**: Split into `settings/base.py` (shared), `settings/dev.py` (local), `settings/prod.py` (Railway — enforces HSTS, SSL redirect, secure cookies). Controlled by `DJANGO_SETTINGS_MODULE` in `.env`.
-- **Deployment**: `Procfile` at repo root (Railway — gunicorn + migrate on release)
+- **Deployment**: `railway.toml` (build command) + `start.sh` (collectstatic → migrate → gunicorn)
 
 ### Apps
 
@@ -263,7 +263,7 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **Lead capture**: `POST /framework/api/save-lead/` — rate-limited 3/hr per IP, validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (set via env var, server-side only, never exposed to the client).
 - **Lead model**: `framework.AssessmentLead` — viewable at `/zm-admin/framework/assessmentlead/`
 - **Prompt engineering**: `framework/prompts.py` — `build_system_prompt()` encodes full framework + strict JSON schema; `build_user_prompt(answers)` interpolates 8 user answers
-- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications; `LEAD_NOTIFICATION_EMAIL` for the notification recipient; `ZOOM_MEETING_URL` for the Zoom link included in booking confirmation emails. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal. See `.env.example` for the full reference.
+- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications; `LEAD_NOTIFICATION_EMAIL` for the notification recipient; `ZOOM_MEETING_URL` for the Zoom link included in booking confirmation emails; `SITE_URL` for building absolute links in emails. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal.
 - **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
 
 

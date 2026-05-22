@@ -6,82 +6,95 @@
 <title>Your Discovery Call Request — Zimplixio</title>
 <style>
   body { margin: 0; padding: 0; background: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111827; }
-  .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-  .header { background: linear-gradient(135deg, #1e3a5f 0%, #0f2044 35%, #060c18 60%, #162d4a 85%, #0f2044 100%); padding: 36px 40px 32px; }
-  .brand-row { display: table; margin-bottom: 4px; }
-  .brand-icon { display: table-cell; vertical-align: middle; padding-right: 14px; }
-  .brand-icon img { display: block; width: 48px; height: 48px; }
-  .brand-text { display: table-cell; vertical-align: middle; font-weight: 800; font-size: 28px; color: #ffffff; letter-spacing: -0.025em; line-height: 1; }
-  .status-bar { padding: 16px 40px; border-bottom: 1px solid #f3f4f6; }
-  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.15); margin-right: 12px; vertical-align: middle; }
-  .status-label { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #b91c1c; vertical-align: middle; }
-  .body { padding: 32px 40px 28px; }
-  .greeting { font-size: 20px; font-weight: 600; color: #111827; margin: 0 0 16px; letter-spacing: -0.01em; }
-  .body p { margin: 0 0 16px; font-size: 15px; line-height: 1.65; color: #4b5563; }
-  .body p strong { color: #111827; font-weight: 600; }
-  .intro { color: #374151 !important; font-size: 16px !important; }
-  .date-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px 28px; margin: 24px 0; }
-  .date-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; }
-  .date-text { font-size: 22px; font-weight: 700; color: #6b7280; letter-spacing: -0.015em; margin-bottom: 16px; line-height: 1.2; text-decoration: line-through; text-decoration-color: rgba(239,68,68,0.5); text-decoration-thickness: 2px; }
-  .meta-grid { padding-top: 16px; border-top: 1px solid #e5e7eb; }
-  .meta-cell { display: inline-block; vertical-align: top; margin-right: 24px; }
-  .meta-label { font-size: 10px; font-weight: 600; color: #9ca3af; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px; }
-  .meta-value { font-size: 15px; font-weight: 600; color: #6b7280; }
-  .cta-block { margin: 24px 0; text-align: center; padding: 24px 28px; background: #f9fafb; border-radius: 14px; border: 1px solid #e5e7eb; }
-  .cta-prompt { font-size: 13px !important; color: #6b7280 !important; margin: 0 0 14px !important; font-weight: 500; }
-  .cta-button { display: inline-block; background: #4338ca; color: #ffffff !important; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
-  .cta-helper { font-size: 12px !important; color: #9ca3af !important; margin: 12px 0 0 !important; }
-  .signoff { margin-top: 28px; padding-top: 24px; border-top: 1px solid #f3f4f6; font-size: 14px; color: #4b5563; line-height: 1.6; }
-  .signoff strong { color: #111827; font-weight: 600; }
-  .footer { background: #fafbfc; border-top: 1px solid #f3f4f6; padding: 20px 40px; text-align: center; }
-  .footer-tag { font-size: 11px; color: #9ca3af; margin: 0; }
 </style>
 </head>
-<body>
-<div class="wrapper">
-  <div class="header">
-    <div class="brand-row">
-      <div class="brand-icon"><img src="https://zimplixio.com/static/images/zimplixio-icon.png" alt="Zimplixio" width="56" height="56" style="display:block; width:56px; height:auto;"></div>
-      <div class="brand-text">Zimplixio</div>
-    </div>
-  </div>
-  <div class="status-bar">
-    <span class="status-dot"></span><span class="status-label">Booking Cancelled</span>
-  </div>
-  <div class="body">
-    <h2 class="greeting">Hi {{ booking.name }},</h2>
-    <p class="intro">We're sorry to let you know that your discovery call request has been <strong>cancelled</strong>. We apologize for any inconvenience this may cause.</p>
-    <div class="date-card">
-      <div class="date-label">Cancelled Slot</div>
-      <div class="date-text">{{ date_str }}</div>
-      <div class="meta-grid">
-        <div class="meta-cell">
-          <div class="meta-label">Time</div>
-          <div class="meta-value">{{ visitor_time_str }}</div>
-        </div>
-        {% if booking.company %}
-        <div class="meta-cell">
-          <div class="meta-label">Company</div>
-          <div class="meta-value">{{ booking.company }}</div>
-        </div>
-        {% endif %}
+<body style="margin:0; padding:0; background:#f4f6f9; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#111827;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f6f9;">
+<tr><td align="center" style="padding:32px 16px;">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+
+  <!-- Header -->
+  <tr>
+    <td style="background:linear-gradient(135deg,#1e3a5f 0%,#0f2044 35%,#060c18 60%,#162d4a 85%,#0f2044 100%); padding:36px 40px 32px;">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="padding-right:14px; vertical-align:middle;">
+            <img src="https://zimplixio.com/static/images/zimplixio-icon.png" alt="Zimplixio" width="56" height="56" style="display:block; width:56px; height:auto;">
+          </td>
+          <td style="vertical-align:middle; font-weight:800; font-size:28px; color:#ffffff; letter-spacing:-0.025em; line-height:1;">Zimplixio</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Status bar -->
+  <tr>
+    <td style="padding:16px 40px; border-bottom:1px solid #f3f4f6;">
+      <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#ef4444; box-shadow:0 0 0 4px rgba(239,68,68,0.15); margin-right:12px; vertical-align:middle;"></span>
+      <span style="display:inline-block; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#b91c1c; vertical-align:middle;">Booking Cancelled</span>
+    </td>
+  </tr>
+
+  <!-- Body -->
+  <tr>
+    <td style="padding:32px 40px 28px;">
+      <h2 style="font-size:20px; font-weight:600; color:#111827; margin:0 0 16px; letter-spacing:-0.01em;">Hi {{ booking.name }},</h2>
+      <p style="margin:0 0 16px; font-size:16px; line-height:1.65; color:#374151;">We're sorry to let you know that your discovery call request has been <strong style="color:#111827; font-weight:600;">cancelled</strong>. We apologize for any inconvenience this may cause.</p>
+
+      <!-- Date card (muted, cancelled style) -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:14px; margin:24px 0;">
+        <tr>
+          <td style="padding:24px 28px;">
+            <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6b7280; margin-bottom:8px;">Cancelled Slot</div>
+            <div style="font-size:22px; font-weight:700; color:#6b7280; letter-spacing:-0.015em; margin-bottom:16px; line-height:1.2; text-decoration:line-through; text-decoration-color:rgba(239,68,68,0.5);">{{ date_str }}</div>
+            <table cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #e5e7eb; width:100%;">
+              <tr>
+                <td style="padding-top:16px; vertical-align:top; padding-right:24px;">
+                  <div style="font-size:10px; font-weight:600; color:#9ca3af; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:2px;">Time</div>
+                  <div style="font-size:15px; font-weight:600; color:#6b7280;">{{ visitor_time_str }}</div>
+                </td>
+                {% if booking.company %}
+                <td style="padding-top:16px; vertical-align:top;">
+                  <div style="font-size:10px; font-weight:600; color:#9ca3af; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:2px;">Company</div>
+                  <div style="font-size:15px; font-weight:600; color:#6b7280;">{{ booking.company }}</div>
+                </td>
+                {% endif %}
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Rebook CTA -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:14px; margin:24px 0;">
+        <tr>
+          <td style="padding:24px 28px; text-align:center;">
+            <p style="margin:0 0 14px; font-size:13px; color:#6b7280; font-weight:500;">Want to find another time that works?</p>
+            <a href="{{ booking_url|default:'https://zimplixio.com/book/' }}" style="display:inline-block; background:#4338ca; color:#ffffff; text-decoration:none; padding:14px 32px; border-radius:10px; font-weight:600; font-size:15px; letter-spacing:-0.01em;">Book a New Discovery Call &rarr;</a>
+            <p style="margin:12px 0 0; font-size:12px; color:#9ca3af;">Or simply reply to this email and we'll help reschedule.</p>
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin:0 0 16px; font-size:15px; line-height:1.65; color:#4b5563;">We'd still love to connect and explore how we can help simplify your technology stack. Reach out whenever you're ready.</p>
+
+      <div style="margin-top:28px; padding-top:24px; border-top:1px solid #f3f4f6; font-size:14px; color:#4b5563; line-height:1.6;">
+        Best regards,<br>
+        <strong style="color:#111827; font-weight:600;">The Zimplixio Team</strong>
       </div>
-    </div>
-    <div class="cta-block">
-      <p class="cta-prompt">Want to find another time that works?</p>
-      <a href="{{ booking_url|default:'https://zimplixio.com/book/' }}" class="cta-button">Book a New Discovery Call &rarr;</a>
-      <p class="cta-helper">Or simply reply to this email and we'll help reschedule.</p>
-    </div>
-    <p>We'd still love to connect and explore how we can help simplify your technology stack. Reach out whenever you're ready.</p>
-    <div class="signoff">
-      Best regards,<br>
-      <strong>The Zimplixio Team</strong>
-    </div>
-  </div>
-  <div class="footer">
-    <img src="https://zimplixio.com/static/images/zimplixio-wordmark.png" alt="Zimplixio" height="24" style="height:24px; width:auto; display:inline-block; margin-bottom:4px;">
-    <p class="footer-tag">Technology Consulting for Small &amp; Mid-Size Businesses</p>
-  </div>
-</div>
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td style="background:#fafbfc; border-top:1px solid #f3f4f6; padding:20px 40px; text-align:center;">
+      <img src="https://zimplixio.com/static/images/zimplixio-wordmark.png" alt="Zimplixio" height="24" style="height:24px; width:auto; display:inline-block; margin-bottom:4px;"><br>
+      <span style="font-size:11px; color:#9ca3af;">Technology Consulting for Small &amp; Mid-Size Businesses</span>
+    </td>
+  </tr>
+
+</table>
+</td></tr>
+</table>
 </body>
 </html>

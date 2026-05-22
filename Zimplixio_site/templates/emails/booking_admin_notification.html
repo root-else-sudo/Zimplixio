@@ -6,102 +6,109 @@
 <title>New Booking Request — Zimplixio Admin</title>
 <style>
   body { margin: 0; padding: 0; background: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111827; }
-  .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-  .header { background: linear-gradient(135deg, #1e3a5f 0%, #0f2044 35%, #060c18 60%, #162d4a 85%, #0f2044 100%); padding: 32px 40px 28px; }
-  .brand-row { display: table; margin-bottom: 12px; }
-  .brand-icon { display: table-cell; vertical-align: middle; padding-right: 14px; }
-  .brand-icon img { display: block; width: 48px; height: 48px; }
-  .brand-text { display: table-cell; vertical-align: middle; font-weight: 800; font-size: 28px; color: #ffffff; letter-spacing: -0.025em; line-height: 1; }
-  .header-title { font-weight: 800; font-size: 22px; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 4px; }
-  .header-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin: 0; }
-  .status-bar { padding: 14px 40px; border-bottom: 1px solid #f3f4f6; background: #fffbeb; }
-  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,0.2); margin-right: 12px; vertical-align: middle; }
-  .status-label { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #92400e; vertical-align: middle; }
-  .status-action { float: right; font-size: 12px; color: #92400e; font-weight: 500; padding-top: 1px; }
-  .body { padding: 28px 40px 24px; }
-  .body p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #4b5563; }
-  .body p strong { color: #111827; font-weight: 600; }
-  .contact-card { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border: 1px solid #c7d2fe; border-radius: 14px; padding: 20px 24px; margin: 0 0 20px; }
-  .contact-name { font-size: 18px; font-weight: 700; color: #1e1b4b; letter-spacing: -0.01em; margin: 0 0 4px; }
-  .contact-email { font-size: 13px; color: #4338ca; font-weight: 500; margin: 0 0 12px; }
-  .contact-email a { color: #4338ca; text-decoration: none; }
-  .contact-company { display: inline-block; padding: 4px 10px; background: rgba(79,70,229,0.12); color: #3730a3; border-radius: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
-  .detail-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6b7280; margin: 0 0 10px 4px; }
-  .detail-table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fafbfc; border: 1px solid #f3f4f6; border-radius: 12px; overflow: hidden; margin: 0 0 20px; }
-  .detail-table td { padding: 12px 18px; font-size: 14px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
-  .detail-table tr:last-child td { border-bottom: none; }
-  .detail-table td:first-child { color: #6b7280; font-weight: 600; width: 110px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 14px; }
-  .detail-table td:last-child { color: #111827; font-weight: 500; }
-  .detail-table .value-strong { font-weight: 600; color: #111827; }
-  .message-block { background: #fff; border: 1px solid #e5e7eb; border-left: 3px solid #6366f1; border-radius: 8px; padding: 14px 16px; color: #374151; line-height: 1.6; font-size: 14px; font-style: italic; }
-  .cta-block { margin: 24px 0 12px; text-align: center; }
-  .cta-button { display: inline-block; background: #4f46e5; color: #ffffff !important; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
-  .cta-helper { font-size: 12px; color: #9ca3af; margin: 10px 0 0; }
-  .footer { background: #fafbfc; border-top: 1px solid #f3f4f6; padding: 18px 40px; text-align: center; }
-  .footer-text { margin: 0; color: #9ca3af; font-size: 11px; line-height: 1.6; }
 </style>
 </head>
-<body>
-<div class="wrapper">
-  <div class="header">
-    <div class="brand-row">
-      <div class="brand-icon"><img src="https://zimplixio.com/static/images/zimplixio-icon.png" alt="Zimplixio" width="56" height="56" style="display:block; width:56px; height:auto;"></div>
-      <div class="brand-text">Zimplixio</div>
-    </div>
-    <h1 class="header-title">New Booking Request</h1>
-    <p class="header-sub">A visitor has requested a discovery call.</p>
-  </div>
+<body style="margin:0; padding:0; background:#f4f6f9; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#111827;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f6f9;">
+<tr><td align="center" style="padding:32px 16px;">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
 
-  <div class="status-bar">
-    <span class="status-dot"></span><span class="status-label">Pending · Action Required</span>
-    <span class="status-action">Review within 24h</span>
-  </div>
+  <!-- Header -->
+  <tr>
+    <td style="background:linear-gradient(135deg,#1e3a5f 0%,#0f2044 35%,#060c18 60%,#162d4a 85%,#0f2044 100%); padding:32px 40px 28px;">
+      <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px;">
+        <tr>
+          <td style="padding-right:14px; vertical-align:middle;">
+            <img src="https://zimplixio.com/static/images/zimplixio-icon.png" alt="Zimplixio" width="56" height="56" style="display:block; width:56px; height:auto;">
+          </td>
+          <td style="vertical-align:middle; font-weight:800; font-size:28px; color:#ffffff; letter-spacing:-0.025em; line-height:1;">Zimplixio</td>
+        </tr>
+      </table>
+      <div style="font-weight:800; font-size:22px; color:#ffffff; letter-spacing:-0.02em; line-height:1.2; margin:0 0 4px;">New Booking Request</div>
+      <div style="font-size:13px; color:rgba(255,255,255,0.55); margin:0;">A visitor has requested a discovery call.</div>
+    </td>
+  </tr>
 
-  <div class="body">
-    <p>A new discovery call has been requested. Review the details below and confirm or decline in the admin panel.</p>
+  <!-- Status bar -->
+  <tr>
+    <td style="padding:14px 40px; background:#fffbeb; border-bottom:1px solid #f3f4f6;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; box-shadow:0 0 0 4px rgba(245,158,11,0.2); margin-right:12px; vertical-align:middle;"></span>
+            <span style="display:inline-block; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#92400e; vertical-align:middle;">Pending · Action Required</span>
+          </td>
+          <td align="right" style="font-size:12px; color:#92400e; font-weight:500;">Review within 24h</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 
-    <div class="contact-card">
-      <p class="contact-name">{{ booking.name }}</p>
-      <p class="contact-email"><a href="mailto:{{ booking.email }}">{{ booking.email }}</a></p>
-      {% if booking.company %}<span class="contact-company">{{ booking.company }}</span>{% endif %}
-    </div>
+  <!-- Body -->
+  <tr>
+    <td style="padding:28px 40px 24px;">
+      <p style="margin:0 0 20px; font-size:14px; line-height:1.6; color:#4b5563;">A new discovery call has been requested. Review the details below and confirm or decline in the admin panel.</p>
 
-    <p class="detail-section-label">Requested Slot</p>
-    <table class="detail-table">
-      <tr>
-        <td>Date</td>
-        <td class="value-strong">{{ date_str }}</td>
-      </tr>
-      <tr>
-        <td>Time</td>
-        <td class="value-strong">{{ time_str }} ET</td>
-      </tr>
-      <tr>
-        <td>Duration</td>
-        <td>30 minutes</td>
-      </tr>
-      {% if booking.visitor_timezone %}
-      <tr>
-        <td>Visitor TZ</td>
-        <td>{{ booking.visitor_timezone }}</td>
-      </tr>
+      <!-- Contact card -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%); border:1px solid #c7d2fe; border-radius:14px; margin:0 0 20px;">
+        <tr>
+          <td style="padding:20px 24px;">
+            <div style="font-size:18px; font-weight:700; color:#1e1b4b; letter-spacing:-0.01em; margin:0 0 4px;">{{ booking.name }}</div>
+            <div style="font-size:13px; margin:0 0 12px;"><a href="mailto:{{ booking.email }}" style="color:#4338ca; font-weight:500; text-decoration:none;">{{ booking.email }}</a></div>
+            {% if booking.company %}<span style="display:inline-block; padding:4px 10px; background:rgba(79,70,229,0.12); color:#3730a3; border-radius:6px; font-size:11px; font-weight:600; letter-spacing:0.02em;">{{ booking.company }}</span>{% endif %}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Slot details -->
+      <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6b7280; margin:0 0 10px 4px;">Requested Slot</div>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fafbfc; border:1px solid #f3f4f6; border-radius:12px; margin:0 0 20px; border-collapse:separate;">
+        <tr>
+          <td style="padding:12px 18px; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:0.06em; text-transform:uppercase; width:110px; border-bottom:1px solid #f3f4f6;">Date</td>
+          <td style="padding:12px 18px; font-size:14px; font-weight:600; color:#111827; border-bottom:1px solid #f3f4f6;">{{ date_str }}</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 18px; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:0.06em; text-transform:uppercase; width:110px; border-bottom:1px solid #f3f4f6;">Time</td>
+          <td style="padding:12px 18px; font-size:14px; font-weight:600; color:#111827; border-bottom:1px solid #f3f4f6;">{{ time_str }} ET</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 18px; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:0.06em; text-transform:uppercase; width:110px; {% if booking.visitor_timezone %}border-bottom:1px solid #f3f4f6;{% endif %}">Duration</td>
+          <td style="padding:12px 18px; font-size:14px; font-weight:500; color:#111827; {% if booking.visitor_timezone %}border-bottom:1px solid #f3f4f6;{% endif %}">30 minutes</td>
+        </tr>
+        {% if booking.visitor_timezone %}
+        <tr>
+          <td style="padding:12px 18px; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:0.06em; text-transform:uppercase; width:110px;">Visitor TZ</td>
+          <td style="padding:12px 18px; font-size:14px; font-weight:500; color:#111827;">{{ booking.visitor_timezone }}</td>
+        </tr>
+        {% endif %}
+      </table>
+
+      {% if booking.message %}
+      <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6b7280; margin:0 0 10px 4px;">Visitor Message</div>
+      <div style="background:#fff; border:1px solid #e5e7eb; border-left:3px solid #6366f1; border-radius:8px; padding:14px 16px; color:#374151; line-height:1.6; font-size:14px; font-style:italic; margin:0 0 20px;">{{ booking.message }}</div>
       {% endif %}
-    </table>
 
-    {% if booking.message %}
-    <p class="detail-section-label">Visitor Message</p>
-    <div class="message-block">{{ booking.message }}</div>
-    {% endif %}
+      <!-- CTA -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 12px;">
+        <tr>
+          <td align="center">
+            <a href="{{ admin_url|default:'https://zimplixio.com/zm-admin/booking/bookingrequest/' }}" style="display:inline-block; background:#4f46e5; color:#ffffff; text-decoration:none; padding:12px 28px; border-radius:10px; font-weight:600; font-size:14px; letter-spacing:-0.01em;">Open in Admin Panel &rarr;</a>
+            <p style="font-size:12px; color:#9ca3af; margin:10px 0 0;">Change status to <strong style="color:#6b7280;">Confirmed</strong> to send the visitor a confirmation email.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 
-    <div class="cta-block">
-      <a href="{{ admin_url|default:'https://zimplixio.com/zm-admin/booking/bookingrequest/' }}" class="cta-button">Open in Admin Panel &rarr;</a>
-      <p class="cta-helper">Change status to <strong>Confirmed</strong> to send the visitor a confirmation email.</p>
-    </div>
-  </div>
+  <!-- Footer -->
+  <tr>
+    <td style="background:#fafbfc; border-top:1px solid #f3f4f6; padding:18px 40px; text-align:center;">
+      <p style="margin:0; color:#9ca3af; font-size:11px; line-height:1.6;">Zimplixio Admin · Internal notification<br>This email was sent because a new booking was submitted via zimplixio.com/book/</p>
+    </td>
+  </tr>
 
-  <div class="footer">
-    <p class="footer-text">Zimplixio Admin · Internal notification<br>This email was sent because a new booking was submitted via zimplixio.com/book/</p>
-  </div>
-</div>
+</table>
+</td></tr>
+</table>
 </body>
 </html>

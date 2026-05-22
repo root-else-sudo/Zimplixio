@@ -31,7 +31,7 @@ class BookingEmailService:
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[booking.email],
                 html_message=html,
-                fail_silently=True,
+                fail_silently=False,
             )
         except Exception:
             logger.exception('Failed to send visitor booking acknowledgement to %s', booking.email)
@@ -54,7 +54,7 @@ class BookingEmailService:
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[admin_email],
                 html_message=html,
-                fail_silently=True,
+                fail_silently=False,
             )
         except Exception:
             logger.exception('Failed to send admin booking notification email')
@@ -71,7 +71,7 @@ class BookingEmailService:
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[booking.email],
                 html_message=html,
-                fail_silently=True,
+                fail_silently=False,
             )
         except Exception:
             logger.exception('Failed to send booking confirmation email to %s', booking.email)

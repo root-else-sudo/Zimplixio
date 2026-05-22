@@ -74,6 +74,7 @@ class BookingRequest(models.Model):
     requested_date = models.DateField()
     requested_time = models.TimeField()
     message = models.TextField(blank=True)
+    visitor_timezone = models.CharField(max_length=50, blank=True, default='')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 

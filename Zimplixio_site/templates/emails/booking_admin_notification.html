@@ -36,7 +36,8 @@
       <tr><td>Email</td><td>{{ booking.email }}</td></tr>
       {% if booking.company %}<tr><td>Company</td><td>{{ booking.company }}</td></tr>{% endif %}
       <tr><td>Date</td><td>{{ date_str }}</td></tr>
-      <tr><td>Time</td><td>{{ time_str }}</td></tr>
+      <tr><td>Time</td><td>{{ time_str }} ET</td></tr>
+      {% if booking.visitor_timezone %}<tr><td>Visitor TZ</td><td>{{ booking.visitor_timezone }}</td></tr>{% endif %}
       <tr><td>Status</td><td>Pending</td></tr>
       {% if booking.message %}
       <tr>

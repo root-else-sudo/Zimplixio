@@ -87,7 +87,7 @@ python manage.py check --deploy
 - **`showcase.ShowcaseScreenshot`** — screenshot images linked to a ShowcaseProject (FK)
 - **`metrics.NPSMetric`** — NPS scores (single-active enforcement via `save()` override)
 - **`booking.TimeSlot`** — admin-defined weekly available windows (day_of_week, start_time, end_time, is_active). Managed via `/zm-admin/booking/timeslot/` — this is the only place to configure availability (no external calendar sync).
-- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled). Confirmed slots are excluded from future availability. Changing status → `confirmed` in admin triggers a visitor confirmation email.
+- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled). Confirmed slots are excluded from future availability. Changing status → `confirmed` in admin triggers a visitor confirmation email. Changing status → `cancelled` triggers a visitor cancellation email. Both are handled via `confirm()` and `cancel()` instance methods which save the model and call `BookingEmailService`.
 - **`framework.AssessmentLead`** — lead captures from the AI assessment (fields: name, email, submitted_at, readiness_level, answers JSON)
 
 ### Key Dependencies
@@ -99,7 +99,7 @@ python manage.py check --deploy
 - `anthropic` — Anthropic Python SDK for AI readiness assessment API calls
 - `@xyflow/react` (v12) — React Flow library for hub-and-spoke diagram in framework accordion (bundled into `static/dist/framework-accordion.js`)
 - `react` v19 + `react-dom` v19 — UI library for the framework accordion bundle
-- `gunicorn` — WSGI server for production (referenced in `Procfile` and declared in `Pipfile`)
+- `gunicorn` — WSGI server for production (declared in `Pipfile`, started via `start.sh`)
 - Tailwind CSS via CDN (development)
 - AOS (Animate On Scroll) via unpkg CDN — global scroll-triggered animations
 
@@ -168,6 +168,7 @@ Detail pages use a Django template inheritance system for per-project flexibilit
 
 The About page (`templates/pages/about.html`) has unique components beyond the standard design system:
 
+- **Meet the Team section**: Currently hidden with `{% comment %}{% endcomment %}` tags in `templates/pages/about.html` (lines 66–131). Remove those tags to restore it.
 - **Founder cards** (`/* === Founder Cards === */` in `main.css`): CSS grid layout (`grid-template-columns: 260px 1fr`), photo left, content right. Both cards use the same photo-left layout — no reverse variant. Photos at `static/images/joseph.jpg` and `static/images/maria-jose.png`.
 - **Values flip cards** (`/* === Values Flip Cards === */` in `main.css`): Three 3D flip cards. CSS `:hover` + JS `.is-flipped` toggle on click/tap. Keyboard accessible (`tabindex="0"`, `role="button"`, Enter/Space triggers flip). `prefers-reduced-motion` disables animation. Icon nodes above cards animate via `.is-hovered` class on `mouseenter`/`mouseleave`.
 - **Interactive world map**: See "About Page — World Map" section below.
@@ -199,8 +200,9 @@ templates/
 ├── booking/                   # book form + booking_success
 ├── emails/                    # transactional HTML email templates
 │   ├── booking_visitor_received.html    # sent on form submit (acknowledgement)
-│   ├── booking_admin_notification.html  # sent to admin on new booking
+│   ├── booking_admin_notification.html  # sent to admin on new booking (includes direct admin link)
 │   ├── booking_visitor_confirmed.html   # sent when admin confirms a booking
+│   ├── booking_visitor_cancelled.html   # sent when admin cancels a booking
 │   └── framework_lead_notification.html # sent to admin when an AI assessment lead is captured
 └── framework/                 # AI adoption framework page + assessment
 ```
@@ -263,7 +265,7 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **Lead capture**: `POST /framework/api/save-lead/` — rate-limited 3/hr per IP, validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (set via env var, server-side only, never exposed to the client).
 - **Lead model**: `framework.AssessmentLead` — viewable at `/zm-admin/framework/assessmentlead/`
 - **Prompt engineering**: `framework/prompts.py` — `build_system_prompt()` encodes full framework + strict JSON schema; `build_user_prompt(answers)` interpolates 8 user answers
-- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for lead notifications; `LEAD_NOTIFICATION_EMAIL` for the notification recipient; `ZOOM_MEETING_URL` for the Zoom link included in booking confirmation emails; `SITE_URL` for building absolute links in emails. In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal.
+- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for transactional email (Microsoft 365 SMTP in production: `smtp.office365.com` port 587); `LEAD_NOTIFICATION_EMAIL` for admin booking/lead notifications (e.g. `joe.ugalde@zimplixio.com`); `ZOOM_MEETING_URL` for the Zoom link in confirmation emails; `SITE_URL` for building absolute links in admin notification emails (dev: `http://localhost:8000`, prod: `https://zimplixio.com`). In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal. `DEFAULT_FROM_EMAIL=team@zimplixio.com` in all environments.
 - **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
 
 
@@ -286,6 +288,23 @@ The "The gap we saw" section of the About page contains an interactive world map
 - `zoomToUS` uses hardcoded continental US corners (`[-125,50]` → `[-66,24]`) — **do not switch to `path.bounds(nation)`**: Alaska + Hawaii inflate the box and break the zoom
 - `clipAngle(90)` must be restored before the reverse morph; country paths must be redrawn after `clipAngle(null)` or polar countries stay clipped
 - 29 country pins (`CONTINENTAL` array) + 12 US city pins (`CITIES` array) — touch and desktop share one unified click handler in `drawWorld`
+
+### Booking Email Flow
+
+`booking/services.py` — `BookingEmailService` handles all transactional emails for the booking system. All methods use `fail_silently=False` so SMTP errors propagate to the logger.
+
+| Trigger | Method | Recipient | Template |
+|---------|--------|-----------|----------|
+| Visitor submits booking form | `send_visitor_received()` | Visitor | `booking_visitor_received.html` |
+| Visitor submits booking form | `send_admin_notification()` | `LEAD_NOTIFICATION_EMAIL` | `booking_admin_notification.html` |
+| Admin changes status → `confirmed` | `send_visitor_confirmed()` | Visitor | `booking_visitor_confirmed.html` |
+| Admin changes status → `cancelled` | `send_visitor_cancelled()` | Visitor | `booking_visitor_cancelled.html` |
+
+**Admin notification email** includes a direct deep-link button to the booking change page: `{SITE_URL}/zm-admin/booking/bookingrequest/{id}/change/`. Requires `SITE_URL` to be set correctly in the environment.
+
+**Admin hook**: `BookingRequestAdmin.save_model()` intercepts status changes. Transitioning to `confirmed` calls `obj.confirm()`; transitioning to `cancelled` calls `obj.cancel()`. Both methods save the model and fire the appropriate email. `super().save_model()` is NOT called in these cases (the model save happens inside `confirm()`/`cancel()`).
+
+**Double-booking protection**: The `available_slots_view` filters out already-confirmed times before presenting them to visitors. No database-level unique constraint exists — two simultaneous pending requests for the same slot can both be confirmed by the admin.
 
 ### Known Gotchas
 

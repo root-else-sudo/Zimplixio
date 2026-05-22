@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-from .utils import format_date, format_time
+from .utils import format_date, format_time, format_time_in_tz
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +14,20 @@ class BookingEmailService:
 
     @staticmethod
     def _build_context(booking):
+        time_str = format_time(booking.requested_date, booking.requested_time)
+        if booking.visitor_timezone:
+            visitor_time_str = format_time_in_tz(
+                booking.requested_date,
+                booking.requested_time,
+                booking.visitor_timezone,
+            )
+        else:
+            visitor_time_str = time_str
         return {
             'booking': booking,
             'date_str': format_date(booking.requested_date),
-            'time_str': format_time(booking.requested_date, booking.requested_time),
+            'time_str': time_str,
+            'visitor_time_str': visitor_time_str,
         }
 
     @staticmethod

@@ -29,6 +29,39 @@
   ];
   const DAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
+  const visitorTz = (function () {
+    try { return Intl.DateTimeFormat().resolvedOptions().timeZone; }
+    catch (e) { return 'America/New_York'; }
+  }());
+
+  function convertSlotToLocal(dateStr, timeStr, tz) {
+    try {
+      var parts = dateStr.split('-').map(Number);
+      var tp = timeStr.split(':').map(Number);
+      var tentative = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], tp[0], tp[1], 0));
+      var nyFmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', hour12: false,
+      });
+      var nyParts = nyFmt.formatToParts(tentative);
+      var nyH = parseInt(nyParts.find(function (p) { return p.type === 'hour'; }).value, 10);
+      var nyM = parseInt(nyParts.find(function (p) { return p.type === 'minute'; }).value, 10);
+      var diffMs = ((tp[0] * 60 + tp[1]) - (nyH * 60 + nyM)) * 60000;
+      var correctUtc = new Date(tentative.getTime() + diffMs);
+      var localParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short',
+      }).formatToParts(correctUtc);
+      var hour = localParts.find(function (p) { return p.type === 'hour'; }).value;
+      var minute = localParts.find(function (p) { return p.type === 'minute'; }).value;
+      var period = localParts.find(function (p) { return p.type === 'dayPeriod'; });
+      var tzName = localParts.find(function (p) { return p.type === 'timeZoneName'; });
+      return hour + ':' + minute + (period ? ' ' + period.value : '') + (tzName ? ' ' + tzName.value : '');
+    } catch (e) {
+      return timeStr;
+    }
+  }
+
   // ─── DOM refs ────────────────────────────────────────────────────────────────
   function el(id) { return document.getElementById(id); }
 
@@ -187,9 +220,10 @@
       return;
     }
     const html = slots.map(function (s) {
-      return '<button type="button" data-value="' + s.value + '" data-label="' + s.label + '" ' +
+      var localLabel = convertSlotToLocal(state.selectedDate, s.value, visitorTz);
+      return '<button type="button" data-value="' + s.value + '" data-label="' + localLabel + '" ' +
         'class="slot-pill px-4 py-3 rounded-lg border-2 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 font-medium text-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-500 transition-colors text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">' +
-        s.label + '</button>';
+        localLabel + '</button>';
     }).join('');
     slotContainer.innerHTML = '<div class="grid grid-cols-3 gap-3">' + html + '</div>';
     slotContainer.querySelectorAll('.slot-pill').forEach(function (btn) {
@@ -207,6 +241,8 @@
     const timeInput = document.querySelector('input[name="requested_time"]');
     if (dateInput) dateInput.value = state.selectedDate;
     if (timeInput) timeInput.value = state.selectedTime;
+    var tzInput = document.querySelector('input[name="visitor_timezone"]');
+    if (tzInput) tzInput.value = visitorTz;
     renderSummaryBar();
     goToStep(3);
   }

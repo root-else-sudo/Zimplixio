@@ -3,55 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>New Booking Request</title>
+<title>New Booking Request — Zimplixio Admin</title>
 <style>
-  body { margin: 0; padding: 0; background: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-  .wrapper { max-width: 560px; margin: 32px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-  .header { background: linear-gradient(135deg, #1e3a6e 0%, #0f2044 100%); padding: 32px 40px; text-align: center; }
-  .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; }
-  .header p { margin: 6px 0 0; color: #93c5fd; font-size: 13px; }
-  .body { padding: 36px 40px; }
-  .body p { margin: 0 0 12px; color: #374151; font-size: 15px; line-height: 1.6; }
-  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-  td { padding: 10px 12px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
-  td:first-child { color: #6b7280; font-weight: 600; width: 140px; }
-  td:last-child { color: #111827; }
-  .message-box { background: #f9fafb; border-radius: 6px; padding: 14px 16px; margin-top: 4px; font-size: 14px; color: #374151; line-height: 1.6; }
-  .cta-wrap { text-align: center; margin: 28px 0 8px; }
-  .cta { display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 13px 32px; border-radius: 8px; font-weight: 600; font-size: 15px; }
-  .footer { background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 20px 40px; text-align: center; }
-  .footer p { margin: 0; color: #9ca3af; font-size: 12px; }
+  body { margin: 0; padding: 0; background: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111827; }
+  .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .header { background: linear-gradient(135deg, #1e3a5f 0%, #0f2044 35%, #060c18 60%, #162d4a 85%, #0f2044 100%); padding: 32px 40px 28px; }
+  .brand-row { display: table; margin-bottom: 12px; }
+  .brand-icon { display: table-cell; vertical-align: middle; padding-right: 14px; }
+  .brand-icon img { display: block; width: 48px; height: 48px; }
+  .brand-text { display: table-cell; vertical-align: middle; font-weight: 800; font-size: 28px; color: #ffffff; letter-spacing: -0.025em; line-height: 1; }
+  .header-title { font-weight: 800; font-size: 22px; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 4px; }
+  .header-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin: 0; }
+  .status-bar { padding: 14px 40px; border-bottom: 1px solid #f3f4f6; background: #fffbeb; }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,0.2); margin-right: 12px; vertical-align: middle; }
+  .status-label { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #92400e; vertical-align: middle; }
+  .status-action { float: right; font-size: 12px; color: #92400e; font-weight: 500; padding-top: 1px; }
+  .body { padding: 28px 40px 24px; }
+  .body p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #4b5563; }
+  .body p strong { color: #111827; font-weight: 600; }
+  .contact-card { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border: 1px solid #c7d2fe; border-radius: 14px; padding: 20px 24px; margin: 0 0 20px; }
+  .contact-name { font-size: 18px; font-weight: 700; color: #1e1b4b; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .contact-email { font-size: 13px; color: #4338ca; font-weight: 500; margin: 0 0 12px; }
+  .contact-email a { color: #4338ca; text-decoration: none; }
+  .contact-company { display: inline-block; padding: 4px 10px; background: rgba(79,70,229,0.12); color: #3730a3; border-radius: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+  .detail-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6b7280; margin: 0 0 10px 4px; }
+  .detail-table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fafbfc; border: 1px solid #f3f4f6; border-radius: 12px; overflow: hidden; margin: 0 0 20px; }
+  .detail-table td { padding: 12px 18px; font-size: 14px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
+  .detail-table tr:last-child td { border-bottom: none; }
+  .detail-table td:first-child { color: #6b7280; font-weight: 600; width: 110px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 14px; }
+  .detail-table td:last-child { color: #111827; font-weight: 500; }
+  .detail-table .value-strong { font-weight: 600; color: #111827; }
+  .message-block { background: #fff; border: 1px solid #e5e7eb; border-left: 3px solid #6366f1; border-radius: 8px; padding: 14px 16px; color: #374151; line-height: 1.6; font-size: 14px; font-style: italic; }
+  .cta-block { margin: 24px 0 12px; text-align: center; }
+  .cta-button { display: inline-block; background: #4f46e5; color: #ffffff !important; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+  .cta-helper { font-size: 12px; color: #9ca3af; margin: 10px 0 0; }
+  .footer { background: #fafbfc; border-top: 1px solid #f3f4f6; padding: 18px 40px; text-align: center; }
+  .footer-text { margin: 0; color: #9ca3af; font-size: 11px; line-height: 1.6; }
 </style>
 </head>
 <body>
 <div class="wrapper">
   <div class="header">
-    <h1>New Booking Request</h1>
-    <p>Zimplixio Admin Notification</p>
+    <div class="brand-row">
+      <div class="brand-icon"><img src="https://zimplixio.com/static/images/zimplixio-icon.png" alt="Zimplixio" width="56" height="56" style="display:block; width:56px; height:auto;"></div>
+      <div class="brand-text">Zimplixio</div>
+    </div>
+    <h1 class="header-title">New Booking Request</h1>
+    <p class="header-sub">A visitor has requested a discovery call.</p>
   </div>
+
+  <div class="status-bar">
+    <span class="status-dot"></span><span class="status-label">Pending · Action Required</span>
+    <span class="status-action">Review within 24h</span>
+  </div>
+
   <div class="body">
-    <p>A new discovery call has been requested. Review the details below and confirm in the admin panel.</p>
-    <table>
-      <tr><td>Name</td><td>{{ booking.name }}</td></tr>
-      <tr><td>Email</td><td>{{ booking.email }}</td></tr>
-      {% if booking.company %}<tr><td>Company</td><td>{{ booking.company }}</td></tr>{% endif %}
-      <tr><td>Date</td><td>{{ date_str }}</td></tr>
-      <tr><td>Time</td><td>{{ time_str }} ET</td></tr>
-      {% if booking.visitor_timezone %}<tr><td>Visitor TZ</td><td>{{ booking.visitor_timezone }}</td></tr>{% endif %}
-      <tr><td>Status</td><td>Pending</td></tr>
-      {% if booking.message %}
+    <p>A new discovery call has been requested. Review the details below and confirm or decline in the admin panel.</p>
+
+    <div class="contact-card">
+      <p class="contact-name">{{ booking.name }}</p>
+      <p class="contact-email"><a href="mailto:{{ booking.email }}">{{ booking.email }}</a></p>
+      {% if booking.company %}<span class="contact-company">{{ booking.company }}</span>{% endif %}
+    </div>
+
+    <p class="detail-section-label">Requested Slot</p>
+    <table class="detail-table">
       <tr>
-        <td>Message</td>
-        <td><div class="message-box">{{ booking.message }}</div></td>
+        <td>Date</td>
+        <td class="value-strong">{{ date_str }}</td>
+      </tr>
+      <tr>
+        <td>Time</td>
+        <td class="value-strong">{{ time_str }} ET</td>
+      </tr>
+      <tr>
+        <td>Duration</td>
+        <td>30 minutes</td>
+      </tr>
+      {% if booking.visitor_timezone %}
+      <tr>
+        <td>Visitor TZ</td>
+        <td>{{ booking.visitor_timezone }}</td>
       </tr>
       {% endif %}
     </table>
-    <div class="cta-wrap">
-      <a href="{{ admin_url }}" class="cta">Review &amp; Confirm Booking</a>
+
+    {% if booking.message %}
+    <p class="detail-section-label">Visitor Message</p>
+    <div class="message-block">{{ booking.message }}</div>
+    {% endif %}
+
+    <div class="cta-block">
+      <a href="{{ admin_url|default:'https://zimplixio.com/zm-admin/booking/bookingrequest/' }}" class="cta-button">Open in Admin Panel &rarr;</a>
+      <p class="cta-helper">Change status to <strong>Confirmed</strong> to send the visitor a confirmation email.</p>
     </div>
   </div>
+
   <div class="footer">
-    <p>Zimplixio Admin · Change status to Confirmed to send the visitor their confirmation email.</p>
+    <p class="footer-text">Zimplixio Admin · Internal notification<br>This email was sent because a new booking was submitted via zimplixio.com/book/</p>
   </div>
 </div>
 </body>

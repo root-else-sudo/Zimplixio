@@ -60,6 +60,22 @@ class BookingEmailService:
             logger.exception('Failed to send admin booking notification email')
 
     @staticmethod
+    def send_visitor_cancelled(booking):
+        context = BookingEmailService._build_context(booking)
+        try:
+            html = render_to_string('emails/booking_visitor_cancelled.html', context)
+            send_mail(
+                subject='Your Discovery Call Request — Zimplixio',
+                message=strip_tags(html),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[booking.email],
+                html_message=html,
+                fail_silently=False,
+            )
+        except Exception:
+            logger.exception('Failed to send booking cancellation email to %s', booking.email)
+
+    @staticmethod
     def send_visitor_confirmed(booking):
         context = BookingEmailService._build_context(booking)
         context['zoom_url'] = getattr(settings, 'ZOOM_MEETING_URL', '')

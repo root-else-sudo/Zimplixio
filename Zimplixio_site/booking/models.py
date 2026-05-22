@@ -90,3 +90,9 @@ class BookingRequest(models.Model):
         self.status = 'confirmed'
         self.save()
         BookingEmailService.send_visitor_confirmed(self)
+
+    def cancel(self):
+        from .services import BookingEmailService
+        self.status = 'cancelled'
+        self.save()
+        BookingEmailService.send_visitor_cancelled(self)

@@ -25,4 +25,7 @@ class BookingRequestAdmin(admin.ModelAdmin):
             if old_status != 'confirmed' and obj.status == 'confirmed':
                 obj.confirm()
                 return
+            if old_status != 'cancelled' and obj.status == 'cancelled':
+                obj.cancel()
+                return
         super().save_model(request, obj, form, change)

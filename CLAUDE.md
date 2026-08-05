@@ -38,7 +38,7 @@ python manage.py check --deploy
 - **Database**: PostgreSQL (configured via `DATABASE_URL` in `.env`)
 - **Templates**: Project-level `Zimplixio_site/templates/` (shared across all apps)
 - **Static files**: `Zimplixio_site/static/` (css, js, images)
-- **Media uploads**: `Zimplixio_site/media/`
+- **Media uploads**: local disk (`Zimplixio_site/media/`) in dev; **Cloudflare R2** in production — see "Media Storage" below
 - **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored).
 - **Settings**: Split into `settings/base.py` (shared), `settings/dev.py` (local), `settings/prod.py` (Railway — enforces HSTS, SSL redirect, secure cookies). Controlled by `DJANGO_SETTINGS_MODULE` in `.env`.
 - **Deployment**: `railway.toml` (build command) + `start.sh` (collectstatic → migrate → gunicorn)
@@ -93,15 +93,47 @@ python manage.py check --deploy
 ### Key Dependencies
 
 - `django-environ` — `.env` file configuration
-- `whitenoise` — static file serving (CompressedManifestStaticFilesStorage in production)
+- `whitenoise` — static file serving (CompressedStaticFilesStorage in production — non-manifest, see `docs/GOTCHAS.md`)
 - `django-ratelimit` — rate limiting on contact and booking form POSTs (5/hr per IP), assessment API (3/hr per IP)
 - `Pillow` — image field support for showcase uploads
+- `django-storages` + `boto3` — S3-compatible media storage backend, pointed at Cloudflare R2 in production (see "Media Storage")
 - `anthropic` — Anthropic Python SDK for AI readiness assessment API calls
 - `@xyflow/react` (v12) — React Flow library for hub-and-spoke diagram in framework accordion (bundled into `static/dist/framework-accordion.js`)
 - `react` v19 + `react-dom` v19 — UI library for the framework accordion bundle
 - `gunicorn` — WSGI server for production (declared in `Pipfile`, started via `start.sh`)
 - Tailwind CSS via CDN (development)
 - AOS (Animate On Scroll) via unpkg CDN — global scroll-triggered animations
+
+### Media Storage
+
+User-uploaded media (not static assets) is stored differently per environment. `MEDIA_ROOT`/`MEDIA_URL` in `settings/base.py` point at `Zimplixio_site/media/` and `/media/`, but production overrides the storage backend entirely.
+
+| Environment | `STORAGES['default']` | Where uploads land |
+|-------------|----------------------|--------------------|
+| dev (`settings/dev.py`) | Django default `FileSystemStorage` | local disk, `Zimplixio_site/media/` |
+| prod (`settings/prod.py`) | `storages.backends.s3boto3.S3Boto3Storage` | **Cloudflare R2** bucket |
+
+**What actually gets uploaded** — three `ImageField`s, all in `showcase`:
+
+| Field | Model | `upload_to` |
+|-------|-------|-------------|
+| `architecture_diagram` | `ShowcaseProject` | `showcase/diagrams/` |
+| `thumbnail` | `ShowcaseProject` | `showcase/thumbnails/` |
+| `image` | `ShowcaseScreenshot` | `showcase/screenshots/` |
+
+**R2 environment variables** (production only, all read in `settings/prod.py`):
+
+| Variable | Maps to | Purpose |
+|----------|---------|---------|
+| `R2_ACCESS_KEY_ID` | `AWS_ACCESS_KEY_ID` | R2 API token ID |
+| `R2_SECRET_ACCESS_KEY` | `AWS_SECRET_ACCESS_KEY` | R2 API token secret |
+| `R2_BUCKET_NAME` | `AWS_STORAGE_BUCKET_NAME` | target bucket |
+| `R2_ENDPOINT_URL` | `AWS_S3_ENDPOINT_URL` | R2 S3-compatible endpoint |
+| `R2_PUBLIC_DOMAIN` | `AWS_S3_CUSTOM_DOMAIN` | public host used to build media URLs |
+
+**Behavior flags** set in `prod.py`: `AWS_DEFAULT_ACL = 'public-read'` (uploads are world-readable), `AWS_QUERYSTRING_AUTH = False` (URLs are plain, unsigned, permanent), `AWS_S3_FILE_OVERWRITE = False` (same-name uploads get a suffix instead of replacing the existing file).
+
+**CSP dependency**: R2-hosted images only render because the R2 public domain is listed in the `img-src` directive of `core/middleware.py`. Changing the bucket or its public domain requires updating that middleware too — see `docs/GOTCHAS.md`.
 
 ### Forms
 
@@ -247,9 +279,9 @@ templates/
 
 ### Security
 
-- CSP middleware (`core.middleware.ContentSecurityPolicyMiddleware`) — `default-src 'self'`; `script-src` allows `'unsafe-inline' 'unsafe-eval'` + Tailwind CDN + unpkg.com; `style-src` allows `'unsafe-inline'` + unpkg.com + fonts.googleapis.com; `font-src 'self'` + fonts.gstatic.com; `img-src 'self' data:`; `frame-src https:`; `frame-ancestors 'none'`
+- CSP middleware (`core.middleware.ContentSecurityPolicyMiddleware`) — `default-src 'self'`; `script-src` allows `'unsafe-inline' 'unsafe-eval'` + Tailwind CDN + unpkg.com; `style-src` allows `'unsafe-inline'` + unpkg.com + fonts.googleapis.com; `font-src 'self'` + fonts.gstatic.com; `img-src 'self' data:` + the Cloudflare R2 public domain (hardcoded — see "Media Storage"); `frame-src https:`; `frame-ancestors 'none'`
 - Rate limiting on form POST endpoints (5/hr per IP)
-- Production-only settings: HSTS, SSL redirect, secure cookies, CompressedManifestStaticFilesStorage (activated when `DEBUG=False`)
+- Production-only settings: HSTS, SSL redirect, secure cookies, CompressedStaticFilesStorage (activated when `DEBUG=False`)
 - Admin at `/zm-admin/` (not the default `/admin/`)
 
 ### AI Adoption Framework (Embedded in Showcase)

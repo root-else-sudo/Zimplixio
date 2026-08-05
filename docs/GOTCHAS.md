@@ -6,9 +6,17 @@ Implementation quirks, removed features, and non-obvious constraints. Read this 
 
 ## Static Files & Build
 
-- **STORAGES setting**: `CompressedManifestStaticFilesStorage` is only enabled when `DEBUG=False` — using it in dev/test without running `collectstatic` causes `ValueError: Missing staticfiles manifest entry`
+- **STORAGES setting — production uses the NON-manifest backend**: `settings/prod.py` sets `staticfiles` to `whitenoise.storage.CompressedStaticFilesStorage`, not the `Manifest` variant. This is deliberate but was never a design decision — it was swapped in during Railway deploy troubleshooting (commit `6ee21d0`) and kept because it works. Trade-off: without the manifest, filenames are not content-hashed, so WhiteNoise cannot mark assets immutable and serves them with its default `max-age=60` instead of a year. Returning visitors re-fetch CSS/JS (including the React bundle) roughly every minute. Do not "fix" the docs by switching the backend — restoring `CompressedManifestStaticFilesStorage` may break the build, since it fails `collectstatic` with `ValueError: Missing staticfiles manifest entry` if any template or CSS file references a static file that does not exist. If you do restore it, verify `collectstatic` passes first.
 - **One React bundle for everything**: `static/dist/framework-accordion.js` (built from `frontend/`) drives both the hub-and-spoke diagram and the assessment wizard. Rebuilding with `cd frontend && npm run build` updates both.
 - **No tsParticles / no CDN for hero effect**: The hero animation is pure vanilla JS canvas (ImageData pixel writing). The tsParticles CDN was removed. `cdn.jsdelivr.net` was also removed from the CSP `script-src` directive in `core/middleware.py`.
+
+## Media Storage (Cloudflare R2)
+
+- **Dev and prod store uploads in completely different places**: dev writes to local disk (`Zimplixio_site/media/`), prod writes to a Cloudflare R2 bucket via `S3Boto3Storage`. `MEDIA_ROOT`/`MEDIA_URL` in `base.py` still point at the local path — they are simply not used in prod, since `STORAGES['default']` overrides the backend. A showcase image uploaded locally does not exist in production, and vice versa.
+- **The R2 public domain is duplicated in two places**: `settings/prod.py` reads it from the `R2_PUBLIC_DOMAIN` env var, but `core/middleware.py` has the same domain **hardcoded** in the CSP `img-src` directive. These must be kept in sync by hand. If the bucket or its public domain is ever rotated and only the env var is updated, media URLs will be generated correctly but every image will be silently blocked by CSP — the page renders with broken images and the only clue is a console CSP violation.
+- **R2 env vars have no defaults**: `prod.py` calls `env('R2_ACCESS_KEY_ID')` etc. with no fallback, so a missing variable raises `ImproperlyConfigured` at startup and the app will not boot. This is intentional (fail loud), but it means prod settings cannot be loaded locally without the full R2 credential set — relevant when testing anything under `settings/prod.py`.
+- **Uploaded media is public and permanently addressable**: `AWS_DEFAULT_ACL = 'public-read'` and `AWS_QUERYSTRING_AUTH = False` mean media URLs are unsigned, unexpiring, and readable by anyone with the link. Do not use these fields for anything non-public.
+- **Same-name uploads do not overwrite**: `AWS_S3_FILE_OVERWRITE = False`, so re-uploading a file with an existing name creates a suffixed copy (`image_a1b2c3.png`) rather than replacing it. Old files are never cleaned up automatically — deleting a `ShowcaseScreenshot` row does not delete the object in R2.
 
 ## Templates & Django
 

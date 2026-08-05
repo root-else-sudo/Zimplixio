@@ -133,7 +133,7 @@ User-uploaded media (not static assets) is stored differently per environment. `
 
 **Behavior flags** set in `prod.py`: `AWS_DEFAULT_ACL = 'public-read'` (uploads are world-readable), `AWS_QUERYSTRING_AUTH = False` (URLs are plain, unsigned, permanent), `AWS_S3_FILE_OVERWRITE = False` (same-name uploads get a suffix instead of replacing the existing file).
 
-**CSP dependency**: R2-hosted images only render because the R2 public domain is listed in the `img-src` directive of `core/middleware.py`. Changing the bucket or its public domain requires updating that middleware too — see `docs/GOTCHAS.md`.
+**CSP dependency**: R2-hosted images only render because the R2 public domain is present in the CSP `img-src` directive. `core/middleware.py` derives it from `settings.AWS_S3_CUSTOM_DOMAIN`, so `R2_PUBLIC_DOMAIN` is the single source of truth — changing the bucket or its public domain requires updating only that env var. In dev the setting is undefined and `img-src` falls back to `'self' data:`. See `docs/GOTCHAS.md`.
 
 ### Forms
 
@@ -279,7 +279,7 @@ templates/
 
 ### Security
 
-- CSP middleware (`core.middleware.ContentSecurityPolicyMiddleware`) — `default-src 'self'`; `script-src` allows `'unsafe-inline' 'unsafe-eval'` + Tailwind CDN + unpkg.com; `style-src` allows `'unsafe-inline'` + unpkg.com + fonts.googleapis.com; `font-src 'self'` + fonts.gstatic.com; `img-src 'self' data:` + the Cloudflare R2 public domain (hardcoded — see "Media Storage"); `frame-src https:`; `frame-ancestors 'none'`
+- CSP middleware (`core.middleware.ContentSecurityPolicyMiddleware`) — `default-src 'self'`; `script-src` allows `'unsafe-inline' 'unsafe-eval'` + Tailwind CDN + unpkg.com; `style-src` allows `'unsafe-inline'` + unpkg.com + fonts.googleapis.com; `font-src 'self'` + fonts.gstatic.com; `img-src 'self' data:` + the Cloudflare R2 public domain in production (derived from `R2_PUBLIC_DOMAIN` — see "Media Storage"); `frame-src https:`; `frame-ancestors 'none'`
 - Rate limiting on form POST endpoints (5/hr per IP)
 - Production-only settings: HSTS, SSL redirect, secure cookies, CompressedStaticFilesStorage (activated when `DEBUG=False`)
 - Admin at `/zm-admin/` (not the default `/admin/`)

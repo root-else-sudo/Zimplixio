@@ -87,7 +87,7 @@ python manage.py check --deploy
 - **`showcase.ShowcaseScreenshot`** — screenshot images linked to a ShowcaseProject (FK)
 - **`metrics.NPSMetric`** — NPS scores (single-active enforcement via `save()` override)
 - **`booking.TimeSlot`** — admin-defined weekly available windows (day_of_week, start_time, end_time, is_active). Managed via `/zm-admin/booking/timeslot/` — this is the only place to configure availability (no external calendar sync).
-- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled). Confirmed slots are excluded from future availability. Changing status → `confirmed` in admin triggers a visitor confirmation email. Changing status → `cancelled` triggers a visitor cancellation email. Both are handled via `confirm()` and `cancel()` instance methods which save the model and call `BookingEmailService`.
+- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled). Fields include `visitor_timezone` (IANA string, e.g. `America/Los_Angeles`, captured from visitor's browser at booking time). Confirmed slots are excluded from future availability. Changing status → `confirmed` in admin triggers a visitor confirmation email. Changing status → `cancelled` triggers a visitor cancellation email. Both are handled via `confirm()` and `cancel()` instance methods which save the model and call `BookingEmailService`.
 - **`framework.AssessmentLead`** — lead captures from the AI assessment (fields: name, email, submitted_at, readiness_level, answers JSON)
 
 ### Key Dependencies
@@ -220,7 +220,7 @@ templates/
 | `static/js/logo-magnetic.js` | Magnetic cursor effect on `.logo-magnetic` elements (logo + Book a Call button) — lerp-based rAF loop, STRENGTH=0.28, EASE=0.1 |
 | `static/js/hero-text.js` | Word-by-word H1 reveal on `[data-word-reveal]` elements — splits into `<span class="word-reveal-item">` with staggered CSS animation |
 | `static/js/particles-hero.js` | **Twisted Particle Stream** — custom canvas ImageData animation (no WebGL, no external lib). 20,000 particles across 6 twisted ribbon surfaces with perspective projection simulating 3D depth. Mouse movement tilts the camera (±1.2 rad Y, ±0.65 rad X). Present on all hero sections. |
-| `static/js/booking-wizard.js` | Calendly-like 3-step booking wizard — state machine driving calendar grid (step 1), time pills (step 2), and contact form (step 3). Fetches available days and slots from JSON API endpoints. Populates hidden `requested_date`/`requested_time` inputs before form submission. |
+| `static/js/booking-wizard.js` | Calendly-like 3-step booking wizard — state machine driving calendar grid (step 1), time pills (step 2), and contact form (step 3). Fetches available days and slots from JSON API endpoints. Auto-detects visitor's browser timezone via `Intl.DateTimeFormat().resolvedOptions().timeZone` and converts Eastern slot times to visitor's local time before display (e.g. "10:00 AM EDT" → "7:00 AM PDT"). Populates hidden `requested_date`, `requested_time`, and `visitor_timezone` inputs before form submission. |
 | `static/js/showcase-carousel.js` | Netflix-style infinite-loop carousel for Featured Solutions on homepage. Vanilla JS IIFE — clones first/last N slides for seamless wrapping, `translateX` percentage-based positioning, CSS transitions. Auto-play (5s, pauses on hover/focus), left/right arrow + keyboard navigation. Responsive: 1 card mobile, 2 tablet, 3 desktop. Rebuilds clones on resize. `prefers-reduced-motion` disables auto-play. |
 | `static/js/world-map.js` | Interactive world map on the About page — D3 v7 + TopoJSON IIFE. Three-state machine: `'world'` (orthographic globe), `'flat'` (Natural Earth world map), `'us'` (US bounding-box zoom). See "About Page — World Map" section. |
 | `static/js/services-scroll.js` | Horizontal scroll-pinned panel controller for the services page (desktop ≥1024px only). Translates vertical scroll into `translateX` on `#svcPanelsTrack`. Includes snap-after-pause: after 220ms of no scrolling, `snapToNearest()` smoothly scrolls to the nearest panel. Uses `isSnapping` guard to prevent feedback loops during programmatic scroll. `goToPanel(index)` is called by nav dot clicks. Does not initialize on mobile — the tabbed layout takes over instead. |
@@ -241,6 +241,8 @@ templates/
 | `static/images/Intel.svg` | Intel logo SVG — used in homepage credentials section |
 | `static/images/joseph.jpg` | Joseph Ugalde photo — used in About page founder card |
 | `static/images/maria-jose.png` | Maria Jose Espinoza photo — used in About page founder card |
+| `static/images/zimplixio-icon.png` | Zimplixio icon PNG (988×1012px, transparent) — used in email template headers |
+| `static/images/zimplixio-wordmark.png` | Zimplixio dark wordmark PNG (2217×596px, transparent) — used in email template footers |
 | `static/manifest.json` | PWA web app manifest with Zimplixio branding |
 
 ### Security
@@ -265,7 +267,7 @@ The framework content is served at `/showcase/ai-adoption-framework/` via a cust
 - **Lead capture**: `POST /framework/api/save-lead/` — rate-limited 3/hr per IP, validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (set via env var, server-side only, never exposed to the client).
 - **Lead model**: `framework.AssessmentLead` — viewable at `/zm-admin/framework/assessmentlead/`
 - **Prompt engineering**: `framework/prompts.py` — `build_system_prompt()` encodes full framework + strict JSON schema; `build_user_prompt(answers)` interpolates 8 user answers
-- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for transactional email (Microsoft 365 SMTP in production: `smtp.office365.com` port 587); `LEAD_NOTIFICATION_EMAIL` for admin booking/lead notifications (e.g. `joe.ugalde@zimplixio.com`); `ZOOM_MEETING_URL` for the Zoom link in confirmation emails; `SITE_URL` for building absolute links in admin notification emails (dev: `http://localhost:8000`, prod: `https://zimplixio.com`). In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal. `DEFAULT_FROM_EMAIL=team@zimplixio.com` in all environments.
+- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for transactional email (Microsoft 365 SMTP in production: `smtp.office365.com` port 587); `LEAD_NOTIFICATION_EMAIL` for admin booking/lead notifications (e.g. `joe.ugalde@zimplixio.com`); `ZOOM_MEETING_URL` for the Zoom link in confirmation emails; `SITE_URL` for building absolute links in admin notification emails (dev: `http://localhost:8000`, prod: `https://zimplixio.com`). In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal. `DEFAULT_FROM_EMAIL=team@zimplixio.com` in all environments. `BOOKING_TIMEZONE` is hardcoded to `'America/New_York'` in `settings/base.py` (not an env var).
 - **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
 
 
@@ -300,9 +302,15 @@ The "The gap we saw" section of the About page contains an interactive world map
 | Admin changes status → `confirmed` | `send_visitor_confirmed()` | Visitor | `booking_visitor_confirmed.html` |
 | Admin changes status → `cancelled` | `send_visitor_cancelled()` | Visitor | `booking_visitor_cancelled.html` |
 
-**Admin notification email** includes a direct deep-link button to the booking change page: `{SITE_URL}/zm-admin/booking/bookingrequest/{id}/change/`. Requires `SITE_URL` to be set correctly in the environment.
+**Timezone-aware context**: `_build_context()` builds both `time_str` (Eastern, for admin) and `visitor_time_str` (converted to visitor's IANA timezone via `format_time_in_tz()` in `booking/utils.py`). Visitor email templates use `{{ visitor_time_str }}`; admin template uses `{{ time_str }} ET`. Falls back to Eastern if `visitor_timezone` is empty.
+
+**Admin notification email** includes a direct deep-link button to the booking change page: `{SITE_URL}/zm-admin/booking/bookingrequest/{id}/change/`. Requires `SITE_URL` to be set correctly in the environment. Also shows visitor's `booking.visitor_timezone` as a reference row.
 
 **Admin hook**: `BookingRequestAdmin.save_model()` intercepts status changes. Transitioning to `confirmed` calls `obj.confirm()`; transitioning to `cancelled` calls `obj.cancel()`. Both methods save the model and fire the appropriate email. `super().save_model()` is NOT called in these cases (the model save happens inside `confirm()`/`cancel()`).
+
+**Email template design**: All 4 templates use fully inline styles + table-based layout for Gmail compatibility. Header cells also include `bgcolor="#0f2044"` as a gradient fallback (Gmail strips CSS gradients). Logo assets referenced via absolute URLs (`https://zimplixio.com/static/images/zimplixio-icon.png` and `zimplixio-wordmark.png`).
+
+**Canonical timezone**: `BOOKING_TIMEZONE = 'America/New_York'` in `settings/base.py`. Slot times are stored and returned as Eastern. `format_time_in_tz()` in `booking/utils.py` uses Python's `zoneinfo` stdlib to convert to any IANA timezone.
 
 **Double-booking protection**: The `available_slots_view` filters out already-confirmed times before presenting them to visitors. No database-level unique constraint exists — two simultaneous pending requests for the same slot can both be confirmed by the admin.
 

@@ -60,7 +60,7 @@ Implementation quirks, removed features, and non-obvious constraints. Read this 
 - **Availability is DB-only**: No Google Calendar or external calendar sync. Availability comes entirely from `TimeSlot` records in the admin. Create at least one active `TimeSlot` or the calendar will show no selectable days.
 - **`requested_date`/`requested_time` are hidden inputs**: Populated by JS before form submission. If JS is disabled the form cannot be submitted — this is by design.
 - **Confirmation email triggers on admin save**: `BookingRequestAdmin.save_model()` detects the `pending → confirmed` transition and sends the confirmation email.
-- **Zoom call link is hardcoded**: `templates/emails/booking_visitor_confirmed.html` contains a fixed Zoom link. Update this template if the meeting link changes.
+- **Zoom call link is env-driven, not hardcoded**: `booking_visitor_confirmed.html` renders `{{ zoom_url }}`, injected by `BookingEmailService.send_visitor_confirmed()` from `settings.ZOOM_MEETING_URL` (`settings/base.py`). To change the meeting link, update the `ZOOM_MEETING_URL` env var — do not edit the template. The setting defaults to `''`, so if the env var is missing the email still sends with an empty `href` and a dead "Join Zoom Meeting" button, with no error raised.
 
 ## Content
 

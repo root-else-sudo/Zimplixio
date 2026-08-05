@@ -65,6 +65,13 @@ DATABASES = {
     'default': env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 }
 
+# Persistent database connections. Without this Django opens (and tears down) a new
+# connection on every request; over Railway's private network that handshake dominates
+# response time. CONN_HEALTH_CHECKS revalidates a pooled connection before reuse so a
+# stale socket surfaces as a reconnect instead of an error.
+DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=600)
+DATABASES['default']['CONN_HEALTH_CHECKS'] = True
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},

@@ -871,7 +871,7 @@ textarea:focus {
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #94a3b8;
+  color: #64748b;
   transition: color 0.3s ease;
 }
 
@@ -1551,7 +1551,7 @@ textarea:focus {
   align-items: center;
   gap: 6px;
   font-size: 0.73rem;
-  color: #9ca3af;
+  color: #6b7280;
   margin: 0;
 }
 
@@ -1944,14 +1944,14 @@ textarea:focus {
 
 .svc-counter-sep {
   font-size: 13px;
-  color: rgba(226, 232, 244, 0.25);
+  color: rgba(226, 232, 244, 0.6);
 }
 
 .svc-counter-total {
   font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(226, 232, 244, 0.25);
+  color: rgba(226, 232, 244, 0.6);
 }
 
 /* ── Nav dots (right side, vertically centred) ──────────────── */

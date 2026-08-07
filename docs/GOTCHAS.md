@@ -76,7 +76,17 @@ Implementation quirks, removed features, and non-obvious constraints. Read this 
 - **`requested_date`/`requested_time` are hidden inputs**: Populated by JS before form submission. If JS is disabled the form cannot be submitted — this is by design.
 - **Zoom call link is env-driven, not hardcoded**: `booking_visitor_confirmed.html` renders `{{ zoom_url }}`, injected by `BookingEmailService.send_visitor_confirmed()` from `settings.ZOOM_MEETING_URL` (`settings/base.py`). To change the meeting link, update the `ZOOM_MEETING_URL` env var — do not edit the template. The setting defaults to `''`, so if the env var is missing the email still sends with an empty `href` and a dead "Join Zoom Meeting" button, with no error raised.
 
+## Cloudflare Edge
+
+The site is proxied through Cloudflare in front of Railway (`server: cloudflare`, `cf-ray`, `cf-cache-status` in every response). Almost everything passes through untouched, with one exception:
+
+- **Production `/robots.txt` does not match the repo — this is expected, not a stale deploy**: Cloudflare's managed robots.txt / AI Crawl Control feature *prepends* ~50 lines to the response after Django has rendered it: a Content Signals Policy preamble, `Content-Signal: search=yes,ai-train=no,use=reference`, and `Disallow: /` for nine AI crawlers (Amazonbot, Applebot-Extended, Bytespider, CCBot, ClaudeBot, CloudflareBrowserRenderingCrawler, Google-Extended, GPTBot, meta-externalagent). The repo's own two rules survive verbatim at the bottom. Nothing in the codebase produces or is overridden by that block — to change it, use the Cloudflare dashboard, not `templates/robots.txt`.
+- **Only robots.txt is modified**: verified — HTML pages contain no Cloudflare-injected scripts and no `/cdn-cgi/` references, and `sitemap.xml` is pure Django output. Do not assume other production/repo differences have the same explanation.
+- **The merged file has two `User-agent: *` groups**: Cloudflare's (`Allow: /`) and the repo's (`Disallow: /zm-admin/`). RFC 9309 requires compliant crawlers to merge duplicate groups and Google does, but a crawler that honours only the first match would ignore the admin rule. Low impact — the admin is behind authentication, and `robots.txt` is a crawling hint, not access control.
+- **Blocking those AI crawlers is a Cloudflare default, not a project decision**: it keeps the site out of AI training data but also out of AI-assistant answers. Worth revisiting deliberately if AI-surfaced discoverability matters for lead generation.
+
 ## Content
 
 - **Enterprise references**: Homepage and About page reference PayPal, IBM, HPE, and Intel (from Joseph's resume). "Systems X" was a previous employer no longer listed.
-- **Results page hidden from UI**: The `/results/` page and URL are intact, but all nav links (header desktop, header mobile, footer) and the NPS badge (`_nps_badge.html`) are hidden until enough client data exists. Restore by re-adding the links and uncommenting `_nps_badge.html`.
+- **Results page hidden from UI, but still in the sitemap**: The `/results/` page and URL are intact, but all nav links (header desktop, header mobile, footer) and the NPS badge (`_nps_badge.html`) are hidden until enough client data exists. Restore by re-adding the links and uncommenting `_nps_badge.html`. Note `core/sitemaps.py` still lists `/results/` at priority 0.8, so search engines are pointed at a page hidden from the site's own navigation.
+- **`/zm-admin/` is published in `robots.txt`**: the admin was moved off the default `/admin/` path for obscurity, but `templates/robots.txt` names it in a world-readable file, which cancels most of that benefit. Removing the `Disallow` line would restore it — crawlers cannot meaningfully index a login-walled page anyway.

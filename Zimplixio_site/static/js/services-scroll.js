@@ -56,11 +56,39 @@
     var progress = getProgress();
     track.style.transform = 'translateX(' + (-progress * (totalPanels - 1) * window.innerWidth) + 'px)';
     progressBar.style.width = (progress * 100) + '%';
-    var idx = Math.min(Math.floor(progress * totalPanels), totalPanels - 1);
+    // Must match the track transform and panelScrollTarget(), both of which map
+    // progress across (totalPanels - 1) gaps. Using totalPanels here instead made the
+    // counter and dots disagree with the panel actually on screen, so a small scroll
+    // snapped to a different panel than the one highlighted.
+    var idx = Math.round(progress * (totalPanels - 1));
+    idx = Math.max(0, Math.min(totalPanels - 1, idx));
     if (idx !== currentPanel) {
       updateUI(idx);
       animatePanelIn(panels[idx]);
     }
+  }
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Hold the snap lock until scrolling actually settles, rather than guessing a
+  // duration. A fixed timer released mid-animation on long scrolls, letting a second
+  // snap fire on top of the first.
+  function scrollToAndLock(target) {
+    isSnapping = true;
+    window.scrollTo({ top: target, behavior: reduceMotion ? 'auto' : 'smooth' });
+
+    var lastY = null, stillFrames = 0, started = Date.now();
+    (function poll() {
+      var y = window.pageYOffset;
+      var arrived = Math.abs(y - target) < 2;
+      var stalled = lastY !== null && Math.abs(y - lastY) < 0.5 && ++stillFrames > 3;
+      if (arrived || stalled || Date.now() - started > 1500) {
+        isSnapping = false;
+        return;
+      }
+      lastY = y;
+      requestAnimationFrame(poll);
+    }());
   }
 
   function snapToNearest() {
@@ -76,11 +104,7 @@
     // Skip if already sitting cleanly on a panel (within 2% of target)
     if (Math.abs(exactPanel - nearestPanel) < 0.02) return;
 
-    isSnapping = true;
-    window.scrollTo({ top: panelScrollTarget(nearestPanel), behavior: 'smooth' });
-
-    // Release snap lock after smooth scroll completes (~600 ms)
-    setTimeout(function () { isSnapping = false; }, 650);
+    scrollToAndLock(panelScrollTarget(nearestPanel));
   }
 
   function onScroll() {
@@ -88,10 +112,11 @@
     rafPending = true;
     requestAnimationFrame(tick);
 
-    // Reset debounce timer on every scroll event
+    // Reset debounce timer on every scroll event. 220ms fired mid-gesture, since
+    // trackpad momentum has natural micro-pauses; 450ms lets a scroll finish first.
     clearTimeout(snapTimeout);
     if (!isSnapping) {
-      snapTimeout = setTimeout(snapToNearest, 220);
+      snapTimeout = setTimeout(snapToNearest, 450);
     }
   }
 
@@ -103,10 +128,8 @@
   }
 
   function goToPanel(index) {
-    isSnapping = true;
     clearTimeout(snapTimeout);
-    window.scrollTo({ top: panelScrollTarget(index), behavior: 'smooth' });
-    setTimeout(function () { isSnapping = false; }, 650);
+    scrollToAndLock(panelScrollTarget(index));
   }
 
   document.addEventListener('DOMContentLoaded', function () {

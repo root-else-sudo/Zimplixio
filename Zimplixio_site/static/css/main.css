@@ -1319,7 +1319,17 @@ textarea:focus {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
+  /* Swap the faces at the midpoint of the 0.75s rotation. backface-visibility alone
+     is not enough here: .values-front-content creates its own stacking context, and a
+     promoted layer can escape backface culling and bleed the front text — mirrored —
+     through the flipped card. Hiding the outgoing face outright prevents that. */
+  transition: visibility 0s linear 0.375s;
 }
+.values-back { visibility: hidden; }
+.values-flip-card:hover .values-front,
+.values-flip-card.is-flipped .values-front { visibility: hidden; }
+.values-flip-card:hover .values-back,
+.values-flip-card.is-flipped .values-back { visibility: visible; }
 
 /* Front face */
 .values-front {
@@ -1436,6 +1446,9 @@ textarea:focus {
   .values-flip-inner,
   .values-track-line,
   .values-front::before { transition: none; }
+  /* No rotation to sync with, so drop the midpoint delay on the face swap */
+  .values-front,
+  .values-back { transition: none; }
   .values-flip-card:hover .values-flip-inner,
   .values-flip-card.is-flipped .values-flip-inner { transform: none; }
   .values-flip-card.is-flipped .values-back { display: block; }
@@ -3294,7 +3307,7 @@ textarea:focus {
   padding: 7rem 0 8rem;
   position: relative;
   overflow: hidden;
-  background: #07111f;
+  background: #f9fafb;
 }
 
 .wte-section::before {
@@ -3305,7 +3318,7 @@ textarea:focus {
   transform: translateX(-50%);
   width: 600px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(37,99,235,0.05) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(37,99,235,0.08) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -3347,7 +3360,7 @@ textarea:focus {
   font-family: 'Syne', sans-serif;
   font-size: clamp(32px, 4vw, 48px);
   font-weight: 800;
-  color: #fff;
+  color: #0f2044;
   line-height: 1.1;
   opacity: 0;
   transform: translateY(16px);
@@ -3369,7 +3382,7 @@ textarea:focus {
   left: 12.5%;
   right: 12.5%;
   height: 1px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(15,32,68,0.14);
   z-index: 0;
 }
 
@@ -3428,7 +3441,7 @@ textarea:focus {
   font-family: 'Syne', sans-serif;
   font-size: 20px;
   font-weight: 800;
-  color: rgba(226,232,244,0.4);
+  color: rgba(15,32,68,0.62);
   transition: color 0.4s ease;
 }
 
@@ -3473,7 +3486,7 @@ textarea:focus {
   font-family: 'Syne', sans-serif;
   font-size: 19px;
   font-weight: 700;
-  color: #fff;
+  color: #0f2044;
   margin-bottom: 0.7rem;
   line-height: 1.2;
 }
@@ -3481,7 +3494,7 @@ textarea:focus {
 .wte-desc {
   font-size: 15px;
   line-height: 1.7;
-  color: rgba(226,232,244,0.55);
+  color: #4b5563;
   font-weight: 300;
 }
 
@@ -3497,7 +3510,7 @@ textarea:focus {
   border-radius: 20px;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 10.5px;
-  color: #60a5fa;
+  color: #1d4ed8;
   opacity: 0;
   transition: opacity 0.4s ease 0.2s;
 }

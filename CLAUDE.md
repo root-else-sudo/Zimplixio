@@ -2,350 +2,182 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Scope note:** this file covers what is *non-obvious* — conventions, constraints, and decisions you would otherwise get wrong. Anything derivable from the code in one command (URL map, model fields, file inventories, template tree) is deliberately not duplicated here; read it from the source instead, which is always current.
+
 ## Project Overview
 
-Zimplixio is a Django 6.0.3 web application using Python 3.14 for an SMB technology consulting firm. The site includes a homepage, about page (with consultant bios, values flip cards, and an interactive world map), services page, solution showcase gallery (with live iframe demos of recomares.com and simple-forecast.com), NPS results page, contact form, booking system, and legal pages. A `README.md` exists at the repo root for public-facing documentation.
+Zimplixio is a Django 6.0.4 web application on Python 3.14.3 for an SMB technology consulting firm. Pages: homepage, about (consultant bios, values flip cards, interactive world map), services, solution showcase gallery with live iframe demos, NPS results, contact form, booking system, and legal pages. `README.md` at the repo root is the public-facing documentation.
 
 ## Development Commands
 
-All commands should be run from `Zimplixio_site/` (where `manage.py` lives). The project uses Pipenv with a `.venv` virtual environment.
+`manage.py` lives in `Zimplixio_site/`, but the virtualenv is at the **repo root** — so from `Zimplixio_site/` the interpreter is `../.venv/bin/python`. Standard Django commands otherwise (`runserver`, `migrate`, `makemigrations`, `createsuperuser`, `test`, `check --deploy`).
 
 ```bash
-# Activate virtual environment
-pipenv shell
-
-# Run development server
-python manage.py runserver
-
-# Database
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-
-# Tests
-python manage.py test                              # Run all tests
-python manage.py test pages                        # Run tests for a specific app
-python manage.py test pages.tests.PageStatusTests  # Run a specific test class
-python manage.py test pages.tests.PageStatusTests.test_home_page  # Run a single test
-
-# Deployment check
-python manage.py check --deploy
+cd Zimplixio_site
+../.venv/bin/python manage.py test        # full suite (50 tests)
+../.venv/bin/python manage.py check
 ```
+
+The React bundle is built separately: `cd frontend && npm run build`.
 
 ## Architecture
 
 - **Django project package**: `Zimplixio_site/Zimplixio_site/` — settings, root URL conf, WSGI/ASGI entry points
-- **Database**: PostgreSQL (configured via `DATABASE_URL` in `.env`). Persistent connections are enabled in `settings/base.py` (`CONN_MAX_AGE`, `CONN_HEALTH_CHECKS`) and the Railway Postgres service must sit in the **same region** as the web service — both are load-bearing for response time, see `docs/GOTCHAS.md`
-- **Templates**: Project-level `Zimplixio_site/templates/` (shared across all apps)
-- **Static files**: `Zimplixio_site/static/` (css, js, images)
-- **Media uploads**: local disk (`Zimplixio_site/media/`) in dev; **Cloudflare R2** in production — see "Media Storage" below
-- **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored).
-- **Settings**: Split into `settings/base.py` (shared), `settings/dev.py` (local), `settings/prod.py` (Railway — enforces HSTS, SSL redirect, secure cookies). Controlled by `DJANGO_SETTINGS_MODULE` in `.env`.
-- **Deployment**: `railway.toml` (build command) + `start.sh` (collectstatic → migrate → gunicorn). Web service and Postgres service must share a region — a cross-region split cost ~85ms per query until it was corrected
+- **Database**: PostgreSQL via `DATABASE_URL`. Persistent connections are enabled in `settings/base.py` (`CONN_MAX_AGE`, `CONN_HEALTH_CHECKS`) and the Railway Postgres service must sit in the **same region** as the web service. Both are load-bearing for response time — see `docs/GOTCHAS.md` before changing either
+- **Templates**: project-level `Zimplixio_site/templates/` (shared across all apps; no per-app template dirs in use)
+- **Static files**: `Zimplixio_site/static/`
+- **Media uploads**: local disk in dev, **Cloudflare R2** in production — see "Media Storage"
+- **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored). There is no `.env.example` — a fresh clone cannot boot until one is written, since `SECRET_KEY`, `DEBUG`, and `ALLOWED_HOSTS` have no defaults
+- **Settings**: `settings/base.py` (shared), `dev.py`, `prod.py` (Railway — HSTS, SSL redirect, secure cookies, R2). Selected by `DJANGO_SETTINGS_MODULE` in `.env`
+- **Deployment**: `railway.toml` (frontend build) + `start.sh` (collectstatic → migrate → gunicorn, 2 workers)
+- **Migrations**: squashed to `0001_initial` in every app except `booking` (which has `0002`, `0003`). Showcase projects and tech tags are admin-managed data, not fixtures
 
 ### Apps
 
-| App | Directory | Purpose |
-|-----|-----------|---------|
-| `core` | `Zimplixio_site/core/` | Context processors, CSP middleware, sitemaps |
-| `pages` | `Zimplixio_site/pages/` | Homepage, About, Services, Contact, Privacy/Cookie Policy |
-| `showcase` | `Zimplixio_site/showcase/` | Solution showcase gallery & detail pages |
-| `metrics` | `Zimplixio_site/metrics/` | NPS score tracking & results page |
-| `booking` | `Zimplixio_site/booking/` | Discovery call booking system |
-| `framework` | `Zimplixio_site/framework/` | AI readiness assessment API endpoints only (no page-level views — the framework page is served by `showcase` at `/showcase/ai-adoption-framework/`) |
+| App | Purpose |
+|-----|---------|
+| `core` | Context processors, CSP middleware, sitemaps |
+| `pages` | Homepage, About, Services, Contact, Privacy/Cookie Policy |
+| `showcase` | Showcase gallery & detail pages — **also serves the AI framework page** |
+| `metrics` | NPS score tracking & results page |
+| `booking` | Discovery call booking system |
+| `framework` | **API endpoints only** — no page views. The framework page lives at `/showcase/ai-adoption-framework/` |
 
-### URL Map
+### Model behavior worth knowing
 
-| URL | App | View |
-|-----|-----|------|
-| `/` | pages | HomePageView |
-| `/about/` | pages | AboutPageView |
-| `/contact/` | pages | ContactView |
-| `/contact/success/` | pages | ContactSuccessView |
-| `/privacy-policy/` | pages | PrivacyPolicyView |
-| `/cookie-policy/` | pages | CookiePolicyView |
-| `/services/` | pages | ServicesPageView |
-| `/showcase/` | showcase | ShowcaseGalleryView |
-| `/showcase/<slug>/` | showcase | ShowcaseDetailView — template routed by slug map in `get_template_names()`: `e-commerce` → `detail.html`, `simple-forecast` → `detail-simple-forecast.html`, `ai-adoption-framework` → `detail-framework.html`, unknown slugs → `detail-base.html` |
-| `/results/` | metrics | NPSResultsView |
-| `/book/` | booking | BookCallView |
-| `/book/success/` | booking | BookingSuccessView |
-| `/book/slots/` | booking | available_slots_view (GET, returns time pills for a date) |
-| `/book/available-days/` | booking | available_days_view (GET, returns bookable days for a month) |
-| **`/framework/api/*`** | **framework — API only** | **No page views; framework page lives at `/showcase/ai-adoption-framework/`** |
-| `/framework/api/assessment/` | framework | assessment_view (POST, Anthropic API) |
-| `/framework/api/save-lead/` | framework | save_lead_view (POST, saves AssessmentLead + sends email notification) |
-| `/zm-admin/` | django.admin | Admin interface |
-| `/sitemap.xml` | django.sitemaps | XML sitemap |
-| `/robots.txt` | — | TemplateView |
+Field lists are in `*/models.py`. What is not obvious from reading them:
 
-### Key Models
-
-- **`pages.ContactSubmission`** — contact form submissions (fields: name, email, company, message, submitted_at, is_read)
-- **`showcase.TechTag`** — technology labels for project tagging (M2M with ShowcaseProject)
-- **`showcase.ShowcaseProject`** — case study projects. Includes `live_demo_url` and `system_design_url` for interactive iframe demos on detail pages
-- **`showcase.ShowcaseScreenshot`** — screenshot images linked to a ShowcaseProject (FK)
-- **`metrics.NPSMetric`** — NPS scores (single-active enforcement via `save()` override)
-- **`booking.TimeSlot`** — admin-defined weekly available windows (day_of_week, start_time, end_time, is_active). Managed via `/zm-admin/booking/timeslot/` — this is the only place to configure availability (no external calendar sync).
-- **`booking.BookingRequest`** — visitor booking requests (pending/confirmed/cancelled). Fields include `visitor_timezone` (IANA string, e.g. `America/Los_Angeles`, captured from visitor's browser at booking time). Confirmed slots are excluded from future availability. Changing status → `confirmed` in admin triggers a visitor confirmation email. Changing status → `cancelled` triggers a visitor cancellation email. Both are handled via `confirm()` and `cancel()` instance methods which save the model and call `BookingEmailService`.
-- **`framework.AssessmentLead`** — lead captures from the AI assessment (fields: name, email, submitted_at, readiness_level, answers JSON)
+- **`metrics.NPSMetric`** — enforces a single active row via a `save()` override
+- **`booking.TimeSlot`** — the *only* source of booking availability. No external calendar sync; with no active rows the calendar shows no selectable days
+- **`booking.BookingRequest`** — `confirm()` and `cancel()` save the model *and* send visitor email. `BookingRequestAdmin.save_model()` calls them on status transitions and deliberately skips `super().save_model()`
+- **`showcase.ShowcaseProject`** — `live_demo_url` drives both the iframe demo section and the gallery "Live Demo" badge
 
 ### Key Dependencies
 
-- `django-environ` — `.env` file configuration
-- `whitenoise` — static file serving (CompressedStaticFilesStorage in production — non-manifest, see `docs/GOTCHAS.md`)
-- `django-ratelimit` — rate limiting on contact and booking form POSTs (5/hr per IP), assessment API (3/hr per IP)
-- `Pillow` — image field support for showcase uploads
-- `django-storages` + `boto3` — S3-compatible media storage backend, pointed at Cloudflare R2 in production (see "Media Storage")
-- `anthropic` — Anthropic Python SDK for AI readiness assessment API calls
-- `@xyflow/react` (v12) — React Flow library for hub-and-spoke diagram in framework accordion (bundled into `static/dist/framework-accordion.js`)
-- `react` v19 + `react-dom` v19 — UI library for the framework accordion bundle
-- `gunicorn` — WSGI server for production (declared in `Pipfile`, started via `start.sh`)
-- Tailwind CSS via CDN (development)
-- AOS (Animate On Scroll) via unpkg CDN — global scroll-triggered animations
+- `django-environ` — `.env` configuration
+- `whitenoise` — static serving (`CompressedStaticFilesStorage` in production — non-manifest, see `docs/GOTCHAS.md`)
+- `django-ratelimit` — all keyed on IP with `block=False`: contact and booking POSTs 5/hr, assessment API 10/hr, save-lead 3/hr
+- `django-storages` + `boto3` — S3-compatible backend pointed at Cloudflare R2 in production
+- `anthropic` — SDK for the AI readiness assessment
+- `react` 19 + `@xyflow/react` v12 + Vite — framework accordion bundle
+- `gunicorn` — production WSGI server, started by `start.sh`
+- Tailwind CSS via `cdn.tailwindcss.com` — **all environments including production**. It is a runtime compiler, not a stylesheet: it compiles CSS in the browser on every page load, which is why CSP `script-src` needs `'unsafe-eval'`. Migrating it to a build step is open work
+- AOS (Animate On Scroll) via unpkg CDN
 
-### Media Storage
+## Media Storage
 
-User-uploaded media (not static assets) is stored differently per environment. `MEDIA_ROOT`/`MEDIA_URL` in `settings/base.py` point at `Zimplixio_site/media/` and `/media/`, but production overrides the storage backend entirely.
+Production overrides the default storage backend entirely — `MEDIA_ROOT`/`MEDIA_URL` in `base.py` are unused there.
 
-| Environment | `STORAGES['default']` | Where uploads land |
-|-------------|----------------------|--------------------|
-| dev (`settings/dev.py`) | Django default `FileSystemStorage` | local disk, `Zimplixio_site/media/` |
-| prod (`settings/prod.py`) | `storages.backends.s3boto3.S3Boto3Storage` | **Cloudflare R2** bucket |
+| Environment | `STORAGES['default']` | Uploads land in |
+|---|---|---|
+| dev | Django default `FileSystemStorage` | `Zimplixio_site/media/` |
+| prod | `storages.backends.s3boto3.S3Boto3Storage` | **Cloudflare R2** |
 
-**What actually gets uploaded** — three `ImageField`s, all in `showcase`:
+Only `showcase` has `ImageField`s (project thumbnail, architecture diagram, screenshot).
 
-| Field | Model | `upload_to` |
-|-------|-------|-------------|
-| `architecture_diagram` | `ShowcaseProject` | `showcase/diagrams/` |
-| `thumbnail` | `ShowcaseProject` | `showcase/thumbnails/` |
-| `image` | `ShowcaseScreenshot` | `showcase/screenshots/` |
+**R2 environment variables** (production only, read in `settings/prod.py`):
 
-**R2 environment variables** (production only, all read in `settings/prod.py`):
+| Variable | Maps to |
+|---|---|
+| `R2_ACCESS_KEY_ID` | `AWS_ACCESS_KEY_ID` |
+| `R2_SECRET_ACCESS_KEY` | `AWS_SECRET_ACCESS_KEY` |
+| `R2_BUCKET_NAME` | `AWS_STORAGE_BUCKET_NAME` |
+| `R2_ENDPOINT_URL` | `AWS_S3_ENDPOINT_URL` |
+| `R2_PUBLIC_DOMAIN` | `AWS_S3_CUSTOM_DOMAIN` |
 
-| Variable | Maps to | Purpose |
-|----------|---------|---------|
-| `R2_ACCESS_KEY_ID` | `AWS_ACCESS_KEY_ID` | R2 API token ID |
-| `R2_SECRET_ACCESS_KEY` | `AWS_SECRET_ACCESS_KEY` | R2 API token secret |
-| `R2_BUCKET_NAME` | `AWS_STORAGE_BUCKET_NAME` | target bucket |
-| `R2_ENDPOINT_URL` | `AWS_S3_ENDPOINT_URL` | R2 S3-compatible endpoint |
-| `R2_PUBLIC_DOMAIN` | `AWS_S3_CUSTOM_DOMAIN` | public host used to build media URLs |
+`core/middleware.py` derives the CSP `img-src` entry from `AWS_S3_CUSTOM_DOMAIN`, so `R2_PUBLIC_DOMAIN` is the single source of truth — do not hardcode the domain. See `docs/GOTCHAS.md` for the ACL, overwrite, and cleanup behaviour of these buckets before storing anything new in them.
 
-**Behavior flags** set in `prod.py`: `AWS_DEFAULT_ACL = 'public-read'` (uploads are world-readable), `AWS_QUERYSTRING_AUTH = False` (URLs are plain, unsigned, permanent), `AWS_S3_FILE_OVERWRITE = False` (same-name uploads get a suffix instead of replacing the existing file).
+## UI Design System
 
-**CSP dependency**: R2-hosted images only render because the R2 public domain is present in the CSP `img-src` directive. `core/middleware.py` derives it from `settings.AWS_S3_CUSTOM_DOMAIN`, so `R2_PUBLIC_DOMAIN` is the single source of truth — changing the bucket or its public domain requires updating only that env var. In dev the setting is undefined and `img-src` falls back to `'self' data:`. See `docs/GOTCHAS.md`.
+Follow these conventions when building new UI:
 
-### Forms
-
-- **`pages.forms.ContactForm`** — contact page submission form
-- **`booking.forms.BookingForm`** — discovery call booking form
-
-### Admin Configuration
-
-All models have customized admin classes. Admin site branding is set in root `urls.py`:
-- `admin.site.site_header = 'Zimplixio Administration'`
-- `admin.site.site_title = 'Zimplixio Admin'`
-- `admin.site.index_title = 'Site Management'`
-
-`framework/admin.py` registers `AssessmentLeadAdmin` with list display (name, email, readiness_level, submitted_at), filters, search, and readonly fields for submitted_at and answers.
-
-### UI Design System
-
-All pages follow a consistent design language. When creating new pages, follow these conventions:
-
-- **Gradient heroes**: Every page opens with `bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900` hero section with ambient blur circles (`bg-white rounded-full blur-3xl` at ~10% opacity)
-- **Section subtitle labels**: Uppercase indigo tracking-wider text (`text-indigo-300 font-medium tracking-wider uppercase text-sm`) above headings
-- **AOS scroll animations**: All sections use `data-aos="fade-up"` with staggered `data-aos-delay` values (100ms increments). AOS is loaded globally in `base.html` with `once: true, duration: 700, easing: 'ease-out-cubic'`
-- **Card styling**: `rounded-2xl border border-gray-200 shadow-sm` with `hover:shadow-md transition-shadow` for interactive cards
-- **Section spacing**: Consistent `py-20` for content sections
+- **Gradient heroes**: `bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900` with ambient blur circles (`bg-white rounded-full blur-3xl`, ~10% opacity)
+- **Section subtitle labels**: `text-indigo-300 font-medium tracking-wider uppercase text-sm` above headings
+- **AOS scroll animations**: `data-aos="fade-up"` with staggered `data-aos-delay` in 100ms increments. Initialized globally in `base.html` (`once: true, duration: 700, easing: 'ease-out-cubic'`)
+- **Cards**: `rounded-2xl border border-gray-200 shadow-sm` + `hover:shadow-md transition-shadow`
+- **Section spacing**: `py-20`
 - **CTA buttons**: `bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20`
-- **Dark mode**: Tailwind `darkMode: 'class'` — the `dark` class is toggled on `<html>` by `dark-mode.js`. Preference is persisted in `localStorage` and applied on page load (inline script in `<head>`) to prevent FOUC. Use `dark:` variants on all new UI elements. Common pairings: `bg-white dark:bg-gray-900`, `text-gray-900 dark:text-white`, `border-gray-200 dark:border-gray-700`, `bg-gray-50 dark:bg-gray-800`. Toggle button uses `.dark-mode-toggle` class; icons use `.dark-mode-moon` (visible in light) and `.dark-mode-sun` (visible in dark, starts `hidden`).
+- **Dark mode**: Tailwind `darkMode: 'class'`; the `dark` class is toggled on `<html>` by `dark-mode.js` and applied pre-paint by an inline script to avoid FOUC. Use `dark:` variants on everything new — common pairings `bg-white dark:bg-gray-900`, `text-gray-900 dark:text-white`, `border-gray-200 dark:border-gray-700`, `bg-gray-50 dark:bg-gray-800`
 
-### Showcase Detail Page — Template Architecture
+Note the `indigo` scale is remapped to a navy/electric-blue palette in `base.html` — see `docs/GOTCHAS.md`. Never introduce raw blue hex values.
 
-Detail pages use a Django template inheritance system for per-project flexibility without duplication:
+## Showcase Detail Pages — Template Architecture
 
-- **`templates/showcase/detail-base.html`** — single structural source of truth. Contains the full page layout (hero, Quick Facts strip, all content sections, iframe demo, CTA) with `{% block %}` tags for every customizable string. Generic defaults are used so any unknown future project renders sensibly.
-- **`templates/showcase/detail.html`** — thin e-commerce (recomares) override. Extends `detail-base.html` and overrides section title/label blocks only.
-- **`templates/showcase/detail-simple-forecast.html`** — thin simple-forecast override. Extends `detail-base.html` and overrides only the blocks it needs.
-- **`templates/showcase/detail-framework.html`** — fully custom template for AI Adoption Framework. Does not extend `detail-base.html` — the framework page has a completely different structure (React components, assessment wizard, no standard content sections).
-- **Template routing**: `ShowcaseDetailView.get_template_names()` uses a `slug_map` dict. Add a new entry to the map + create `detail-{slug}.html` for any new project needing custom titles.
+Per-project flexibility comes from **template inheritance, not conditionals**:
 
-**Available `{% block %}` tags in `detail-base.html`** (with generic defaults):
+- **`detail-base.html`** — the single structural source of truth (hero, Quick Facts strip, content sections, iframe demo, CTA), with `{% block %}` tags for every customizable string and generic defaults so unknown projects still render sensibly
+- **`detail.html`** (e-commerce) and **`detail-simple-forecast.html`** — thin overrides that extend the base and replace only the blocks they need
+- **`detail-framework.html`** — fully custom, does **not** extend the base. The framework page has a different structure (React components, assessment wizard). Do not refactor it to extend the base
+- **Routing**: `ShowcaseDetailView.get_template_names()` maps slug → template via a `slug_map` dict, falling back to `detail-base.html`. To add a project with custom copy, add a map entry and a `detail-{slug}.html`
 
-| Block | Default |
-|-------|---------|
-| `hero_subtitle` | *(empty)* |
-| `section_problem_label` | `The Challenge` |
-| `section_problem_heading` | `The Scenario` |
-| `section_decision_label` | `Our Strategy` |
-| `section_decision_heading` | `The Approach` |
-| `section_solution_label` | `What We Built` |
-| `section_solution_heading` | `The Solution` |
-| `section_results_label` | `The Impact` |
-| `section_results_heading` | `The Outcome` |
-| `demo_hint` | *(empty)* — text below toggle buttons in iframe section |
+Never add `{% if project.slug == ... %}` branches to `detail-base.html`. Override a block instead. Block names and their defaults are visible by grepping `{% block` in the base template.
 
-**Quick Facts strip**: All detail pages (including `detail-framework.html`) show a strip below the hero with Industry, Tech Stack pills, and Live Demo availability on a single row (`flex items-start gap-x-10`, no wrapping). `detail-framework.html` hardcodes the Live Demo indicator since the framework project has no `live_demo_url`.
+**Interactive iframe demos**: the section only renders when `live_demo_url` is set; a "System Design" toggle appears only if `system_design_url` is also set. Sandbox is `allow-scripts allow-same-origin allow-forms allow-popups`, and `demo-iframe.js` drives the loading overlay.
 
-**Interactive iframe demos**:
-- The iframe section only appears when `live_demo_url` is set on a `ShowcaseProject`
-- **Toggle buttons**: "Live App" (default) + "System Design" (only if `system_design_url` is set)
-- **Iframe sandbox**: `allow-scripts allow-same-origin allow-forms allow-popups` for security
-- **Loading overlay**: Spinner shown until iframe fires `load` event, driven by `static/js/demo-iframe.js`
-- **Gallery badge**: Projects with `live_demo_url` show a green "Live Demo" badge on gallery cards
-- **Showcased projects with live iframes**: **recomares.com** (e-commerce, has `/system-design` toggle) and **simple-forecast.com** (LSS forecasting, no system design page). Simple Forecast order=2, created via migration `0007`.
+## About Page — World Map
 
-### About Page — Special Features
+An interactive D3 v7 + TopoJSON map in the "The gap we saw" section. Sources: `static/js/world-map.js`, `static/data/world-110m.json`, `static/data/us-10m.json`. D3 and TopoJSON load from unpkg; data URLs are injected via `data-world-url` / `data-us-url` on `#world-map-container`.
 
-The About page (`templates/pages/about.html`) has unique components beyond the standard design system:
+Three-state machine (`state.view`): `'world'` (orthographic globe, the default) → `'flat'` (Natural Earth) → `'us'` (bounding-box zoom), with mouse-out returning to the globe after 600ms.
 
-- **Meet the Team section**: Currently hidden with `{% comment %}{% endcomment %}` tags in `templates/pages/about.html` (lines 66–131). Remove those tags to restore it.
-- **Founder cards** (`/* === Founder Cards === */` in `main.css`): CSS grid layout (`grid-template-columns: 260px 1fr`), photo left, content right. Both cards use the same photo-left layout — no reverse variant. Photos at `static/images/joseph.jpg` and `static/images/maria-jose.png`.
-- **Values flip cards** (`/* === Values Flip Cards === */` in `main.css`): Three 3D flip cards. CSS `:hover` + JS `.is-flipped` toggle on click/tap. Keyboard accessible (`tabindex="0"`, `role="button"`, Enter/Space triggers flip). `prefers-reduced-motion` disables animation. Icon nodes above cards animate via `.is-hovered` class on `mouseenter`/`mouseleave`.
-- **Interactive world map**: See "About Page — World Map" section below.
+**Critical constraints — read `world-map.js` before changing:**
+- `zoomToUS` uses hardcoded continental US corners (`[-125,50]` → `[-66,24]`). **Do not switch to `path.bounds(nation)`** — Alaska and Hawaii inflate the box and break the zoom
+- `clipAngle(90)` must be restored before the reverse morph, and country paths must be redrawn after `clipAngle(null)` or polar countries stay clipped
+- Country pins and US city pins share one unified click handler in `drawWorld` (touch and desktop)
 
-### Template Structure
+## Notable Static Files
 
-```
-templates/
-├── base.html                  # HTML5 skeleton, Tailwind CDN, AOS global, Schema.org JSON-LD
-├── 404.html                   # Custom "Page not found" error page
-├── 500.html                   # Custom "Server error" page (self-contained — no context processors)
-├── robots.txt
-├── partials/
-│   ├── _header.html           # Sticky nav with hamburger menu
-│   ├── _footer.html
-│   ├── _cookie_banner.html
-│   ├── _meta_tags.html        # Open Graph / Twitter Card meta
-│   ├── _nps_badge.html        # NPS score badge (conditional)
-│   └── _cta_section.html      # Reusable CTA block with gradient bg
-├── pages/                     # home, about, contact, contact_success, privacy/cookie policy
-├── services/                  # services page with tabbed interface + FAQ accordion
-├── showcase/
-│   ├── gallery.html           # filterable project gallery
-│   ├── detail-base.html       # BASE template — full layout with {% block %} tags, generic defaults
-│   ├── detail.html            # e-commerce (recomares) override — extends detail-base.html
-│   ├── detail-simple-forecast.html  # simple-forecast override — extends detail-base.html
-│   └── detail-framework.html  # AI framework — fully custom, does NOT extend detail-base.html
-├── metrics/                   # NPS results page
-├── booking/                   # book form + booking_success
-├── emails/                    # transactional HTML email templates
-│   ├── booking_visitor_received.html    # sent on form submit (acknowledgement)
-│   ├── booking_admin_notification.html  # sent to admin on new booking (includes direct admin link)
-│   ├── booking_visitor_confirmed.html   # sent when admin confirms a booking
-│   ├── booking_visitor_cancelled.html   # sent when admin cancels a booking
-│   └── framework_lead_notification.html # sent to admin when an AI assessment lead is captured
-└── framework/                 # AI adoption framework page + assessment
-```
+Most of `static/js/` is self-describing by filename. The ones with non-obvious behavior:
 
-### Static JS Files
+| File | Why it's non-obvious |
+|---|---|
+| `particles-hero.js` | Custom canvas ImageData animation — no WebGL, no library. 20,000 particles across 6 twisted ribbon surfaces; mouse tilts the camera. Requires a `<div id="hero-particles">` inside the hero section |
+| `booking-wizard.js` | 3-step wizard state machine. Auto-detects the visitor's timezone and converts Eastern slot times for display; populates hidden `requested_date`, `requested_time`, `visitor_timezone` inputs |
+| `services-scroll.js` | Desktop-only (≥1024px) scroll-pinned horizontal panels with snap-after-pause and an `isSnapping` reentrancy guard. Mobile uses a separate tabbed layout in the same template |
+| `showcase-carousel.js` | Infinite-loop carousel that clones first/last N slides; rebuilds clones on resize |
+| `world-map.js` | See "About Page — World Map" |
 
-| File | Purpose |
-|------|---------|
-| `static/js/mobile-nav.js` | Hamburger toggle for mobile navigation |
-| `static/js/cookie-consent.js` | Cookie banner with localStorage persistence |
-| `static/js/faq-accordion.js` | Expand/collapse FAQ items on services page |
-| `static/js/demo-iframe.js` | Iframe loading overlay + toggle buttons on showcase detail page |
-| `static/js/dark-mode.js` | Dark mode toggle with smooth transition (enables `body.transitions-enabled` after first paint to avoid FOUC) |
-| `static/js/header-scroll.js` | Adds `.header-elevated` box-shadow to `<header>` when `scrollY > 20` |
-| `static/js/logo-magnetic.js` | Magnetic cursor effect on `.logo-magnetic` elements (logo + Book a Call button) — lerp-based rAF loop, STRENGTH=0.28, EASE=0.1 |
-| `static/js/hero-text.js` | Word-by-word H1 reveal on `[data-word-reveal]` elements — splits into `<span class="word-reveal-item">` with staggered CSS animation |
-| `static/js/particles-hero.js` | **Twisted Particle Stream** — custom canvas ImageData animation (no WebGL, no external lib). 20,000 particles across 6 twisted ribbon surfaces with perspective projection simulating 3D depth. Mouse movement tilts the camera (±1.2 rad Y, ±0.65 rad X). Present on all hero sections. |
-| `static/js/booking-wizard.js` | Calendly-like 3-step booking wizard — state machine driving calendar grid (step 1), time pills (step 2), and contact form (step 3). Fetches available days and slots from JSON API endpoints. Auto-detects visitor's browser timezone via `Intl.DateTimeFormat().resolvedOptions().timeZone` and converts Eastern slot times to visitor's local time before display (e.g. "10:00 AM EDT" → "7:00 AM PDT"). Populates hidden `requested_date`, `requested_time`, and `visitor_timezone` inputs before form submission. |
-| `static/js/showcase-carousel.js` | Netflix-style infinite-loop carousel for Featured Solutions on homepage. Vanilla JS IIFE — clones first/last N slides for seamless wrapping, `translateX` percentage-based positioning, CSS transitions. Auto-play (5s, pauses on hover/focus), left/right arrow + keyboard navigation. Responsive: 1 card mobile, 2 tablet, 3 desktop. Rebuilds clones on resize. `prefers-reduced-motion` disables auto-play. |
-| `static/js/world-map.js` | Interactive world map on the About page — D3 v7 + TopoJSON IIFE. Three-state machine: `'world'` (orthographic globe), `'flat'` (Natural Earth world map), `'us'` (US bounding-box zoom). See "About Page — World Map" section. |
-| `static/js/services-scroll.js` | Horizontal scroll-pinned panel controller for the services page (desktop ≥1024px only). Translates vertical scroll into `translateX` on `#svcPanelsTrack`. Includes snap-after-pause: after 220ms of no scrolling, `snapToNearest()` smoothly scrolls to the nearest panel. Uses `isSnapping` guard to prevent feedback loops during programmatic scroll. `goToPanel(index)` is called by nav dot clicks. Does not initialize on mobile — the tabbed layout takes over instead. |
+Other assets worth flagging: `static/css/main.css` is organized by `/* === Section === */` comments; `static/images/HPE.svg` was edited to use white text (invisible on white backgrounds — this is intentional); `static/images/logo.svg` has no fixed width/height so CSS controls sizing; and **`static/dist/*` is gitignored build output**, absent from a fresh clone until `npm run build` runs.
 
-### Other Static Files
+## Security
 
-| File | Purpose |
-|------|---------|
-| `static/css/main.css` | Custom styles — see inline `/* === Section Name === */` comments for component groupings. Covers hero animations, showcase cards/carousel, PDCA section, about page transitions and gradients, NPS score number, founder cards, values flip cards, services tabbed interface, services scroll panels, services widget grids (p01–p05), What to Expect timeline, world map, credential logos, and dark mode form inputs. |
-| `static/css/framework.css` | Framework-specific styles: callout boxes, accordion transitions, report blocks, badges, print rules, stage node icon hover animations (`icon-trace`, `icon-scan-line`, `icon-flow-node`, `icon-data-stream`, `icon-trend-line`, etc.), `prefers-reduced-motion` overrides |
-| `static/dist/framework-accordion.js` | Bundled React + React Flow component — hub-and-spoke diagram with animated edges, custom nodes, stage modals; used by `detail-framework.html` |
-| `static/dist/framework-accordion.css` | Extracted CSS from the React bundle (React Flow base styles + custom animations) — linked in `detail-framework.html` |
-| `static/images/logo.svg` | Zimplixio banner logo — used in `_header.html` nav. ViewBox cropped to content area; fixed width/height removed so CSS controls sizing (`h-14 w-auto` in nav) |
-| `static/images/favicon.png` | Site favicon — circular icon PNG with transparent background. Linked in `base.html` as `<link rel="icon" type="image/png">` |
-| `static/images/Paypal.svg` | PayPal logo SVG — used in homepage credentials section |
-| `static/images/IBM.svg` | IBM logo SVG — used in homepage credentials section |
-| `static/images/HPE.svg` | HPE logo SVG (white text, green icon) — used in homepage credentials section |
-| `static/images/Intel.svg` | Intel logo SVG — used in homepage credentials section |
-| `static/images/joseph.jpg` | Joseph Ugalde photo — used in About page founder card |
-| `static/images/maria-jose.png` | Maria Jose Espinoza photo — used in About page founder card |
-| `static/images/zimplixio-icon.png` | Zimplixio icon PNG (988×1012px, transparent) — used in email template headers |
-| `static/images/zimplixio-wordmark.png` | Zimplixio dark wordmark PNG (2217×596px, transparent) — used in email template footers |
-| `static/manifest.json` | PWA web app manifest with Zimplixio branding |
+- CSP middleware (`core.middleware.ContentSecurityPolicyMiddleware`) — `default-src 'self'`; `script-src` allows `'unsafe-inline' 'unsafe-eval'` + Tailwind CDN + unpkg.com; `style-src` allows `'unsafe-inline'` + unpkg.com + fonts.googleapis.com; `font-src 'self'` + fonts.gstatic.com; `img-src 'self' data:` + the R2 domain in production; `frame-src https:`; `frame-ancestors 'none'`
+- Rate limiting on form POST endpoints (see Key Dependencies for exact rates)
+- Production-only: HSTS, SSL redirect, secure cookies (`DEBUG=False`)
+- Admin at `/zm-admin/`, not the default `/admin/`
 
-### Security
+## AI Adoption Framework
 
-- CSP middleware (`core.middleware.ContentSecurityPolicyMiddleware`) — `default-src 'self'`; `script-src` allows `'unsafe-inline' 'unsafe-eval'` + Tailwind CDN + unpkg.com; `style-src` allows `'unsafe-inline'` + unpkg.com + fonts.googleapis.com; `font-src 'self'` + fonts.gstatic.com; `img-src 'self' data:` + the Cloudflare R2 public domain in production (derived from `R2_PUBLIC_DOMAIN` — see "Media Storage"); `frame-src https:`; `frame-ancestors 'none'`
-- Rate limiting on form POST endpoints (5/hr per IP)
-- Production-only settings: HSTS, SSL redirect, secure cookies, CompressedStaticFilesStorage (activated when `DEBUG=False`)
-- Admin at `/zm-admin/` (not the default `/admin/`)
+Served at `/showcase/ai-adoption-framework/` by `showcase`, using the custom `detail-framework.html`. The `framework` app provides only API endpoints.
 
-### AI Adoption Framework (Embedded in Showcase)
+- **Accordion**: React + React Flow mounted on `#framework-root` — `HubNode` centre, 6 `StageNode` circles, `GradientEdge` spokes, `StageModal` portal on click
+- **React source**: `frontend/src/`. `data/stages.ts` is the canonical diagram content (the `Stage`/`Column`/`Callout`/`Table` interfaces and the `STAGES` array that `StageModal` renders); `data/questions.ts` holds the 8 assessment questions. All 6 stages use `type: 'step'` — the unused `'ongoing'` type triggers a purple palette in `StageNode`, do not use it
+- **Assessment flow**: 8-question wizard on `#assessment-root` → API call → contact capture → lead saved + admin email → report revealed. The "Start Assessment" button dispatches an `assessmentStart` DOM event the wizard listens for
+- **Assessment API**: `POST /framework/api/assessment/` calls `claude-sonnet-4-6` and returns a structured JSON report. Returns 503 when `ANTHROPIC_API_KEY` is empty
+- **Lead capture**: `POST /framework/api/save-lead/` validates name + email (blocks disposable domains), saves an `AssessmentLead`, emails `LEAD_NOTIFICATION_EMAIL`
+- **Prompts**: `framework/prompts.py` — `build_system_prompt()` encodes the framework and a strict JSON schema; `build_user_prompt(answers)` interpolates the answers
 
-The framework content is served at `/showcase/ai-adoption-framework/` via a custom template (`templates/showcase/detail-framework.html`). `framework/urls.py` routes the assessment API and save-lead endpoints.
+## Booking Email Flow
 
-- **Custom template routing**: `ShowcaseDetailView.get_template_names()` returns `detail-framework.html` when `slug == 'ai-adoption-framework'`; `get_context_data()` injects `api_available`
-- **Page structure**: Hero (with "Try the Assessment" scroll button) → Core Philosophy → Framework Accordion (6 stages, React Flow) → Closing Quote → CTA Panel → Assessment wizard
-- **Framework accordion**: React + React Flow component mounted on `<div id="framework-root">`. Hub-and-spoke diagram — `HubNode` (center), 6 `StageNode` circles, `GradientEdge` spokes. Clicking a node opens a `StageModal` portal. Tech stack: React 19, Vite, `@xyflow/react` v12. Build with `cd frontend && npm run build` — output goes to `static/dist/`.
-- **React source**: `frontend/src/` — all component, data, hook, and type files. Key data files: `data/stages.ts` (diagram content), `data/questions.ts` (8 assessment questions). All 6 stages use `type: 'step'` — the unused `'ongoing'` type triggers a purple palette in `StageNode`, do not use it.
-- **Fonts**: DM Serif Display + DM Sans loaded via Google Fonts in `{% block extra_head %}`
-- **Content source (React)**: `frontend/src/data/stages.ts` — canonical data for the React Flow component. Defines TypeScript interfaces (`Stage`, `Column`, `Callout`, `Table`) and the `STAGES` array with structured fields (`intro`, `columns`, `callouts`, `tables`). `StageModal` renders this structured data. All 6 stages use `type: 'step'` — the `'ongoing'` type is no longer used and would trigger a different (purple) color palette in `StageNode`.
-- **Assessment API**: `POST /framework/api/assessment/` — rate-limited 10/hr per IP, calls `claude-sonnet-4-6`, returns structured JSON report (`readiness_level`, `readiness_summary`, `priority_stage`, `top_risks`, `first_30_days`, `one_line_verdict`)
-- **Assessment user flow**: 8-question wizard (React, mounted on `#assessment-root`) → loading screen (API call) → contact capture form (name + email) → lead saved + email notification sent → report revealed. The "Start Assessment" button dispatches a `assessmentStart` custom DOM event that the React wizard listens for.
-- **Lead capture**: `POST /framework/api/save-lead/` — rate-limited 3/hr per IP, validates name + email (blocks disposable domains, suspicious local-parts), saves `AssessmentLead`, sends email notification to `LEAD_NOTIFICATION_EMAIL` (set via env var, server-side only, never exposed to the client).
-- **Lead model**: `framework.AssessmentLead` — viewable at `/zm-admin/framework/assessmentlead/`
-- **Prompt engineering**: `framework/prompts.py` — `build_system_prompt()` encodes full framework + strict JSON schema; `build_user_prompt(answers)` interpolates 8 user answers
-- **Environment variables**: `ANTHROPIC_API_KEY` (assessment returns 503 if empty); `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` for transactional email (Microsoft 365 SMTP in production: `smtp.office365.com` port 587); `LEAD_NOTIFICATION_EMAIL` for admin booking/lead notifications (e.g. `joe.ugalde@zimplixio.com`); `ZOOM_MEETING_URL` for the Zoom link in confirmation emails; `SITE_URL` for building absolute links in admin notification emails (dev: `http://localhost:8000`, prod: `https://zimplixio.com`). In dev, `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints emails to terminal. `DEFAULT_FROM_EMAIL=team@zimplixio.com` in all environments. `BOOKING_TIMEZONE` is hardcoded to `'America/New_York'` in `settings/base.py` (not an env var).
-- **Tech tags**: "React" and "Vite" added to the showcase project via migration `showcase/migrations/0006_add_react_vite_tags_to_framework.py`
+`booking/services.py` — `BookingEmailService`, all methods `fail_silently=False` so SMTP errors reach the logger.
 
+| Trigger | Method | Recipient |
+|---|---|---|
+| Visitor submits form | `send_visitor_received()` | Visitor |
+| Visitor submits form | `send_admin_notification()` | `LEAD_NOTIFICATION_EMAIL` |
+| Admin sets status → `confirmed` | `send_visitor_confirmed()` | Visitor |
+| Admin sets status → `cancelled` | `send_visitor_cancelled()` | Visitor |
 
+**Timezone handling**: `BOOKING_TIMEZONE = 'America/New_York'` in `base.py` is canonical — slot times are stored and returned as Eastern. `_build_context()` builds both `time_str` (Eastern, used by the admin template) and `visitor_time_str` (converted via `format_time_in_tz()` in `booking/utils.py`, used by visitor templates), falling back to Eastern when `visitor_timezone` is empty.
 
-### About Page — World Map
+**Template design**: all templates use fully inline styles and table layouts for Gmail, with `bgcolor` fallbacks since Gmail strips CSS gradients. Logos are referenced by absolute URL.
 
-The "The gap we saw" section of the About page contains an interactive world map in the right `lg:col-span-3` of a `lg:grid-cols-4` layout inside `max-w-7xl`.
+**Double-booking gap**: `available_slots_view` filters confirmed times at read time, but there is no database constraint — two pending requests for the same slot can both be confirmed. Known and deferred.
 
-**Files**: `static/js/world-map.js` (D3 v7 + TopoJSON IIFE), `static/data/world-110m.json`, `static/data/us-10m.json`. D3 and TopoJSON loaded via unpkg CDN in `extra_js`. Data URLs injected via `data-world-url` / `data-us-url` attributes on `#world-map-container`.
+## Environment Variables
 
-**Three-state interaction**
+Beyond the R2 set above: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL` (no defaults — the app will not boot without them); `CONN_MAX_AGE` (defaults to 600); `ANTHROPIC_API_KEY`; `EMAIL_BACKEND`/`EMAIL_HOST`/`EMAIL_HOST_USER`/`EMAIL_HOST_PASSWORD`/`DEFAULT_FROM_EMAIL` (Microsoft 365 SMTP in production, console backend in dev); `LEAD_NOTIFICATION_EMAIL`; `ZOOM_MEETING_URL`; `SITE_URL` (absolute links in admin emails). `BOOKING_TIMEZONE` is hardcoded in `base.py`, not an env var.
 
-| State | `state.view` | How to enter | How to exit |
-|-------|-------------|--------------|-------------|
-| Orthographic globe | `'world'` | Page load | Click any country pin or Americas landmass |
-| Flat world map (Natural Earth) | `'flat'` | Morph animation completes | Click US country or US pin → zoom; or mouse-out (600ms) → globe |
-| US bounding-box zoom | `'us'` | Click US in flat state | Click outside US states → zoom back to flat; or mouse-out → globe |
+## Known Gotchas
 
-**Critical constraints — do not change without reading `world-map.js` first**
-- `zoomToUS` uses hardcoded continental US corners (`[-125,50]` → `[-66,24]`) — **do not switch to `path.bounds(nation)`**: Alaska + Hawaii inflate the box and break the zoom
-- `clipAngle(90)` must be restored before the reverse morph; country paths must be redrawn after `clipAngle(null)` or polar countries stay clipped
-- 29 country pins (`CONTINENTAL` array) + 12 US city pins (`CITIES` array) — touch and desktop share one unified click handler in `drawWorld`
-
-### Booking Email Flow
-
-`booking/services.py` — `BookingEmailService` handles all transactional emails for the booking system. All methods use `fail_silently=False` so SMTP errors propagate to the logger.
-
-| Trigger | Method | Recipient | Template |
-|---------|--------|-----------|----------|
-| Visitor submits booking form | `send_visitor_received()` | Visitor | `booking_visitor_received.html` |
-| Visitor submits booking form | `send_admin_notification()` | `LEAD_NOTIFICATION_EMAIL` | `booking_admin_notification.html` |
-| Admin changes status → `confirmed` | `send_visitor_confirmed()` | Visitor | `booking_visitor_confirmed.html` |
-| Admin changes status → `cancelled` | `send_visitor_cancelled()` | Visitor | `booking_visitor_cancelled.html` |
-
-**Timezone-aware context**: `_build_context()` builds both `time_str` (Eastern, for admin) and `visitor_time_str` (converted to visitor's IANA timezone via `format_time_in_tz()` in `booking/utils.py`). Visitor email templates use `{{ visitor_time_str }}`; admin template uses `{{ time_str }} ET`. Falls back to Eastern if `visitor_timezone` is empty.
-
-**Admin notification email** includes a direct deep-link button to the booking change page: `{SITE_URL}/zm-admin/booking/bookingrequest/{id}/change/`. Requires `SITE_URL` to be set correctly in the environment. Also shows visitor's `booking.visitor_timezone` as a reference row.
-
-**Admin hook**: `BookingRequestAdmin.save_model()` intercepts status changes. Transitioning to `confirmed` calls `obj.confirm()`; transitioning to `cancelled` calls `obj.cancel()`. Both methods save the model and fire the appropriate email. `super().save_model()` is NOT called in these cases (the model save happens inside `confirm()`/`cancel()`).
-
-**Email template design**: All 4 templates use fully inline styles + table-based layout for Gmail compatibility. Header cells also include `bgcolor="#0f2044"` as a gradient fallback (Gmail strips CSS gradients). Logo assets referenced via absolute URLs (`https://zimplixio.com/static/images/zimplixio-icon.png` and `zimplixio-wordmark.png`).
-
-**Canonical timezone**: `BOOKING_TIMEZONE = 'America/New_York'` in `settings/base.py`. Slot times are stored and returned as Eastern. `format_time_in_tz()` in `booking/utils.py` uses Python's `zoneinfo` stdlib to convert to any IANA timezone.
-
-**Double-booking protection**: The `available_slots_view` filters out already-confirmed times before presenting them to visitors. No database-level unique constraint exists — two simultaneous pending requests for the same slot can both be confirmed by the admin.
-
-### Known Gotchas
-
-See [`docs/GOTCHAS.md`](docs/GOTCHAS.md) for the full list of implementation quirks, removed features, and non-obvious constraints.
+See [`docs/GOTCHAS.md`](docs/GOTCHAS.md) for implementation quirks, removed features, and non-obvious constraints.

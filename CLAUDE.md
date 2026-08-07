@@ -35,13 +35,13 @@ python manage.py check --deploy
 ## Architecture
 
 - **Django project package**: `Zimplixio_site/Zimplixio_site/` — settings, root URL conf, WSGI/ASGI entry points
-- **Database**: PostgreSQL (configured via `DATABASE_URL` in `.env`)
+- **Database**: PostgreSQL (configured via `DATABASE_URL` in `.env`). Persistent connections are enabled in `settings/base.py` (`CONN_MAX_AGE`, `CONN_HEALTH_CHECKS`) and the Railway Postgres service must sit in the **same region** as the web service — both are load-bearing for response time, see `docs/GOTCHAS.md`
 - **Templates**: Project-level `Zimplixio_site/templates/` (shared across all apps)
 - **Static files**: `Zimplixio_site/static/` (css, js, images)
 - **Media uploads**: local disk (`Zimplixio_site/media/`) in dev; **Cloudflare R2** in production — see "Media Storage" below
 - **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored).
 - **Settings**: Split into `settings/base.py` (shared), `settings/dev.py` (local), `settings/prod.py` (Railway — enforces HSTS, SSL redirect, secure cookies). Controlled by `DJANGO_SETTINGS_MODULE` in `.env`.
-- **Deployment**: `railway.toml` (build command) + `start.sh` (collectstatic → migrate → gunicorn)
+- **Deployment**: `railway.toml` (build command) + `start.sh` (collectstatic → migrate → gunicorn). Web service and Postgres service must share a region — a cross-region split cost ~85ms per query until it was corrected
 
 ### Apps
 

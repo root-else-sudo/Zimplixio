@@ -8,7 +8,7 @@ export function Callout({ callout }: CalloutProps) {
   return (
     <div className="framework-callout">
       <div className="framework-callout-label">{callout.label}</div>
-      <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{callout.text}</p>
+      <p className="text-gray-700 text-sm leading-relaxed">{callout.text}</p>
     </div>
   );
 }

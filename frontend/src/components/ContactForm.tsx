@@ -81,17 +81,17 @@ export function ContactForm({ report, onSuccess }: Props) {
 
   return (
     <div className="contact-capture max-w-md mx-auto text-center">
-      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Your report is ready</h3>
-      <p className="text-gray-500 dark:text-gray-400 mb-8">Enter your details to unlock your personalised AI readiness report.</p>
+      <h3 className="text-2xl font-bold text-gray-900 mb-2">Your report is ready</h3>
+      <p className="text-gray-500 mb-8">Enter your details to unlock your personalised AI readiness report.</p>
       <form onSubmit={handleSubmit} className="space-y-4 text-left">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="lead-name">
+          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="lead-name">
             Full name
           </label>
           <input
             id="lead-name"
             type="text"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Jane Smith"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -99,13 +99,13 @@ export function ContactForm({ report, onSuccess }: Props) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="lead-email">
+          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="lead-email">
             Business email
           </label>
           <input
             id="lead-email"
             type="email"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="jane@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -113,7 +113,7 @@ export function ContactForm({ report, onSuccess }: Props) {
           />
         </div>
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {error}
           </div>
         )}
@@ -125,7 +125,7 @@ export function ContactForm({ report, onSuccess }: Props) {
           {submitting ? 'Saving…' : 'Unlock My Report'}
         </button>
       </form>
-      <p className="text-xs text-gray-400 dark:text-gray-500 mt-4">No spam. Used only to send your report and occasional insights.</p>
+      <p className="text-xs text-gray-400 mt-4">No spam. Used only to send your report and occasional insights.</p>
     </div>
   );
 }

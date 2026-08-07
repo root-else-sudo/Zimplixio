@@ -87,13 +87,13 @@
         dot.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-indigo-600 text-white border-2 border-indigo-600';
         dot.textContent = i;
       } else {
-        dot.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white dark:bg-gray-800 text-gray-400 border-2 border-gray-300 dark:border-gray-600';
+        dot.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white text-gray-400 border-2 border-gray-300';
         dot.textContent = i;
       }
       if (line) {
         line.className = i < n
           ? 'flex-1 h-0.5 bg-indigo-600 mx-1'
-          : 'flex-1 h-0.5 bg-gray-300 dark:bg-gray-600 mx-1';
+          : 'flex-1 h-0.5 bg-gray-300 mx-1';
       }
     }
   }
@@ -131,7 +131,7 @@
 
     // Day-of-week headers (Mon–Sun)
     let html = DAY_LABELS.map(function (d) {
-      return '<div class="text-center text-xs font-semibold text-gray-400 dark:text-gray-500 py-1">' + d + '</div>';
+      return '<div class="text-center text-xs font-semibold text-gray-400 py-1">' + d + '</div>';
     }).join('');
 
     // First day of month (0=Sun … 6=Sat → convert to Mon-based offset)
@@ -156,10 +156,10 @@
         cls = 'w-9 h-9 mx-auto rounded-full flex items-center justify-center text-sm font-semibold bg-indigo-600 text-white cursor-pointer select-none';
         attrs = 'data-date="' + iso + '"';
       } else if (!isPast && isAvail) {
-        cls = 'w-9 h-9 mx-auto rounded-full flex items-center justify-center text-sm font-medium text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-400 dark:ring-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer select-none transition-colors';
+        cls = 'w-9 h-9 mx-auto rounded-full flex items-center justify-center text-sm font-medium text-indigo-700 ring-2 ring-indigo-400 hover:bg-indigo-50 cursor-pointer select-none transition-colors';
         attrs = 'data-date="' + iso + '"';
       } else {
-        cls = 'w-9 h-9 mx-auto rounded-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-not-allowed select-none';
+        cls = 'w-9 h-9 mx-auto rounded-full flex items-center justify-center text-sm text-gray-300 cursor-not-allowed select-none';
         attrs = '';
       }
 
@@ -216,13 +216,13 @@
     const slotContainer = el('slot-container');
     if (!slotContainer) return;
     if (!slots.length) {
-      slotContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-8 text-sm">No available times for this day.<br>Please go back and pick another date.</p>';
+      slotContainer.innerHTML = '<p class="text-center text-gray-500 py-8 text-sm">No available times for this day.<br>Please go back and pick another date.</p>';
       return;
     }
     const html = slots.map(function (s) {
       var localLabel = convertSlotToLocal(state.selectedDate, s.value, visitorTz);
       return '<button type="button" data-value="' + s.value + '" data-label="' + localLabel + '" ' +
-        'class="slot-pill px-4 py-3 rounded-lg border-2 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 font-medium text-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-500 transition-colors text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">' +
+        'class="slot-pill px-4 py-3 rounded-lg border-2 border-indigo-300 text-indigo-700 font-medium text-sm hover:bg-indigo-50 hover:border-indigo-500 transition-colors text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">' +
         localLabel + '</button>';
     }).join('');
     slotContainer.innerHTML = '<div class="grid grid-cols-3 gap-3">' + html + '</div>';

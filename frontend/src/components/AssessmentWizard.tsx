@@ -102,7 +102,7 @@ export function AssessmentWizard() {
   if (step === 'error') {
     return (
       <div className="text-center py-12">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-6 py-4 rounded-2xl max-w-md mx-auto mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-2xl max-w-md mx-auto mb-6">
           {error}
         </div>
         <button
@@ -138,7 +138,7 @@ export function AssessmentWizard() {
                 ? 'w-2.5 h-2.5 bg-indigo-600'
                 : i === currentQuestion
                 ? 'w-2.5 h-2.5 bg-indigo-600 ring-2 ring-indigo-300 ring-offset-1'
-                : 'w-2.5 h-2.5 bg-gray-300 dark:bg-gray-600'
+                : 'w-2.5 h-2.5 bg-gray-300'
             }`}
           />
         ))}
@@ -146,11 +146,11 @@ export function AssessmentWizard() {
 
       {/* Progress bar */}
       <div className="mb-8">
-        <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <div className="flex justify-between text-sm text-gray-500 mb-2">
           <span>Question {currentQuestion + 1} of {QUESTIONS.length}</span>
           <span>{Math.round(progress)}% complete</span>
         </div>
-        <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-indigo-600 rounded-full"
             style={{
@@ -175,7 +175,7 @@ export function AssessmentWizard() {
         <button
           onClick={goBack}
           disabled={currentQuestion === 0}
-          className="px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 font-medium hover:border-indigo-400 hover:text-indigo-600 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-600 font-medium hover:border-indigo-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Back
         </button>

@@ -20,35 +20,13 @@
         <a href="{{ url_showcase }}" class="font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:rounded {% if request.path == url_showcase %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_showcase %}aria-current="page"{% endif %}>Showcase</a>
         <a href="{{ url_contact }}" class="font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:rounded {% if request.path == url_contact %}text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5{% else %}text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400{% endif %}" {% if request.path == url_contact %}aria-current="page"{% endif %}>Contact</a>
 
-        <!-- Dark mode toggle (desktop) -->
-        <button class="dark-mode-toggle p-2 rounded-lg text-gray-600 hover:text-indigo-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-indigo-400 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Toggle dark mode" aria-pressed="false">
-          <!-- Moon icon (shown in light mode) -->
-          <svg class="dark-mode-moon h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-          </svg>
-          <!-- Sun icon (shown in dark mode) -->
-          <svg class="dark-mode-sun hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-          </svg>
-        </button>
-
         <a href="{% url 'booking:book' %}" class="logo-magnetic btn-premium inline-flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2">
           Book a Call
         </a>
       </div>
 
-      <!-- Mobile right side: dark toggle + hamburger -->
+      <!-- Mobile right side: hamburger -->
       <div class="md:hidden flex items-center gap-1">
-        <!-- Dark mode toggle (mobile) -->
-        <button class="dark-mode-toggle p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-indigo-400 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Toggle dark mode" aria-pressed="false">
-          <svg class="dark-mode-moon h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-          </svg>
-          <svg class="dark-mode-sun hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-          </svg>
-        </button>
-
         <!-- Mobile hamburger -->
         <button id="mobile-menu-btn" class="p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-indigo-400 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Toggle menu" aria-expanded="false">
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

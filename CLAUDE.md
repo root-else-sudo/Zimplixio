@@ -134,7 +134,7 @@ Most of `static/js/` is self-describing by filename. The ones with non-obvious b
 | `particles-hero.js` | Custom canvas ImageData animation — no WebGL, no library. 20,000 particles across 6 twisted ribbon surfaces; mouse tilts the camera. Requires a `<div id="hero-particles">` inside the hero section |
 | `booking-wizard.js` | 3-step wizard state machine. Auto-detects the visitor's timezone and converts Eastern slot times for display; populates hidden `requested_date`, `requested_time`, `visitor_timezone` inputs |
 | `services-scroll.js` | Desktop-only (≥1024px) scroll-pinned horizontal panels with snap-after-pause and an `isSnapping` reentrancy guard. Mobile uses a separate tabbed layout in the same template |
-| `showcase-carousel.js` | Infinite-loop carousel that clones first/last N slides; rebuilds clones on resize |
+| `showcase-carousel-v2.js` | Infinite-loop carousel that clones first/last N slides; falls back to a static row when every project already fits, and re-evaluates on resize |
 | `world-map.js` | See "About Page — World Map" |
 
 Other assets worth flagging: `static/css/main.css` is organized by `/* === Section === */` comments; the HPE logo is `static/images/HPE-v2.svg` (renamed to bust caches when its text went from white to dark — see `docs/GOTCHAS.md`); `static/images/logo.svg` has no fixed width/height so CSS controls sizing; and **`static/dist/*` is gitignored build output**, absent from a fresh clone until `npm run build` runs.

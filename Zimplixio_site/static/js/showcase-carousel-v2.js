@@ -99,10 +99,10 @@
     updateCenter();
   }
 
-  // With fewer projects than fit on screen there are not enough slides to fill the
-  // window without showing a card twice, so lay them out statically instead: no
-  // clones, no transform, no autoplay, no arrows. At exactly `visible` projects the
-  // loop still works and is left alone.
+  // A loop only means anything when a card is off-screen. Once every project already
+  // fits, sliding just rotates duplicates through the visible slots — most obviously
+  // with a single filtered result, which otherwise cycles the same card forever. Lay
+  // them out statically instead: no clones, no transform, no autoplay, no arrows.
   function setupStatic() {
     clearClones();
     stopAutoplay();
@@ -111,9 +111,11 @@
     carousel.classList.add('showcase-carousel-static');
     track.style.transition = 'none';
     track.style.transform = 'none';
-    var slideW = getSlideWidthPercent();
     realSlides.forEach(function (slide) {
-      slide.style.flex = '0 0 ' + slideW + '%';
+      // Drop the inline width positionTrack() may have set, so the static width in
+      // main.css applies. Slot widths are a carousel concern; a static row sizes its
+      // cards to read deliberately rather than to divide the viewport.
+      slide.style.flex = '';
       slide.classList.remove('is-center');
     });
   }
@@ -122,7 +124,7 @@
   // since the same project count can be static on desktop and a real carousel on mobile.
   function render() {
     visible = getVisible();
-    if (totalReal < visible) {
+    if (totalReal <= visible) {
       setupStatic();
     } else {
       isStatic = false;

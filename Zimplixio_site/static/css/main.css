@@ -322,9 +322,15 @@ textarea:focus {
 
 /* Static layout — set by showcase-carousel.js when there are no more projects than
    fit on screen (a filtered gallery, typically). Nothing to loop through, so the
-   cards are centred and the arrows are removed rather than left as dead controls. */
+   cards are centred and the arrows are removed rather than left as dead controls.
+   Cards take a fixed width instead of a share of the viewport: dividing the row
+   between one or two results leaves a lone card stranded in a wide empty strip. */
 .showcase-carousel-static .showcase-track {
   justify-content: center;
+}
+.showcase-carousel-static .showcase-slide {
+  flex: 0 0 380px;
+  max-width: 100%;
 }
 .showcase-carousel-static .showcase-arrow {
   display: none;

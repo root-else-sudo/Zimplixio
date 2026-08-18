@@ -137,7 +137,7 @@ Most of `static/js/` is self-describing by filename. The ones with non-obvious b
 | `showcase-carousel.js` | Infinite-loop carousel that clones first/last N slides; rebuilds clones on resize |
 | `world-map.js` | See "About Page — World Map" |
 
-Other assets worth flagging: `static/css/main.css` is organized by `/* === Section === */` comments; `static/images/HPE.svg` was edited to use white text (invisible on white backgrounds — this is intentional); `static/images/logo.svg` has no fixed width/height so CSS controls sizing; and **`static/dist/*` is gitignored build output**, absent from a fresh clone until `npm run build` runs.
+Other assets worth flagging: `static/css/main.css` is organized by `/* === Section === */` comments; the HPE logo is `static/images/HPE-v2.svg` (renamed to bust caches when its text went from white to dark — see `docs/GOTCHAS.md`); `static/images/logo.svg` has no fixed width/height so CSS controls sizing; and **`static/dist/*` is gitignored build output**, absent from a fresh clone until `npm run build` runs.
 
 ## Security
 

@@ -320,6 +320,16 @@ textarea:focus {
   height: 100%;
 }
 
+/* Static layout — set by showcase-carousel.js when there are no more projects than
+   fit on screen (a filtered gallery, typically). Nothing to loop through, so the
+   cards are centred and the arrows are removed rather than left as dead controls. */
+.showcase-carousel-static .showcase-track {
+  justify-content: center;
+}
+.showcase-carousel-static .showcase-arrow {
+  display: none;
+}
+
 /* Navigation arrows */
 .showcase-arrow {
   position: absolute;

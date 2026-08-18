@@ -41,7 +41,7 @@ Implementation quirks, removed features, and non-obvious constraints. Read this 
 - **Gallery thumbnails**: Use `object-contain` (not `object-cover`) so icon-style images display fully without cropping.
 - **Cross-origin iframe CSRF**: Embedded apps (e.g., recomares.com) that use POST-based actions (like Django `set_language`) will fail in the iframe due to third-party cookie blocking. The "Open in new tab" fallback link is provided.
 - **Iframe-embedded showcase apps must allow framing**: Any external app added to the showcase with `live_demo_url` must not send `X-Frame-Options: SAMEORIGIN`. Remove `XFrameOptionsMiddleware` from the embedded app's `MIDDLEWARE` setting to allow cross-origin embedding.
-- **Showcase carousel clones require N ≥ visible count**: The carousel clones the first/last N slides (3 desktop, 2 tablet, 1 mobile). With only 3 projects it still works, but sparse if fewer.
+- **Showcase carousel falls back to a static row below the visible count**: The carousel clones the first/last N slides (N = 3 desktop, 2 tablet, 1 mobile). When there are *fewer* projects than fit on screen — which is what the industry filter produces — there are not enough slides to fill the window without repeating a card, so `showcase-carousel.js` skips cloning entirely, adds `.showcase-carousel-static` (centres the row, hides the arrows), and leaves the track untransformed. At exactly N projects the loop still works and is used. Both layouts are re-evaluated on resize, since the same project count can be static on desktop and a real carousel on mobile.
 - **Showcase carousel auto-play pauses on hover/focus**: Stays paused if the user tabs in and doesn't tab out — intentional for accessibility.
 
 ## Design System & CSS

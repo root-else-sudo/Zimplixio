@@ -20,6 +20,7 @@
   var current = 0;
   var visible = 3;
   var timer = null;
+  var isStatic = false;
 
   function getVisible() {
     if (window.innerWidth < 768) return 1;
@@ -31,13 +32,20 @@
     return 100 / visible;
   }
 
+  function clearClones() {
+    track.querySelectorAll('[data-clone]').forEach(function (c) { c.remove(); });
+  }
+
   // Build clones for infinite loop
   function setupClones() {
-    // Remove existing clones
-    track.querySelectorAll('[data-clone]').forEach(function (c) { c.remove(); });
+    clearClones();
 
-    visible = getVisible();
-    var cloneCount = visible;
+    // Never clone more slides than exist. The loops below already cap themselves at
+    // totalReal, so using `visible` here made `current` (set to cloneCount at the end)
+    // point past the slides that were actually prepended: a filtered gallery with one
+    // project translated the track clean off-screen and rendered a blank section, and
+    // a two-project gallery opened on the wrong card.
+    var cloneCount = Math.min(visible, totalReal);
 
     // Clone last N → prepend
     for (var i = totalReal - 1; i >= Math.max(0, totalReal - cloneCount); i--) {
@@ -91,7 +99,41 @@
     updateCenter();
   }
 
+  // With fewer projects than fit on screen there are not enough slides to fill the
+  // window without showing a card twice, so lay them out statically instead: no
+  // clones, no transform, no autoplay, no arrows. At exactly `visible` projects the
+  // loop still works and is left alone.
+  function setupStatic() {
+    clearClones();
+    stopAutoplay();
+    isStatic = true;
+    current = 0;
+    carousel.classList.add('showcase-carousel-static');
+    track.style.transition = 'none';
+    track.style.transform = 'none';
+    var slideW = getSlideWidthPercent();
+    realSlides.forEach(function (slide) {
+      slide.style.flex = '0 0 ' + slideW + '%';
+      slide.classList.remove('is-center');
+    });
+  }
+
+  // Chooses the layout for the current breakpoint. Re-run whenever `visible` changes,
+  // since the same project count can be static on desktop and a real carousel on mobile.
+  function render() {
+    visible = getVisible();
+    if (totalReal < visible) {
+      setupStatic();
+    } else {
+      isStatic = false;
+      carousel.classList.remove('showcase-carousel-static');
+      setupClones();
+      startAutoplay();
+    }
+  }
+
   function goTo(index, animate) {
+    if (isStatic) return;
     if (isTransitioning && animate) return;
     current = index;
     if (animate) isTransitioning = true;
@@ -100,6 +142,7 @@
 
   // After transition, check for clone boundary and jump
   track.addEventListener('transitionend', function () {
+    if (isStatic) return;
     isTransitioning = false;
     var cloneCount = Math.min(visible, totalReal);
 
@@ -144,7 +187,7 @@
 
   // Auto-play
   function startAutoplay() {
-    if (reducedMotion) return;
+    if (reducedMotion || isStatic) return;
     stopAutoplay();
     timer = setInterval(function () {
       goTo(current + 1, true);
@@ -179,20 +222,16 @@
     }
   });
 
-  // Responsive: rebuild clones on resize
+  // Responsive: re-lay out on resize. Goes through render() rather than setupClones()
+  // so a breakpoint change can also switch between static and carousel layouts.
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
-      var newVisible = getVisible();
-      if (newVisible !== visible) {
-        setupClones();
-        startAutoplay();
-      }
+      if (getVisible() !== visible) render();
     }, 200);
   });
 
   // Initialize
-  setupClones();
-  startAutoplay();
+  render();
 })();

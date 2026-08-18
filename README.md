@@ -16,7 +16,6 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 - **About Page** — Values flip cards, interactive world map, and career stats
 - **Services Page** — Scroll-pinned panel layout (desktop) with tabbed interface (mobile) and FAQ accordion
 - **NPS Results Page** — Live NPS metric display
-- **Dark Mode** — Full site dark mode toggle with FOUC prevention
 - **PWA** — Web app manifest for installability
 
 ---
@@ -25,13 +24,13 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Django 6.0.3, Python 3.14 |
+| Backend | Django 6.0.4, Python 3.14 |
 | Database | PostgreSQL |
 | Frontend | Tailwind CSS (CDN), AOS animations |
 | React bundle | React 19, Vite, @xyflow/react v12 |
 | AI | Anthropic Claude (`claude-sonnet-4-6`) |
 | Media storage | Cloudflare R2 (via django-storages) |
-| Static files | WhiteNoise (CompressedManifestStaticFilesStorage in prod) |
+| Static files | WhiteNoise (`CompressedStaticFilesStorage` in prod — non-manifest, see `docs/GOTCHAS.md`) |
 | Rate limiting | django-ratelimit |
 | Image handling | Pillow |
 | Config | django-environ |
@@ -49,6 +48,7 @@ Zimplixio/
 ├── Pipfile                         # Python dependencies
 ├── Pipfile.lock                    # Pinned dependency versions
 ├── docs/                           # Project documentation
+│   ├── COMPANY_OVERVIEW.md         # Business context and positioning
 │   └── GOTCHAS.md                  # Implementation quirks and non-obvious constraints
 ├── frontend/                       # React source (Vite)
 │   └── src/

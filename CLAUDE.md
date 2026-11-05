@@ -91,7 +91,7 @@ Only `showcase` has `ImageField`s (project thumbnail, architecture diagram, scre
 
 Follow these conventions when building new UI:
 
-- **Gradient heroes**: `bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900` with ambient blur circles (`bg-white rounded-full blur-3xl`, ~10% opacity)
+- **Gradient heroes**: `.hero-animated-bg` (animated dark navy gradient) + a `<div id="hero-particles">`. Do **not** add `bg-white rounded-full blur-3xl` ambient circles to these — they surface as visible grey discs against the dark gradient, see `docs/GOTCHAS.md`. The lighter static `bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900` band (privacy/cookie policy, the framework `#assessment-cta`) still uses one at ~10% opacity
 - **Section subtitle labels**: `text-indigo-300 font-medium tracking-wider uppercase text-sm` above headings
 - **AOS scroll animations**: `data-aos="fade-up"` with staggered `data-aos-delay` in 100ms increments. Initialized globally in `base.html` (`once: true, duration: 700, easing: 'ease-out-cubic'`)
 - **Cards**: `rounded-2xl border border-gray-200 shadow-sm` + `hover:shadow-md transition-shadow`

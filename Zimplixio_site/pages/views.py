@@ -6,6 +6,7 @@ from django_ratelimit.decorators import ratelimit
 
 from showcase.models import ShowcaseProject
 from .forms import ContactForm
+from .services import ContactEmailService
 
 
 class HomePageView(TemplateView):
@@ -35,6 +36,11 @@ class ContactView(CreateView):
         if getattr(request, 'limited', False):
             return HttpResponse('Too many submissions. Please try again later.', status=429)
         return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        ContactEmailService.send_visitor_received(self.object)
+        return response
 
 
 class ContactSuccessView(TemplateView):

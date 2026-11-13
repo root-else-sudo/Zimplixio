@@ -39,7 +39,11 @@ class ContactView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        ContactEmailService.send_visitor_received(self.object)
+        # Flagged submissions are stored for review but never acknowledged by
+        # email — bot-supplied addresses belong to people who never wrote in,
+        # and mailing them damages the sending domain's reputation.
+        if not self.object.is_spam:
+            ContactEmailService.send_visitor_received(self.object)
         return response
 
 

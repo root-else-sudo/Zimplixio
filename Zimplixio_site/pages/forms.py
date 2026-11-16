@@ -114,17 +114,26 @@ class ContactForm(forms.ModelForm):
     def _spam_reason(self):
         """Why this submission looks automated, or '' if it looks human.
 
-        Deliberately does not raise: a flagged submission is still saved so a
-        false positive is recoverable, it is just never emailed.
+        Order matters. Only the first signal found is returned, and that
+        decides whether the submission is refused (_REFUSED_REASONS) or
+        merely flagged and stored -- so conclusive signals are checked
+        FIRST. Checking the decoy first would mean a bot that trips both it
+        and the dwell floor gets stored instead of refused, which one line
+        in the bot's script would have been enough to exploit.
         """
+        elapsed = read_form_token(self.data.get('ts'))
+
+        # Conclusive: no human completes this form in under three seconds.
+        if elapsed is not None and elapsed < MIN_DWELL_SECONDS:
+            return 'too_fast'
+
+        # Recoverable: browser autofill can fill the decoy, and a missing or
+        # day-old token can mean a tab left open rather than a bot. These are
+        # stored so a false positive can be found and rescued.
         if self.cleaned_data.get('website'):
             return 'honeypot'
-
-        elapsed = read_form_token(self.data.get('ts'))
         if elapsed is None:
             return 'no_token'
-        if elapsed < MIN_DWELL_SECONDS:
-            return 'too_fast'
         if elapsed > MAX_DWELL_SECONDS:
             return 'stale_token'
         return ''
@@ -142,5 +151,14 @@ class ContactForm(forms.ModelForm):
             # in _post_clean() leaves them alone.
             self.instance.is_spam = True
             self.instance.spam_reason = reason
-            logger.info('contact form flagged as spam (%s)', reason)
+            if self._errors:
+                # clean() runs even after field validation has already failed,
+                # so this submission will never reach form_valid() and never
+                # becomes a row. Logged distinctly, because refused and
+                # discarded submissions leave nothing behind -- the log is the
+                # only record, and it must not imply a row that is not there.
+                logger.info('contact form discarded (%s; invalid: %s)',
+                            reason, ','.join(sorted(self._errors)))
+            else:
+                logger.info('contact form flagged as spam (%s)', reason)
         return cleaned

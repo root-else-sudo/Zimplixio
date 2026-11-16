@@ -346,6 +346,93 @@ class ContactTooFastRejectionTests(TestCase):
         self.assertEqual(s.spam_reason, 'stale_token')
 
 
+class SpamSignalPrecedenceTests(TestCase):
+    """A refusable signal must win over a merely-flaggable one.
+
+    _spam_reason() returns the FIRST signal it finds, so the order it checks
+    them in decides whether a submission is refused or stored. The honeypot
+    used to be checked first, which meant a bot that filled the decoy AND
+    posted in under 3 seconds was stored rather than refused -- one line in
+    the bot's script would have refilled the table.
+    """
+
+    BASE = {
+        'name': 'Ada Lovelace',
+        'email': 'ada@example.com',
+        'company': 'Analytical Engines',
+        'message': 'We need help forecasting demand.',
+    }
+
+    def setUp(self):
+        cache.clear()
+        mail.outbox = []
+
+    def post(self, *, age_seconds, honeypot=''):
+        data = dict(self.BASE)
+        data['website'] = honeypot
+        data['ts'] = make_form_token(issued_at=time.time() - age_seconds)
+        return self.client.post(reverse('pages:contact'), data)
+
+    def test_honeypot_and_fast_is_refused_not_stored(self):
+        """The dwell floor is conclusive; tripping the decoy too cannot weaken it."""
+        r = self.post(age_seconds=0.5, honeypot='http://spam.example')
+        self.assertEqual(r.status_code, 200)
+        self.assertFalse(ContactSubmission.objects.exists())
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_honeypot_at_human_speed_is_still_stored_for_review(self):
+        """Autofill can trip the decoy, so a slow one stays recoverable."""
+        r = self.post(age_seconds=30, honeypot='http://spam.example')
+        self.assertEqual(r.status_code, 302)
+        s = ContactSubmission.objects.get()
+        self.assertTrue(s.is_spam)
+        self.assertEqual(s.spam_reason, 'honeypot')
+        self.assertEqual(len(mail.outbox), 0)
+
+
+class SpamLoggingTests(TestCase):
+    """The log is the only record of submissions that never become rows.
+
+    clean() runs even when field validation has already failed, so a flagged
+    submission with an invalid field is logged and then silently discarded.
+    The log must not imply a row that does not exist.
+    """
+
+    BASE = {
+        'name': 'Ada Lovelace',
+        'email': 'ada@example.com',
+        'company': 'Analytical Engines',
+        'message': 'We need help forecasting demand.',
+    }
+
+    def setUp(self):
+        cache.clear()
+
+    def post(self, **over):
+        data = dict(self.BASE)
+        data['website'] = 'http://spam.example'
+        data['ts'] = make_form_token(issued_at=time.time() - 30)
+        data.update(over)
+        return self.client.post(reverse('pages:contact'), data)
+
+    def test_a_stored_flag_is_logged_as_flagged(self):
+        with self.assertLogs('pages.forms', level='INFO') as log:
+            self.post()
+        self.assertEqual(ContactSubmission.objects.count(), 1)
+        self.assertTrue(any('flagged as spam (honeypot)' in m for m in log.output),
+                        log.output)
+
+    def test_a_discarded_flag_says_so_and_names_the_invalid_field(self):
+        with self.assertLogs('pages.forms', level='INFO') as log:
+            self.post(email='not-an-email')
+        self.assertFalse(ContactSubmission.objects.exists())
+        joined = ' '.join(log.output)
+        self.assertIn('discarded', joined,
+                      'a discarded submission must not be logged as merely flagged')
+        self.assertIn('email', joined, 'the log should name the field that failed')
+        self.assertNotIn('flagged as spam', joined)
+
+
 class TemplateCommentTests(TestCase):
     """Django's ``{# #}`` comment is single-line ONLY.
 

@@ -11,6 +11,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from .admin import ContactSubmissionAdmin
+from .forms import MIN_DWELL_SECONDS, make_form_token
 from .models import ContactSubmission
 
 
@@ -184,9 +185,13 @@ class ContactSpamFilterTests(TestCase):
         self.assertEqual(len(mail.outbox), 0, 'no mail may leave for a flagged submission')
 
     # ---------- dwell time ----------
-    def test_submitted_too_fast_is_flagged(self):
+    def test_submitted_too_fast_is_refused_not_stored(self):
+        """The one conclusive bot signal: refuse it, do not keep it.
+
+        See ContactTooFastRejectionTests for the full behaviour.
+        """
         self.client.post(reverse('pages:contact'), self.payload(age_seconds=0.5))
-        self.assertTrue(ContactSubmission.objects.get().is_spam)
+        self.assertFalse(ContactSubmission.objects.exists())
         self.assertEqual(len(mail.outbox), 0)
 
     def test_slow_genuine_submission_is_clean(self):
@@ -230,6 +235,113 @@ class ContactSpamFilterTests(TestCase):
     def test_honeypot_has_no_visible_label(self):
         html = self.client.get(reverse('pages:contact')).content.decode()
         self.assertNotIn('>Website<', html)
+
+
+class ContactTooFastRejectionTests(TestCase):
+    """A sub-3-second POST is refused by the form, so it never becomes a row.
+
+    Every other spam signal still flags-and-stores on purpose: the honeypot
+    can be tripped by browser autofill, and a missing or stale dwell token
+    can mean a tab left open overnight rather than a bot. Only the
+    sub-3-second POST is conclusive enough to throw the submission away,
+    and even then the visitor gets a form they can simply send again.
+    """
+
+    BASE = {
+        'name': 'Ada Lovelace',
+        'email': 'ada@example.com',
+        'company': 'Analytical Engines',
+        'message': 'We need help forecasting demand.',
+    }
+
+    def setUp(self):
+        cache.clear()
+        mail.outbox = []
+
+    def payload(self, *, age_seconds=0.5, token=None):
+        data = dict(self.BASE)
+        data['website'] = ''
+        data['ts'] = token if token is not None else make_form_token(
+            issued_at=time.time() - age_seconds
+        )
+        return data
+
+    def test_no_row_is_written(self):
+        self.client.post(reverse('pages:contact'), self.payload())
+        self.assertFalse(ContactSubmission.objects.exists())
+
+    def test_no_email_is_sent(self):
+        self.client.post(reverse('pages:contact'), self.payload())
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_the_form_is_redisplayed_rather_than_redirected(self):
+        r = self.client.post(reverse('pages:contact'), self.payload())
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.context['form'].non_field_errors())
+
+    def test_the_error_does_not_reveal_the_timing_rule(self):
+        """A bot author reading the response must not learn what to tune."""
+        r = self.client.post(reverse('pages:contact'), self.payload())
+        error = ' '.join(r.context['form'].non_field_errors()).lower()
+        for leak in ('second', 'fast', 'quick', 'speed', 'bot',
+                     'spam', 'dwell', 'timer', 'wait'):
+            self.assertNotIn(leak, error,
+                             f'error text leaks the mechanism: {error!r}')
+
+    def test_the_visitors_message_survives_the_rejection(self):
+        """They must not have to retype what they wrote."""
+        r = self.client.post(reverse('pages:contact'), self.payload())
+        self.assertContains(r, 'We need help forecasting demand.')
+
+    def test_the_rerendered_form_still_carries_the_original_token(self):
+        """Why the retry below works: the bound form echoes the token back."""
+        token = make_form_token(issued_at=time.time() - 0.5)
+        r = self.client.post(reverse('pages:contact'), self.payload(token=token))
+        self.assertContains(r, token)
+
+    def test_a_rejected_visitor_can_resubmit_and_succeed(self):
+        """The recovery path, and the reason refusing beats silently flagging.
+
+        Today a false positive is stored as spam, never emailed, and the
+        visitor is never told -- unrecoverable. Refused, they see an error
+        and pressing Send again just works, because the token they send
+        back is by then older than MIN_DWELL_SECONDS.
+        """
+        url = reverse('pages:contact')
+        first = self.client.post(url, self.payload())
+        self.assertEqual(first.status_code, 200)
+        self.assertFalse(ContactSubmission.objects.exists())
+
+        token = first.context['form']['ts'].value()
+        later = time.time() + MIN_DWELL_SECONDS + 1
+        with patch('pages.forms.time.time', return_value=later):
+            second = self.client.post(url, self.payload(token=token))
+
+        self.assertEqual(second.status_code, 302)
+        self.assertFalse(ContactSubmission.objects.get().is_spam)
+        self.assertEqual(len(mail.outbox), 1)
+
+    # ---------- the other signals must NOT start rejecting ----------
+    def test_honeypot_is_still_stored_for_review(self):
+        self.client.post(reverse('pages:contact'),
+                         dict(self.payload(age_seconds=30),
+                              website='http://spam.example'))
+        s = ContactSubmission.objects.get()
+        self.assertTrue(s.is_spam)
+        self.assertEqual(s.spam_reason, 'honeypot')
+
+    def test_missing_token_is_still_stored_for_review(self):
+        self.client.post(reverse('pages:contact'), self.payload(token=''))
+        s = ContactSubmission.objects.get()
+        self.assertTrue(s.is_spam)
+        self.assertEqual(s.spam_reason, 'no_token')
+
+    def test_stale_token_is_still_stored_for_review(self):
+        self.client.post(reverse('pages:contact'),
+                         self.payload(age_seconds=60 * 60 * 30))
+        s = ContactSubmission.objects.get()
+        self.assertTrue(s.is_spam)
+        self.assertEqual(s.spam_reason, 'stale_token')
 
 
 class ContactAdminActionTests(TestCase):

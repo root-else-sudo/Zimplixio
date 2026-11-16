@@ -16,6 +16,21 @@ MAX_DWELL_SECONDS = 60 * 60 * 24
 
 _TOKEN_SALT = 'pages.contact.dwell'
 
+# Shown when a submission is refused outright. Deliberately says nothing about
+# why: a bot author reading the response must not learn which signal to tune.
+# A real visitor only needs to know to press Send again, and that works -- the
+# token their browser sends back has by then aged past MIN_DWELL_SECONDS.
+REJECTION_MESSAGE = (
+    'We could not process that submission. '
+    'Please try sending your message again.'
+)
+
+# Signals conclusive enough to throw the submission away rather than store it.
+# Only the dwell floor qualifies: a human cannot fill this form in under
+# MIN_DWELL_SECONDS, but the honeypot can be tripped by browser autofill and a
+# missing or stale token can mean a tab left open, so those stay recoverable.
+_REFUSED_REASONS = frozenset({'too_fast'})
+
 # Hidden with an inline style rather than a CSS class on purpose: static assets
 # carry no content hash here, Cloudflare serves main.css with max-age=14400 and
 # Safari caches it in memory indefinitely, so a visitor on a stale stylesheet
@@ -117,6 +132,11 @@ class ContactForm(forms.ModelForm):
     def clean(self):
         cleaned = super().clean()
         reason = self._spam_reason()
+        if reason in _REFUSED_REASONS:
+            # No row is created: form_valid() never runs, so there is nothing
+            # to save and nothing to email.
+            logger.info('contact form refused (%s)', reason)
+            raise forms.ValidationError(REJECTION_MESSAGE, code=reason)
         if reason:
             # `is_spam`/`spam_reason` are not form fields, so construct_instance()
             # in _post_clean() leaves them alone.

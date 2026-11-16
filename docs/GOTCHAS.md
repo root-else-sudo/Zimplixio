@@ -78,6 +78,17 @@ Implementation quirks, removed features, and non-obvious constraints. Read this 
 - **`requested_date`/`requested_time` are hidden inputs**: Populated by JS before form submission. If JS is disabled the form cannot be submitted — this is by design.
 - **Zoom call link is env-driven, not hardcoded**: `booking_visitor_confirmed.html` renders `{{ zoom_url }}`, injected by `BookingEmailService.send_visitor_confirmed()` from `settings.ZOOM_MEETING_URL` (`settings/base.py`). To change the meeting link, update the `ZOOM_MEETING_URL` env var — do not edit the template. The setting defaults to `''`, so if the env var is missing the email still sends with an empty `href` and a dead "Join Zoom Meeting" button, with no error raised.
 
+## Contact Form Spam Filter
+
+`pages/forms.py` gates submissions on a decoy field plus a signed render timestamp (`ts`). The two signals are treated **asymmetrically on purpose**:
+
+- **Only `too_fast` is refused; every other reason is flagged and stored**: a POST arriving under `MIN_DWELL_SECONDS` (3s) raises a `ValidationError` and never becomes a row. `honeypot`, `no_token` and `stale_token` still save the submission with `is_spam=True` instead. The asymmetry is deliberate: no human fills this form in under three seconds, but browser autofill can populate the decoy and a missing or day-old token can just mean a tab left open overnight. Those stay recoverable; the sub-3-second POST does not need to be.
+- **A refused visitor can simply press Send again, and that is load-bearing**: the re-rendered bound form echoes the *original* `ts` value back from `self.data`, so by the time they retry, the token has aged past the 3-second floor and the submission succeeds. Do **not** "fix" the invalid-POST path by stamping a fresh token — that would reset the clock on every attempt and make the rejection permanent for a genuine false positive.
+- **The rejection message is deliberately uninformative**: `REJECTION_MESSAGE` says nothing about timing. A bot author reading the response must not learn which signal to tune. `ContactTooFastRejectionTests.test_the_error_does_not_reveal_the_timing_rule` enforces this — do not make the copy more helpful.
+- **A flagged (not refused) submission is silent and unrecoverable for the visitor**: `ContactView.form_valid()` skips the confirmation email when `is_spam` is set, so a false positive there sits in the admin with the visitor never told. This is the whole reason `too_fast` refuses rather than flags.
+- **The honeypot has never caught anything in production**: as of Nov 2026 every live catch was `too_fast` — the bots fetch `/contact/`, parse the signed token, echo it back, and ignore fields they do not recognise. The real defence is the 3-second rule alone, and a `sleep(5)` in the bot would defeat it. The decoy stays as free insurance, not as a working layer. Cloudflare Bot Fight Mode was measured against this campaign and caught **0%** (~41 submissions/hour before and after enabling it); it was turned back off.
+- **`/contact/` must never be edge-cached**: the dwell token is stamped into the HTML at render time. A cached page would hand every visitor the same `ts`, which goes `stale_token` for everyone after 24h. Cloudflare currently reports `cf-cache-status: DYNAMIC` for it — keep it that way.
+
 ## Cloudflare Edge
 
 The site is proxied through Cloudflare in front of Railway (`server: cloudflare`, `cf-ray`, `cf-cache-status` in every response). Almost everything passes through untouched, with one exception:

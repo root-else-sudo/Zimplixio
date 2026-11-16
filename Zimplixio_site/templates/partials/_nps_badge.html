@@ -1,5 +1,8 @@
 {# NPS badge hidden until enough data — restore when results page is ready #}
-{# {% if nps_score is not None %}
+{# Disabled with the comment tag, not the hash form: the hash form is #}
+{# single-line only, so a multi-line one spills onto the page as text. #}
+{% comment %}
+{% if nps_score is not None %}
 <a href="{% url 'metrics:results' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full hover:bg-green-100 transition-colors group">
   <span class="text-green-700 font-bold text-lg">{{ nps_score }}</span>
   <span class="text-green-600 text-sm font-medium">NPS Score</span>
@@ -7,4 +10,5 @@
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
   </svg>
 </a>
-{% endif %} #}
+{% endif %}
+{% endcomment %}

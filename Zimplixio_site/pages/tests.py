@@ -1,3 +1,5 @@
+import pathlib
+import re
 import time
 from io import StringIO
 from unittest.mock import patch
@@ -342,6 +344,53 @@ class ContactTooFastRejectionTests(TestCase):
         s = ContactSubmission.objects.get()
         self.assertTrue(s.is_spam)
         self.assertEqual(s.spam_reason, 'stale_token')
+
+
+class TemplateCommentTests(TestCase):
+    """Django's ``{# #}`` comment is single-line ONLY.
+
+    The lexer's tag regex does not match across newlines, so a multi-line
+    ``{# ... #}`` is not a comment at all: the braces are emitted as literal
+    text and any ``{% %}`` tags between them are executed normally. This
+    shipped to production once (contact.html, visible under the message
+    field) and sat latent in _nps_badge.html, where it would have fired the
+    moment an NPS score existed. Use ``{% comment %}...{% endcomment %}``
+    for anything spanning more than one line.
+    """
+
+    TEMPLATES = pathlib.Path(__file__).resolve().parent.parent / 'templates'
+
+    def test_no_template_opens_a_comment_it_does_not_close_on_the_same_line(self):
+        offenders = []
+        for path in sorted(self.TEMPLATES.rglob('*.html')):
+            text = path.read_text()
+            for match in re.finditer(r'\{#', text):
+                close = text.find('#}', match.start())
+                body = text[match.start() + 2:close] if close != -1 else text[match.start():]
+                # Unclosed, spanning lines, or nesting a marker -- the lexer's
+                # non-greedy {#.*?#} closes at the FIRST #}, so a nested one
+                # silently spills the remainder of the line onto the page.
+                if close == -1 or '\n' in body or '{#' in body or '#}' in body:
+                    line = text[:match.start()].count('\n') + 1
+                    offenders.append('%s:%d' % (path.relative_to(self.TEMPLATES), line))
+        self.assertEqual(
+            offenders, [],
+            'multi-line {# #} is not a comment -- use {% comment %}: ' + ', '.join(offenders)
+        )
+
+    def test_contact_page_renders_no_literal_comment_markers(self):
+        html = self.client.get(reverse('pages:contact')).content.decode()
+        self.assertNotIn('{#', html)
+        self.assertNotIn('#}', html)
+
+    def test_nps_badge_stays_hidden_once_a_score_exists(self):
+        """The partial is deliberately disabled; a score must not reveal it."""
+        from django.template.loader import render_to_string
+        out = render_to_string('partials/_nps_badge.html', {'nps_score': 72})
+        self.assertNotIn('{#', out)
+        self.assertNotIn('#}', out)
+        self.assertNotIn('NPS Score', out,
+                         'the badge is meant to stay hidden until results are ready')
 
 
 class ContactAdminActionTests(TestCase):

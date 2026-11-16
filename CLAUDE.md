@@ -14,7 +14,7 @@ Zimplixio is a Django 6.0.4 web application on Python 3.14.3 for an SMB technolo
 
 ```bash
 cd Zimplixio_site
-../.venv/bin/python manage.py test        # full suite (50 tests)
+../.venv/bin/python manage.py test        # full suite (96 tests)
 ../.venv/bin/python manage.py check
 ```
 
@@ -30,7 +30,7 @@ The React bundle is built separately: `cd frontend && npm run build`.
 - **Environment config**: `Zimplixio_site/.env` (django-environ, gitignored). There is no `.env.example` — a fresh clone cannot boot until one is written, since `SECRET_KEY`, `DEBUG`, and `ALLOWED_HOSTS` have no defaults
 - **Settings**: `settings/base.py` (shared), `dev.py`, `prod.py` (Railway — HSTS, SSL redirect, secure cookies, R2). Selected by `DJANGO_SETTINGS_MODULE` in `.env`
 - **Deployment**: `railway.toml` (frontend build) + `start.sh` (collectstatic → migrate → gunicorn, 2 workers)
-- **Migrations**: squashed to `0001_initial` in every app except `booking` (which has `0002`, `0003`). Showcase projects and tech tags are admin-managed data, not fixtures
+- **Migrations**: squashed to `0001_initial` in every app except `booking` (`0002`, `0003`) and `pages` (`0002`, the contact spam fields). Showcase projects and tech tags are admin-managed data, not fixtures
 
 ### Apps
 
@@ -51,6 +51,7 @@ Field lists are in `*/models.py`. What is not obvious from reading them:
 - **`booking.TimeSlot`** — the *only* source of booking availability. No external calendar sync; with no active rows the calendar shows no selectable days
 - **`booking.BookingRequest`** — `confirm()` and `cancel()` save the model *and* send visitor email. `BookingRequestAdmin.save_model()` calls them on status transitions and deliberately skips `super().save_model()`
 - **`showcase.ShowcaseProject`** — `live_demo_url` drives both the iframe demo section and the gallery "Live Demo" badge
+- **`pages.ContactSubmission`** — `is_spam`/`spam_reason` are set by the form, not by any view or admin save. `is_spam` gates the acknowledgement email, so anything flagged is stored but never replied to
 
 ### Key Dependencies
 
@@ -75,29 +76,19 @@ Production overrides the default storage backend entirely — `MEDIA_ROOT`/`MEDI
 
 Only `showcase` has `ImageField`s (project thumbnail, architecture diagram, screenshot).
 
-**R2 environment variables** (production only, read in `settings/prod.py`):
-
-| Variable | Maps to |
-|---|---|
-| `R2_ACCESS_KEY_ID` | `AWS_ACCESS_KEY_ID` |
-| `R2_SECRET_ACCESS_KEY` | `AWS_SECRET_ACCESS_KEY` |
-| `R2_BUCKET_NAME` | `AWS_STORAGE_BUCKET_NAME` |
-| `R2_ENDPOINT_URL` | `AWS_S3_ENDPOINT_URL` |
-| `R2_PUBLIC_DOMAIN` | `AWS_S3_CUSTOM_DOMAIN` |
-
-`core/middleware.py` derives the CSP `img-src` entry from `AWS_S3_CUSTOM_DOMAIN`, so `R2_PUBLIC_DOMAIN` is the single source of truth — do not hardcode the domain. See `docs/GOTCHAS.md` for the ACL, overwrite, and cleanup behaviour of these buckets before storing anything new in them.
+The five `R2_*` variables map onto the `AWS_*` names django-storages expects — the mapping is in `settings/prod.py`, and README documents the variables themselves. The part worth knowing here: `core/middleware.py` derives the CSP `img-src` entry from `AWS_S3_CUSTOM_DOMAIN`, so `R2_PUBLIC_DOMAIN` is the single source of truth — do not hardcode the domain. See `docs/GOTCHAS.md` for the ACL, overwrite, and cleanup behaviour of these buckets before storing anything new in them.
 
 ## UI Design System
 
 Follow these conventions when building new UI:
 
-- **Gradient heroes**: `.hero-animated-bg` (animated dark navy gradient) + a `<div id="hero-particles">`. Do **not** add `bg-white rounded-full blur-3xl` ambient circles to these — they surface as visible grey discs against the dark gradient, see `docs/GOTCHAS.md`. The lighter static `bg-gradient-to-br from-indigo-700 via-indigo-800 to-gray-900` band (privacy/cookie policy, the framework `#assessment-cta`) still uses one at ~10% opacity
+- **Gradient heroes**: `.hero-animated-bg` + a `<div id="hero-particles">`. Do **not** put `bg-white rounded-full blur-3xl` ambient circles inside one — they surface as grey discs on the dark gradient. The lighter static `bg-gradient-to-br` band (privacy/cookie policy, the framework `#assessment-cta`) legitimately keeps one at ~10% opacity. **Enforced by `DesignSystemRuleTests`**, scoped to the hero `<section>`
 - **Section subtitle labels**: `text-indigo-300 font-medium tracking-wider uppercase text-sm` above headings
-- **AOS scroll animations**: `data-aos="fade-up"` with staggered `data-aos-delay` in 100ms increments. Initialized globally in `base.html` (`once: true, duration: 700, easing: 'ease-out-cubic'`)
+- **AOS scroll animations**: `data-aos="fade-up"` with staggered `data-aos-delay` in 100ms increments. Initialized globally in `base.html` (`once: true, duration: 700, easing: 'ease-out-cubic', offset: 60`). It also passes `disable: prefers-reduced-motion`, so on a machine with reduced motion enabled **no AOS animation fires at all** — that is the setting, not a bug
 - **Cards**: `rounded-2xl border border-gray-200 shadow-sm` + `hover:shadow-md transition-shadow`
 - **Section spacing**: `py-20`
 - **CTA buttons**: `bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20`
-- **Dark mode**: Tailwind `darkMode: 'class'`; the `dark` class is toggled on `<html>` by `dark-mode.js` and applied pre-paint by an inline script to avoid FOUC. Use `dark:` variants on everything new — common pairings `bg-white dark:bg-gray-900`, `text-gray-900 dark:text-white`, `border-gray-200 dark:border-gray-700`, `bg-gray-50 dark:bg-gray-800`
+- **The site is light-only — never add `dark:` variants.** Nothing sets the `dark` class, so they are dead code; `base.html` keeps Tailwind's `darkMode: 'class'` deliberately, to stop stray variants activating from the OS preference. **Enforced by `DesignSystemRuleTests`**
 
 Note the `indigo` scale is remapped to a navy/electric-blue palette in `base.html` — see `docs/GOTCHAS.md`. Never introduce raw blue hex values.
 
@@ -110,7 +101,7 @@ Per-project flexibility comes from **template inheritance, not conditionals**:
 - **`detail-framework.html`** — fully custom, does **not** extend the base. The framework page has a different structure (React components, assessment wizard). Do not refactor it to extend the base
 - **Routing**: `ShowcaseDetailView.get_template_names()` maps slug → template via a `slug_map` dict, falling back to `detail-base.html`. To add a project with custom copy, add a map entry and a `detail-{slug}.html`
 
-Never add `{% if project.slug == ... %}` branches to `detail-base.html`. Override a block instead. Block names and their defaults are visible by grepping `{% block` in the base template.
+Never add `{% if project.slug == ... %}` branches to `detail-base.html` — override a block instead. **Enforced by `DesignSystemRuleTests`.** Block names and defaults are visible by grepping `{% block` in the base template.
 
 **Interactive iframe demos**: the section only renders when `live_demo_url` is set; a "System Design" toggle appears only if `system_design_url` is also set. Sandbox is `allow-scripts allow-same-origin allow-forms allow-popups`, and `demo-iframe.js` drives the loading overlay.
 
@@ -145,6 +136,7 @@ Other assets worth flagging: `static/css/main.css` is organized by `/* === Secti
 - Rate limiting on form POST endpoints (see Key Dependencies for exact rates)
 - Production-only: HSTS, SSL redirect, secure cookies (`DEBUG=False`)
 - Admin at `/zm-admin/`, not the default `/admin/`
+- **Do not enable MFA on `team@zimplixio.com`.** It is the SMTP account the app authenticates as (`EMAIL_HOST_USER`, basic auth against `smtp.office365.com`). Enforcing MFA breaks basic auth and silently kills every outbound email — contact, booking and assessment alike. Moving to OAuth2/Graph is the prerequisite, not a toggle. See `docs/GOTCHAS.md` → Outbound Email & Deliverability
 
 ## AI Adoption Framework
 
@@ -174,9 +166,19 @@ Served at `/showcase/ai-adoption-framework/` by `showcase`, using the custom `de
 
 **Double-booking gap**: `available_slots_view` filters confirmed times at read time, but there is no database constraint — two pending requests for the same slot can both be confirmed. Known and deferred.
 
+## Contact Form Pipeline
+
+`pages/forms.py` + `pages/services.py`. Three things here are easy to get wrong:
+
+- **A submission has three possible fates, not two**: accepted (row + acknowledgement email), *flagged* (row written, `is_spam=True`, **no email**), or *refused* (`ValidationError`, **no row at all**). Only `too_fast` refuses; `honeypot`, `no_token` and `stale_token` flag-and-store. The order of checks in `_spam_reason()` decides which, and is load-bearing — see `docs/GOTCHAS.md`
+- **There is deliberately no admin notification email**, unlike booking. `ContactView.form_valid()` sends only `ContactEmailService.send_visitor_received()`. This is a product decision, not an oversight — do not add a `send_admin_notification()` to match `BookingEmailService`
+- **`pages/services.py` has a `render_plaintext()` helper that `booking/services.py` lacks.** `strip_tags()` alone leaks `<style>` contents, leaves entities encoded and drops `<br>`, so booking's plain-text alternative is malformed. Known and consciously left alone — do not "fix" booking without being asked
+
+`manage.py flag_contact_spam` backfills historical rows and is **dry-run by default**; it needs `--apply` to write, and never reclassifies a row that already has a verdict.
+
 ## Environment Variables
 
-Beyond the R2 set above: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL` (no defaults — the app will not boot without them); `CONN_MAX_AGE` (defaults to 600); `ANTHROPIC_API_KEY`; `EMAIL_BACKEND`/`EMAIL_HOST`/`EMAIL_HOST_USER`/`EMAIL_HOST_PASSWORD`/`DEFAULT_FROM_EMAIL` (Microsoft 365 SMTP in production, console backend in dev); `LEAD_NOTIFICATION_EMAIL`; `ZOOM_MEETING_URL`; `SITE_URL` (absolute links in admin emails). `BOOKING_TIMEZONE` is hardcoded in `base.py`, not an env var.
+README has the full list with dev and prod values. Three things it does not tell you: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS` and `DATABASE_URL` have **no defaults**, so the app will not boot without them; `CONN_MAX_AGE` defaults to 600 and is load-bearing for response time (see `docs/GOTCHAS.md`); and `BOOKING_TIMEZONE` is **hardcoded** in `settings/base.py`, not an env var — looking for it in Railway is a dead end.
 
 ## Known Gotchas
 

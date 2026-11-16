@@ -1,22 +1,42 @@
 # Zimplixio
 
-The official website for **Zimplixio**, an SMB technology consulting firm. Built with Django 6 and Python 3.14, the site serves as both a marketing platform and a live showcase of client work — featuring an interactive solution gallery, a discovery call booking system, an AI-powered readiness assessment, and a contact pipeline.
+The official website for **Zimplixio**, an SMB technology consulting firm — a marketing site that doubles as a live showcase of client work. It serves an interactive solution gallery with embedded demos, an AI readiness assessment backed by Claude, a discovery-call booking system, and a contact pipeline hardened against a sustained bot campaign.
 
-**Live site:** [zimplixio.com](https://zimplixio.com)
+**Live:** [zimplixio.com](https://zimplixio.com)
+
+![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-6.0-092E20?logo=django&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Railway](https://img.shields.io/badge/Deployed%20on-Railway-0B0D0E?logo=railway&logoColor=white)
 
 ---
 
-## Features
+![Homepage](docs/screenshots/homepage-hero.png)
 
-- **Homepage** — Hero with animated particle canvas, featured showcase carousel, NPS score badge, and CTA
-- **Solution Showcase** — Filterable gallery of case studies with live iframe demos (recomares.com, simple-forecast.com) and interactive system design views
-- **AI Adoption Framework** — 6-stage methodology navigator (React + React Flow) paired with an 8-question AI readiness assessment powered by Claude
-- **Booking System** — Calendly-style 3-step wizard (calendar → time slot → contact form) with admin-managed availability and full email notification flow
-- **Contact Form** — Rate-limited submission pipeline with admin read-tracking
-- **About Page** — Values flip cards, interactive world map, and career stats
-- **Services Page** — Scroll-pinned panel layout (desktop) with tabbed interface (mobile) and FAQ accordion
-- **NPS Results Page** — Live NPS metric display
-- **PWA** — Web app manifest for installability
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/framework-diagram.png" alt="AI Adoption Framework navigator"></td>
+<td width="50%"><img src="docs/screenshots/about-world-map.png" alt="Interactive world map"></td>
+</tr>
+<tr>
+<td><b>AI Adoption Framework</b> — React Flow hub-and-spoke navigator over six methodology stages, paired with an 8-question readiness assessment.</td>
+<td><b>About page globe</b> — D3 orthographic projection with a three-state machine: globe → flat → US bounding-box zoom.</td>
+</tr>
+</table>
+
+![Solution showcase](docs/screenshots/showcase-gallery.png)
+
+---
+
+## What's here
+
+- **Solution showcase** — case studies with live cross-origin iframe demos and system-design toggles, driven by a carousel that falls back to a static row when every card already fits
+- **AI Adoption Framework** — React Flow diagram plus an assessment wizard that calls Claude and returns a structured JSON report
+- **Booking system** — three-step wizard that detects the visitor's timezone and converts Eastern slot times for display, with a four-stage email lifecycle
+- **Contact pipeline** — layered spam filtering, acknowledgement email, admin review tooling
+- **Hero animation** — 20,000 particles across six twisted ribbon surfaces, written as raw canvas `ImageData` with no WebGL and no library
+- **Services page** — scroll-pinned horizontal panels on desktop, a tabbed layout on mobile, sharing one template
 
 ---
 
@@ -25,52 +45,135 @@ The official website for **Zimplixio**, an SMB technology consulting firm. Built
 | Layer | Technology |
 |-------|------------|
 | Backend | Django 6.0.4, Python 3.14 |
-| Database | PostgreSQL |
-| Frontend | Tailwind CSS (CDN), AOS animations |
-| React bundle | React 19, Vite, @xyflow/react v12 |
+| Database | PostgreSQL (persistent connections, same-region) |
+| Frontend | Tailwind CSS (CDN), AOS animations, vanilla-JS canvas |
+| React bundle | React 19, Vite, `@xyflow/react` v12 |
 | AI | Anthropic Claude (`claude-sonnet-4-6`) |
 | Media storage | Cloudflare R2 (via django-storages) |
-| Static files | WhiteNoise (`CompressedStaticFilesStorage` in prod — non-manifest, see `docs/GOTCHAS.md`) |
-| Rate limiting | django-ratelimit |
-| Image handling | Pillow |
-| Config | django-environ |
-| WSGI | Gunicorn |
-| Deployment | Railway |
+| Static files | WhiteNoise (`CompressedStaticFilesStorage`) |
+| Edge | Cloudflare proxy in front of Railway |
+| Email | Microsoft 365 SMTP, SPF + DKIM authenticated |
+| Deployment | Railway (Gunicorn, 2 workers) |
 
 ---
 
-## Project Structure
+## Engineering Notes
 
+The decisions in this project that took the most thought, and what each one cost.
+
+### Template inheritance instead of conditionals
+
+Showcase detail pages vary per project. The obvious approach — `{% if project.slug == "recomares" %}` branches in a shared template — rots quickly into a pile of special cases.
+
+Instead, `detail-base.html` is the single structural source of truth with `{% block %}` tags and generic defaults, and per-project templates extend it and override only what they need. `ShowcaseDetailView.get_template_names()` maps slug → template, falling back to the base, so an unknown project still renders sensibly.
+
+The rule is enforced rather than documented: a test scans `detail-base.html` and fails the build if a slug conditional appears.
+
+### A 10–16× latency improvement, measured
+
+Pages were taking 793–1074 ms. Two independent database causes, found by measurement rather than inspection:
+
+1. `CONN_MAX_AGE` was unset, so Django rebuilt a PostgreSQL connection on every request — ~800 ms each.
+2. The Railway web service sat in US East while Postgres was in EU West, so every query crossed the Atlantic at ~85 ms per round trip.
+
+Result: **793–1074 ms → 60–115 ms**, with database-attributable overhead now inside measurement noise.
+
+The method mattered more than the fix. Comparing a DB-touching endpoint against one that skips the ORM isolated connection cost from query cost from template cost. Four plausible culprits were measured and ruled out along the way — the Tailwind CDN, AOS blocking render, Railway cold starts, and the public database proxy. All four would have been reasonable guesses; none was the cause.
+
+### Layered spam defence, and the decision not to add a CAPTCHA
+
+The contact form was taking a sustained automated campaign — thousands of submissions, every one triggering an acknowledgement email to a scraped third-party address. That volume got the sending mailbox restricted by Microsoft.
+
+The filter combines a decoy field with a signed, tamper-proof render timestamp, and treats the two signals **asymmetrically**:
+
+| Signal | Outcome | Why |
+|---|---|---|
+| Submitted in under 3 seconds | **Refused** — no row written | No human fills this form that fast |
+| Decoy field filled | **Flagged** — stored, never emailed | Browser autofill can trip it |
+| Token missing or expired | **Flagged** — stored, never emailed | Can just mean a tab left open overnight |
+
+Two details carry most of the value. The order of checks is load-bearing: conclusive signals are evaluated first, because the first match decides refuse-versus-store, and checking the decoy first meant a bot tripping both got stored. And a refused visitor can simply press Send again — the re-rendered form echoes the original token, which has by then aged past the floor — so a false positive is recoverable rather than silent.
+
+Measured outcomes: two distinct bots, each caught by a different signal; Cloudflare's Bot Fight Mode caught **0%** of the high-volume one; and Turnstile was designed, costed and **deliberately not deployed**, because it would introduce new ways to lose a genuine lead for no measured gain.
+
+### Design-system rules as tests, not documentation
+
+A documented rule is advisory and only works if read. Several of this project's UI constraints are mechanically checkable, so they're static-analysis tests over every template instead:
+
+- No ambient blur circles inside an animated hero — scoped to the hero `<section>` by nesting depth, so the legitimate ones elsewhere don't trip it
+- No `dark:` variants (the site is light-only; nothing sets the class, so they'd be dead code)
+- No per-project conditionals in the shared showcase template
+
+Each test was verified by deliberately introducing the violation it guards against and confirming it fails with the file and line.
+
+### Accepted trade-offs
+
+Two shortcuts were taken knowingly and are documented rather than quietly carried:
+
+- **Tailwind via CDN in production.** It is a runtime compiler, not a stylesheet — it compiles CSS in the browser on every page load, which is why the CSP needs `unsafe-eval`. Migrating it to a build step is open work and is now the largest remaining component of perceived load time.
+- **Non-manifest static storage.** WhiteNoise runs `CompressedStaticFilesStorage`, so filenames are not content-hashed and a file's URL never changes when its bytes do. Renaming the file is the only reliable cache bust. Restoring the manifest backend risks breaking `collectstatic`, so it stays until that is verified.
+
+A hand-written CSP middleware derives its `img-src` entry from the configured R2 domain rather than hardcoding it, so rotating the bucket cannot silently block every image on the site.
+
+Fuller detail on all of the above — including the failure modes behind each rule — is in [`docs/GOTCHAS.md`](docs/GOTCHAS.md).
+
+---
+
+## Testing
+
+```bash
+cd Zimplixio_site
+python manage.py test                              # 99 tests
+python manage.py test pages                        # single app
+python manage.py test pages.tests.ContactFormTests # single class
 ```
-Zimplixio/
-├── railway.toml                    # Railway build + start commands
-├── start.sh                        # Production startup: collectstatic → migrate → gunicorn
-├── Pipfile                         # Python dependencies
-├── Pipfile.lock                    # Pinned dependency versions
-├── docs/                           # Project documentation
-│   ├── COMPANY_OVERVIEW.md         # Business context and positioning
-│   └── GOTCHAS.md                  # Implementation quirks and non-obvious constraints
-├── frontend/                       # React source (Vite)
-│   └── src/
-│       ├── components/             # FlowHub, StageModal, AssessmentWizard, etc.
-│       └── data/                   # stages.ts, questions.ts
-└── Zimplixio_site/
-    ├── manage.py
-    ├── .env                        # Environment variables (gitignored — create manually)
-    ├── Zimplixio_site/             # Django project package (settings, urls, wsgi)
-    │   └── settings/
-    │       ├── base.py             # Shared settings
-    │       ├── dev.py              # Local development overrides
-    │       └── prod.py             # Production hardening (HSTS, SSL, etc.)
-    ├── core/                       # Context processors, CSP middleware, sitemaps
-    ├── pages/                      # Homepage, About, Services, Contact, legal pages
-    ├── showcase/                   # Solution gallery & detail pages
-    ├── metrics/                    # NPS score tracking
-    ├── booking/                    # Discovery call booking wizard + email flow
-    ├── framework/                  # AI Adoption Framework + assessment API
-    ├── templates/                  # Project-level templates (all apps)
-    ├── static/                     # CSS, JS, images, React dist bundle
-    └── media/                      # Uploaded thumbnails, screenshots, diagrams
+
+Coverage is behavioural rather than line-count driven — page responses, form validation, the spam filter's refuse/flag/accept paths, email rendering including the plain-text alternative, admin bulk actions, and a management command. Alongside those sit static-analysis tests that read every template and fail on design-system violations.
+
+| App | Tests |
+|---|---|
+| `pages` | 57 |
+| `framework` | 17 |
+| `showcase` | 16 |
+| `metrics` | 5 |
+| `booking` | 4 |
+
+---
+
+## Known Gaps
+
+Stated plainly rather than discovered later:
+
+- **No CI pipeline.** Tests run locally; nothing gates a push.
+- **Uneven coverage.** `booking` is the most stateful app and has the thinnest tests; `core`'s CSP middleware has none.
+- **Double-booking is possible.** Available slots are filtered at read time, but no database constraint prevents two pending requests for the same slot from both being confirmed. Known, deferred to the next scheduling pass.
+- **Tailwind CDN in production**, as described above.
+
+---
+
+## Application Flows
+
+### Booking
+
+1. Visitor submits at `/book/` → acknowledgement email to the visitor, notification to `LEAD_NOTIFICATION_EMAIL`
+2. Admin reviews at `/zm-admin/booking/bookingrequest/`
+3. Admin sets status to `Confirmed` → confirmation email with the Zoom link
+
+Availability comes solely from `TimeSlot` records in the admin. There is no external calendar sync.
+
+### Contact
+
+| Outcome | Row stored | Email sent | Cause |
+|---------|-----------|------------|-------|
+| **Accepted** | Yes, `is_spam=False` | Acknowledgement | Looks human |
+| **Flagged** | Yes, `is_spam=True` | None | Decoy filled, or missing/expired token |
+| **Refused** | No | None | Submitted in under 3 seconds |
+
+Unlike booking, no admin notification email is sent — deliberate. To classify rows predating the filter:
+
+```bash
+python manage.py flag_contact_spam            # dry run, reports only
+python manage.py flag_contact_spam --apply    # writes
 ```
 
 ---
@@ -79,156 +182,137 @@ Zimplixio/
 
 ### Prerequisites
 
-- Python 3.14
-- Pipenv
-- PostgreSQL (local instance)
-- Node.js (only needed to rebuild the React bundle)
+Python 3.14 · Pipenv · PostgreSQL · Node.js (only to rebuild the React bundle)
 
-### Local Setup
+### Setup
 
 ```bash
-# 1. Clone the repo
-git clone <repo-url>
-cd Zimplixio
+git clone <repo-url> && cd Zimplixio
 
-# 2. Create the virtual environment inside the project folder
 export PIPENV_VENV_IN_PROJECT=1
 pipenv --python /path/to/python3.14 install
 pipenv shell
 
-# 3. Create and configure the environment file
-# Create Zimplixio_site/.env — see Environment Variables section below for required keys
+# create Zimplixio_site/.env — see Environment Variables below
 
-# 4. Run migrations
 cd Zimplixio_site
 python manage.py migrate
-
-# 5. Create a superuser (for admin access)
 python manage.py createsuperuser
-
-# 6. Start the dev server
 python manage.py runserver
 ```
 
-The site will be available at `http://localhost:8000`. Admin at `http://localhost:8000/zm-admin/`.
+Site at `http://localhost:8000`, admin at `/zm-admin/`.
 
-> **Email in dev:** `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` prints all outbound emails to the terminal instead of sending them. This is the default and requires no SMTP setup locally.
+> **Email in dev** uses the console backend, printing messages to the terminal. No SMTP setup needed locally.
 
-### Rebuilding the React Bundle
-
-The framework accordion and AI assessment wizard are bundled from `frontend/src/`:
+### Rebuilding the React bundle
 
 ```bash
-cd frontend
-npm install
-npm run build
+cd frontend && npm install && npm run build
 ```
 
-Built files are written to `Zimplixio_site/static/dist/` and served by Django.
+Output lands in `Zimplixio_site/static/dist/` (gitignored) and is served by Django.
 
-### Running Tests
+---
 
-```bash
-cd Zimplixio_site
-python manage.py test                              # All tests
-python manage.py test pages                        # Single app
-python manage.py test showcase.tests.ShowcaseTests # Single class
+## Project Structure
+
+Standard Django layout. The parts that aren't obvious:
+
+```
+docs/GOTCHAS.md             Implementation traps and the reasoning behind each rule
+frontend/src/data/          stages.ts and questions.ts — canonical content for the
+                            React diagram and assessment wizard
+Zimplixio_site/
+  templates/                Project-level only; no per-app template dirs
+  core/                     Context processors, CSP middleware, sitemaps
+  showcase/                 Gallery and detail pages — also serves the framework page
+  framework/                API endpoints only, no page views
+  static/dist/              React build output (gitignored; run npm run build)
 ```
 
 ---
 
 ## Environment Variables
 
-Create `Zimplixio_site/.env` with the following variables:
+Create `Zimplixio_site/.env`. On Railway these are set in the dashboard instead.
 
 ### Core
 
-| Variable | Required | Dev value | Description |
-|----------|----------|-----------|-------------|
-| `DJANGO_SETTINGS_MODULE` | Yes | `Zimplixio_site.settings.dev` | Use `settings.prod` on Railway |
-| `SECRET_KEY` | Yes | Any string | Generate a long random key for production |
-| `DEBUG` | Yes | `True` | Always `False` in production |
-| `ALLOWED_HOSTS` | Yes | `localhost,127.0.0.1` | Comma-separated hostnames |
-| `DATABASE_URL` | Yes | `postgres://...` | PostgreSQL connection string |
+| Variable | Dev value | Description |
+|----------|-----------|-------------|
+| `DJANGO_SETTINGS_MODULE` | `Zimplixio_site.settings.dev` | `settings.prod` on Railway |
+| `SECRET_KEY` | any string | Generate a long random key for production |
+| `DEBUG` | `True` | Always `False` in production |
+| `ALLOWED_HOSTS` | `localhost,127.0.0.1` | Comma-separated |
+| `DATABASE_URL` | `postgres://...` | PostgreSQL connection string |
+| `CONN_MAX_AGE` | `600` | Load-bearing for response time — see Engineering Notes |
+
+These five have no defaults; the app will not boot without them.
 
 ### Email (Microsoft 365)
 
-| Variable | Dev value | Prod value | Description |
-|----------|-----------|------------|-------------|
-| `EMAIL_BACKEND` | `django.core.mail.backends.console.EmailBackend` | `django.core.mail.backends.smtp.EmailBackend` | Console prints to terminal; SMTP sends real emails |
-| `EMAIL_HOST` | `smtp.office365.com` | `smtp.office365.com` | Microsoft 365 SMTP server |
-| `EMAIL_PORT` | `587` | `587` | STARTTLS port |
-| `EMAIL_USE_TLS` | `True` | `True` | Required for Office 365 |
-| `EMAIL_HOST_USER` | `team@zimplixio.com` | `team@zimplixio.com` | Sending mailbox |
-| `EMAIL_HOST_PASSWORD` | *(mailbox password)* | *(mailbox password)* | Microsoft 365 mailbox password |
-| `DEFAULT_FROM_EMAIL` | `team@zimplixio.com` | `team@zimplixio.com` | From address on all outbound emails |
+| Variable | Value | Description |
+|----------|-------|-------------|
+| `EMAIL_BACKEND` | console (dev) / smtp (prod) | Console prints to terminal |
+| `EMAIL_HOST` | `smtp.office365.com` | |
+| `EMAIL_PORT` | `587` | STARTTLS |
+| `EMAIL_USE_TLS` | `True` | Required for Microsoft 365 |
+| `EMAIL_HOST_USER` | `team@zimplixio.com` | Sending mailbox |
+| `EMAIL_HOST_PASSWORD` | *(mailbox password)* | |
+| `DEFAULT_FROM_EMAIL` | `team@zimplixio.com` | |
 
-### Business Settings
+> **Sending mail needs correct DNS, not just these variables.** The domain must publish an SPF record including `spf.protection.outlook.com` and two DKIM CNAMEs, or DMARC tells receiving servers to junk everything. Mail CNAMEs in Cloudflare must be **DNS only**, never proxied. **Do not enable MFA on the sending mailbox** — it authenticates with basic auth, and MFA silently breaks every outbound email. See [`docs/GOTCHAS.md`](docs/GOTCHAS.md) → Outbound Email & Deliverability.
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LEAD_NOTIFICATION_EMAIL` | No | Receives admin notifications for new booking requests (e.g. `joe.ugalde@zimplixio.com`) |
-| `ZOOM_MEETING_URL` | No | Zoom link included in booking confirmation emails sent to visitors |
-| `SITE_URL` | No | Base URL used to build absolute links in emails. Dev: `http://localhost:8000`. Prod: `https://zimplixio.com` |
-| `ANTHROPIC_API_KEY` | No | Enables AI readiness assessment — returns 503 if absent |
-
-### Cloudflare R2 (Media Storage)
+### Business settings
 
 | Variable | Description |
 |----------|-------------|
-| `R2_ACCESS_KEY_ID` | R2 API access key |
-| `R2_SECRET_ACCESS_KEY` | R2 API secret |
-| `R2_BUCKET_NAME` | R2 bucket name |
-| `R2_ENDPOINT_URL` | R2 S3-compatible endpoint URL |
-| `R2_PUBLIC_DOMAIN` | Public domain for serving media files |
+| `LEAD_NOTIFICATION_EMAIL` | Receives booking and assessment-lead notifications |
+| `ZOOM_MEETING_URL` | Link embedded in booking confirmation emails |
+| `SITE_URL` | Base URL for absolute links in emails |
+| `ANTHROPIC_API_KEY` | Enables the AI assessment — the endpoint returns 503 without it |
+
+`BOOKING_TIMEZONE` is hardcoded in `settings/base.py`, not an environment variable.
+
+### Cloudflare R2
+
+`R2_ACCESS_KEY_ID` · `R2_SECRET_ACCESS_KEY` · `R2_BUCKET_NAME` · `R2_ENDPOINT_URL` · `R2_PUBLIC_DOMAIN`
+
+Production only, no defaults — a missing value raises `ImproperlyConfigured` at startup rather than failing quietly.
 
 ---
 
-## Booking Flow
+## Deployment
 
-The booking system handles the full discovery call lifecycle:
+Railway, configured via `railway.toml` and `start.sh`:
 
-1. **Visitor submits booking** (`/book/`) → acknowledgement email sent to visitor + notification email sent to `LEAD_NOTIFICATION_EMAIL`
-2. **Admin reviews** at `/zm-admin/booking/bookingrequest/` — notification email includes a direct link to the booking record
-3. **Admin confirms** by changing status to `Confirmed` → confirmation email sent to visitor with Zoom link
-
-Available time slots are configured via `TimeSlot` records in the admin (`/zm-admin/booking/timeslot/`).
-
----
-
-## Deployment (Railway)
-
-Deployment is configured via `railway.toml` and `start.sh`:
-
-**Build** (`railway.toml`):
 ```
-cd frontend && npm install && npm run build
+build:  cd frontend && npm install && npm run build
+start:  collectstatic → migrate → gunicorn (2 workers)
 ```
 
-**Start** (`start.sh`):
-```
-collectstatic → migrate → gunicorn
-```
-
-All environment variables are set in the Railway dashboard under **Variables** — no `.env` file is used on the server. See the Environment Variables section above for the full list with production values.
+The Postgres service must stay in the **same region** as the web service — see Engineering Notes.
 
 ---
 
 ## Admin
 
-The admin interface is at `/zm-admin/` (not the default `/admin/`).
+At `/zm-admin/`, not the default path.
 
 | Section | Purpose |
 |---------|---------|
-| **Showcase** | Create/edit case study projects, upload media, manage tech tags |
-| **Booking → TimeSlots** | Configure weekly availability windows |
-| **Booking → BookingRequests** | Review pending requests, confirm to trigger visitor email |
-| **Metrics** | Set the active NPS score |
-| **Contact** | Read and track contact form submissions |
-| **Framework → AssessmentLeads** | View AI assessment leads with readiness levels and answers |
+| Showcase | Case study projects, media, tech tags |
+| Booking → TimeSlots | Weekly availability windows |
+| Booking → BookingRequests | Review and confirm requests |
+| Metrics | Active NPS score |
+| Contact | Review submissions, filter spam, bulk actions |
+| Framework → AssessmentLeads | Assessment leads with readiness levels |
 
 ---
 
 ## License
 
 Private — all rights reserved. © Zimplixio.
+
+The repository is published for portfolio and reference purposes; the code is not licensed for reuse.

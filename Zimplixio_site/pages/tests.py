@@ -480,6 +480,84 @@ class TemplateCommentTests(TestCase):
                          'the badge is meant to stay hidden until results are ready')
 
 
+class DesignSystemRuleTests(TestCase):
+    """CLAUDE.md's UI rules, enforced instead of merely documented.
+
+    Each of these has actually been violated in this repo. A rule in a
+    document is advisory and costs context every session; a rule here fails
+    the build and names the file and line.
+    """
+
+    TEMPLATES = pathlib.Path(__file__).resolve().parent.parent / 'templates'
+
+    def _templates(self):
+        return sorted(self.TEMPLATES.rglob('*.html'))
+
+    def test_detail_base_has_no_per_project_conditionals(self):
+        """detail-base.html is the shared skeleton; projects override blocks.
+
+        A ``{% if project.slug == ... %}`` here is how that skeleton rots into
+        a pile of special cases. Add ``detail-<slug>.html`` extending the base
+        and override the block instead -- see CLAUDE.md.
+        """
+        path = self.TEMPLATES / 'showcase' / 'detail-base.html'
+        offenders = [
+            '%s:%d' % (path.name, i)
+            for i, line in enumerate(path.read_text().splitlines(), 1)
+            if re.search(r'\{%\s*if\b[^%]*\bslug\b', line)
+        ]
+        self.assertEqual(
+            offenders, [],
+            'override a block instead of branching on slug: ' + ', '.join(offenders))
+
+    def test_no_ambient_blur_discs_inside_an_animated_hero(self):
+        """``bg-white rounded-full blur-3xl`` shows as grey discs on the dark gradient.
+
+        Scoped to the <section> carrying .hero-animated-bg, tracking nesting
+        depth: the lighter static ``bg-gradient-to-br`` bands (privacy and
+        cookie policy, the framework #assessment-cta) legitimately use one at
+        ~10% opacity and must not trip this.
+        """
+        offenders = []
+        for path in self._templates():
+            lines = path.read_text().splitlines()
+            for i, line in enumerate(lines):
+                if 'hero-animated-bg' not in line:
+                    continue
+                depth = 0
+                for j in range(i, len(lines)):
+                    depth += lines[j].count('<section')
+                    depth -= lines[j].count('</section>')
+                    if 'blur-3xl' in lines[j] and 'rounded-full' in lines[j]:
+                        offenders.append(
+                            '%s:%d' % (path.relative_to(self.TEMPLATES), j + 1))
+                    if depth <= 0:
+                        break
+        self.assertEqual(
+            offenders, [],
+            'ambient blur discs inside .hero-animated-bg: ' + ', '.join(offenders))
+
+    def test_no_dark_mode_variants_in_markup(self):
+        """The site is light-only, so a ``dark:`` utility is dead code.
+
+        base.html keeps Tailwind's ``darkMode: 'class'`` deliberately, to stop
+        stray variants activating from the OS preference. Comments may discuss
+        ``dark:``; markup may not use it.
+        """
+        offenders = []
+        for path in self._templates():
+            for i, raw in enumerate(path.read_text().splitlines(), 1):
+                # Strip comments, but not the // inside a https:// URL.
+                line = re.sub(r'(?<!:)//.*$', '', raw)
+                line = re.sub(r'\{#.*?#\}', '', line)
+                if 'dark:' in line:
+                    offenders.append('%s:%d' % (path.relative_to(self.TEMPLATES), i))
+        self.assertEqual(
+            offenders, [],
+            'site is light-only, a dark: variant can never activate: '
+            + ', '.join(offenders))
+
+
 class ContactAdminActionTests(TestCase):
     """Bulk actions — the admin had none, so clearing 2k rows meant one at a time."""
 

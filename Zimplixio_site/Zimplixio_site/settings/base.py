@@ -81,7 +81,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+# Display timezone. Storage stays UTC (USE_TZ=True) -- this only controls how
+# datetimes are rendered and how datetime form input is interpreted. It is
+# Eastern because that is where the business operates and because the admin
+# shows aware `created_at`/`submitted_at` beside naive `requested_time`
+# values that are already Eastern; leaving this as UTC put two timezones five
+# hours apart in the same table row. Keep in sync with BOOKING_TIMEZONE below.
+TIME_ZONE = 'America/New_York'
 USE_I18N = True
 USE_TZ = True
 
@@ -106,6 +112,9 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@zimplixio.com')
 LEAD_NOTIFICATION_EMAIL = env('LEAD_NOTIFICATION_EMAIL', default='')
 ZOOM_MEETING_URL = env('ZOOM_MEETING_URL', default='')
 SITE_URL = env('SITE_URL', default='http://localhost:8000')
+# The timezone slot times are published in. Deliberately a separate setting
+# from TIME_ZONE (display) even though both are Eastern today: booking
+# availability is a business rule, not a rendering preference.
 BOOKING_TIMEZONE = 'America/New_York'
 
 LOGGING = {

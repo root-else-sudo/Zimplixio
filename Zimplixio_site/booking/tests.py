@@ -4,6 +4,7 @@ from datetime import date, datetime, time
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
@@ -135,3 +136,44 @@ class BookingDateBoundaryTests(TestCase):
         with self._at_evening():
             r = self.client.get(reverse('booking:slots'), {'date': '2026-11-10'})
         self.assertEqual(json.loads(r.content)['slots'], [])
+
+
+class AdminTimestampDisplayTests(TestCase):
+    """Admin timestamps must render in the business timezone, not UTC.
+
+    Guards a project-wide setting (`TIME_ZONE`), tested here because this is
+    where it bites hardest: the booking changelist shows `created_at` beside
+    `requested_date`/`requested_time`. The latter are naive fields holding
+    Eastern values, so with TIME_ZONE='UTC' a single row displayed two
+    timezones five hours apart with nothing marking which was which.
+    """
+
+    # 18:28 UTC on 17 Nov 2026 is 13:28 Eastern.
+    CREATED_UTC = datetime(2026, 11, 17, 18, 28, tzinfo=ZoneInfo('UTC'))
+
+    @classmethod
+    def setUpTestData(cls):
+        get_user_model().objects.create_superuser(
+            username='admin', email='a@example.com', password='pw-for-tests-only')
+        b = BookingRequest.objects.create(
+            name='Timestamp Probe', email='probe@example.com',
+            requested_date=date(2026, 11, 18), requested_time=time(10, 30),
+            visitor_timezone='America/New_York', status='pending')
+        BookingRequest.objects.filter(pk=b.pk).update(created_at=cls.CREATED_UTC)
+
+    def setUp(self):
+        self.client.login(username='admin', password='pw-for-tests-only')
+
+    def test_changelist_shows_eastern_not_utc(self):
+        html = self.client.get(
+            reverse('admin:booking_bookingrequest_changelist')).content.decode()
+        self.assertIn('1:28 p.m.', html,
+                      'created_at should render as 13:28 Eastern')
+        self.assertNotIn('6:28 p.m.', html,
+                         'created_at is still rendering as 18:28 UTC')
+
+    def test_requested_time_is_unchanged(self):
+        """The naive TimeField must not be shifted by the display timezone."""
+        html = self.client.get(
+            reverse('admin:booking_bookingrequest_changelist')).content.decode()
+        self.assertIn('10:30 a.m.', html)

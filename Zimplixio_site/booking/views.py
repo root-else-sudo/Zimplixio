@@ -12,6 +12,7 @@ from django_ratelimit.decorators import ratelimit
 from .forms import BookingForm
 from .models import BookingRequest, TimeSlot
 from .services import BookingEmailService
+from .utils import today_in_booking_tz
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,8 @@ def available_days_view(request):
     )
     confirmed = BookingRequest.objects.confirmed_slots_for_month(year, month)
 
-    today = date.today()
+    # Eastern, not the server's UTC date -- see today_in_booking_tz().
+    today = today_in_booking_tz()
     _, days_in_month = calendar.monthrange(year, month)
     available_days = []
 
@@ -58,7 +60,7 @@ def available_slots_view(request):
     except (ValueError, AttributeError):
         return JsonResponse({'error': 'Invalid date. Use YYYY-MM-DD.'}, status=400)
 
-    if requested <= date.today():
+    if requested <= today_in_booking_tz():
         return JsonResponse({'slots': []})
 
     day_slots = TimeSlot.objects.filter(is_active=True, day_of_week=requested.weekday())

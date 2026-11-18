@@ -14,7 +14,7 @@ Zimplixio is a Django 6.0.4 web application on Python 3.14.3 for an SMB technolo
 
 ```bash
 cd Zimplixio_site
-../.venv/bin/python manage.py test        # full suite (96 tests)
+../.venv/bin/python manage.py test        # full suite (130 tests)
 ../.venv/bin/python manage.py check
 ```
 
@@ -162,6 +162,8 @@ Served at `/showcase/ai-adoption-framework/` by `showcase`, using the custom `de
 
 **Timezone handling**: `BOOKING_TIMEZONE = 'America/New_York'` in `base.py` is canonical — slot times are stored and returned as Eastern. `_build_context()` builds both `time_str` (Eastern, used by the admin template) and `visitor_time_str` (converted via `format_time_in_tz()` in `booking/utils.py`, used by visitor templates), falling back to Eastern when `visitor_timezone` is empty.
 
+**Calendar invitation**: a confirmed booking carries an RFC 5545 `text/calendar` part built by `booking/calendar_invite.py`, which is what makes a mail client show Accept / Tentative / Decline. `confirm()` sends `METHOD:REQUEST`, `cancel()` sends `METHOD:CANCEL` for the same UID so the meeting is retracted rather than left on the visitor's calendar. The invite is attached **twice** — as an alternative part and as `invite.ics` — because clients split on which one they honour. The admin is CC'd on the confirmation (not on the initial request, which fires before the slot is accepted) so the same invite reaches both calendars. The event carries the static `ZOOM_MEETING_URL`; per-meeting Zoom links would need the Zoom API and are not implemented.
+
 **Template design**: all templates use fully inline styles and table layouts for Gmail, with `bgcolor` fallbacks since Gmail strips CSS gradients. Logos are referenced by absolute URL.
 
 **Double-booking gap**: `available_slots_view` filters confirmed times at read time, but there is no database constraint — two pending requests for the same slot can both be confirmed. Known and deferred.
@@ -185,7 +187,7 @@ Both public forms that email the address they are handed — contact (`pages/for
 
 ## Environment Variables
 
-README has the full list with dev and prod values. Three things it does not tell you: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS` and `DATABASE_URL` have **no defaults**, so the app will not boot without them; `CONN_MAX_AGE` defaults to 600 and is load-bearing for response time (see `docs/GOTCHAS.md`); and `BOOKING_TIMEZONE` is **hardcoded** in `settings/base.py`, not an env var — looking for it in Railway is a dead end.
+README has the full list with dev and prod values. Three things it does not tell you: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS` and `DATABASE_URL` have **no defaults**, so the app will not boot without them; `CONN_MAX_AGE` defaults to 600 and is load-bearing for response time (see `docs/GOTCHAS.md`); and `BOOKING_TIMEZONE` and `BOOKING_DURATION_MINUTES` are **hardcoded** in `settings/base.py`, not env vars — looking for them in Railway is a dead end. `BOOKING_DURATION_MINUTES` is read by both the email templates and the calendar invite, so the advertised duration and the booked block cannot drift.
 
 ## Known Gotchas
 

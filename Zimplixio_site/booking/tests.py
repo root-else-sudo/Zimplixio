@@ -270,3 +270,177 @@ class BookingAntiSpamTests(TestCase):
         self.assertIn('display:none', row.replace(' ', ''))
         self.assertIn('tabindex="-1"', row)
         self.assertIn('aria-hidden="true"', row)
+
+
+class CalendarInviteTests(TestCase):
+    """The confirmation email carries a real iCalendar invitation.
+
+    The trap this suite exists for is the timezone one: `requested_date` and
+    `requested_time` are naive values that *mean* Eastern, and DTSTART has to
+    go out as a UTC instant. Combining them without attaching Eastern first
+    is the same mistake that hid a whole day of availability every evening --
+    here it would silently put every invite five hours off.
+    """
+
+    def _booking(self, **over):
+        data = dict(
+            name='Ada Lovelace',
+            email='ada@example.com',
+            company='Analytical Engines',
+            requested_date=date(2026, 11, 19),
+            requested_time=time(15, 30),
+            visitor_timezone='America/New_York',
+            message='Looking forward to it.',
+        )
+        data.update(over)
+        return BookingRequest.objects.create(**data)
+
+    # ---------- the timezone conversion ----------
+    def test_dtstart_is_the_eastern_slot_expressed_in_utc(self):
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking())
+        # 15:30 EST (UTC-5) on 2026-11-19 is 20:30 UTC.
+        self.assertIn('DTSTART:20261119T203000Z', ics)
+
+    def test_dtstart_respects_daylight_saving(self):
+        """A hardcoded -5 offset passes the EST test and fails this one."""
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking(requested_date=date(2026, 7, 15)))
+        # 15:30 EDT (UTC-4) on 2026-07-15 is 19:30 UTC.
+        self.assertIn('DTSTART:20260715T193000Z', ics)
+
+    def test_dtend_is_one_slot_after_dtstart(self):
+        from django.conf import settings
+        from .calendar_invite import build_invite
+        self.assertEqual(getattr(settings, 'BOOKING_DURATION_MINUTES', None), 30)
+        ics = build_invite(self._booking())
+        self.assertIn('DTEND:20261119T210000Z', ics)
+
+    # ---------- identity of the event ----------
+    def test_uid_is_stable_and_tied_to_the_booking(self):
+        from .calendar_invite import build_invite
+        booking = self._booking()
+        expected = 'UID:booking-%s@zimplixio.com' % booking.pk
+        self.assertIn(expected, build_invite(booking))
+        # Same booking, built again -> same UID, so clients update rather
+        # than creating a second event.
+        self.assertIn(expected, build_invite(booking))
+
+    def test_organizer_is_the_sending_address_not_the_admin(self):
+        from django.conf import settings
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking())
+        self.assertIn('mailto:%s' % settings.DEFAULT_FROM_EMAIL, ics)
+
+    def test_visitor_is_an_attendee_who_is_asked_to_rsvp(self):
+        from .calendar_invite import build_invite
+        # Unfold first: the spec wraps at 75 octets, mid-parameter if need be.
+        ics = build_invite(self._booking()).replace('\r\n ', '')
+        self.assertIn('RSVP=TRUE', ics)
+        self.assertIn('mailto:ada@example.com', ics)
+
+    # ---------- request vs cancel ----------
+    def test_confirmation_invite_is_a_request(self):
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking())
+        self.assertIn('METHOD:REQUEST', ics)
+        self.assertIn('STATUS:CONFIRMED', ics)
+        self.assertIn('SEQUENCE:0', ics)
+
+    def test_cancellation_retracts_the_event(self):
+        """Without this the meeting stays on the visitor's calendar forever."""
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking(), method='CANCEL')
+        self.assertIn('METHOD:CANCEL', ics)
+        self.assertIn('STATUS:CANCELLED', ics)
+        # A cancellation must outrank the request it supersedes.
+        self.assertIn('SEQUENCE:1', ics)
+
+    # ---------- RFC 5545 mechanics ----------
+    def test_lines_are_crlf_terminated(self):
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking())
+        self.assertTrue(ics.startswith('BEGIN:VCALENDAR\r\n'))
+        self.assertTrue(ics.rstrip('\r\n').endswith('END:VCALENDAR'))
+        self.assertNotIn('\n\n', ics.replace('\r\n', '\n'))
+
+    def test_long_lines_are_folded_to_75_octets(self):
+        from .calendar_invite import build_invite
+        with self.settings(ZOOM_MEETING_URL='https://us05web.zoom.us/j/9648777904'
+                                            '?pwd=wYxDbqBSJWgav9aC3KsbjAJwLM9ZEv.1'):
+            ics = build_invite(self._booking())
+        for line in ics.split('\r\n'):
+            self.assertLessEqual(len(line.encode('utf-8')), 75, repr(line))
+
+    def test_text_values_are_escaped(self):
+        """An unescaped comma or newline silently truncates the field."""
+        from .calendar_invite import build_invite
+        ics = build_invite(self._booking(
+            name='Lovelace, Ada', message='Line one\nLine two; with a semicolon'))
+        unfolded = ics.replace('\r\n ', '')
+        self.assertIn('Lovelace\\, Ada', unfolded)
+        self.assertIn('\\n', unfolded)
+        self.assertIn('\\;', unfolded)
+
+    def test_admin_is_an_attendee_too(self):
+        """The event should name both parties, not just the visitor."""
+        from .calendar_invite import build_invite
+        with self.settings(LEAD_NOTIFICATION_EMAIL='joe@zimplixio.com'):
+            ics = build_invite(self._booking())
+        self.assertIn('mailto:joe@zimplixio.com', ics.replace('\r\n ', ''))
+
+    def test_zoom_url_is_carried_into_the_event(self):
+        from .calendar_invite import build_invite
+        with self.settings(ZOOM_MEETING_URL='https://example.zoom.us/j/123'):
+            ics = build_invite(self._booking())
+        self.assertIn('https://example.zoom.us/j/123', ics.replace('\r\n ', ''))
+
+
+class CalendarInviteDeliveryTests(TestCase):
+    """The invite has to actually leave the building, attached correctly."""
+
+    def setUp(self):
+        mail.outbox = []
+        self.booking = BookingRequest.objects.create(
+            name='Ada Lovelace', email='ada@example.com',
+            requested_date=date(2026, 11, 19), requested_time=time(15, 30),
+            visitor_timezone='America/New_York')
+
+    def _ics_parts(self, message):
+        return [a for a in message.attachments
+                if 'text/calendar' in str(a)] or [
+            a for a in getattr(message, 'alternatives', [])
+            if 'text/calendar' in str(a[1])]
+
+    def test_confirmation_email_attaches_the_invite(self):
+        self.booking.confirm()
+        msg = mail.outbox[-1]
+        self.assertTrue(self._ics_parts(msg), 'no text/calendar part on the confirmation')
+        self.assertIn('METHOD:REQUEST', str(msg.message()))
+
+    def test_confirmation_still_has_its_html_body(self):
+        """Attaching must not cost us the styled email."""
+        self.booking.confirm()
+        body = str(mail.outbox[-1].message())
+        self.assertIn('text/html', body)
+        self.assertIn('Join Zoom Meeting', body.replace('=\n', ''))
+
+    def test_cancellation_email_retracts_the_invite(self):
+        self.booking.confirm()
+        mail.outbox = []
+        self.booking.cancel()
+        msg = mail.outbox[-1]
+        self.assertTrue(self._ics_parts(msg), 'no text/calendar part on the cancellation')
+        self.assertIn('METHOD:CANCEL', str(msg.message()))
+
+    def test_confirmation_copies_the_admin_so_both_calendars_get_it(self):
+        with self.settings(LEAD_NOTIFICATION_EMAIL='joe@zimplixio.com'):
+            self.booking.confirm()
+        self.assertIn('joe@zimplixio.com', mail.outbox[-1].cc)
+
+    def test_admin_notification_is_not_an_invite(self):
+        """The admin mail fires on request, before the slot is accepted."""
+        from .services import BookingEmailService
+        with self.settings(LEAD_NOTIFICATION_EMAIL='joe@zimplixio.com'):
+            BookingEmailService.send_admin_notification(self.booking)
+        self.assertNotIn('METHOD:REQUEST', str(mail.outbox[-1].message()))

@@ -73,7 +73,7 @@
         </tr>
         <tr>
           <td style="padding:12px 18px; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:0.06em; text-transform:uppercase; width:110px; {% if booking.visitor_timezone %}border-bottom:1px solid #f3f4f6;{% endif %}">Duration</td>
-          <td style="padding:12px 18px; font-size:14px; font-weight:500; color:#111827; {% if booking.visitor_timezone %}border-bottom:1px solid #f3f4f6;{% endif %}">30 minutes</td>
+          <td style="padding:12px 18px; font-size:14px; font-weight:500; color:#111827; {% if booking.visitor_timezone %}border-bottom:1px solid #f3f4f6;{% endif %}">{{ duration_minutes }} minutes</td>
         </tr>
         {% if booking.visitor_timezone %}
         <tr>

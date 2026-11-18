@@ -116,6 +116,10 @@ SITE_URL = env('SITE_URL', default='http://localhost:8000')
 # from TIME_ZONE (display) even though both are Eastern today: booking
 # availability is a business rule, not a rendering preference.
 BOOKING_TIMEZONE = 'America/New_York'
+# Length of a discovery call. Read by both the email templates and the
+# calendar invite, so the advertised duration and the booked block cannot
+# drift apart.
+BOOKING_DURATION_MINUTES = 30
 
 LOGGING = {
     'version': 1,

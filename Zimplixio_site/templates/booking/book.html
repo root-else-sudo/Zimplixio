@@ -118,6 +118,12 @@
               {{ form.requested_date }}
               {{ form.requested_time }}
               {{ form.visitor_timezone }}
+              {% comment %}
+                Anti-spam: decoy field + signed render timestamp. Rendered
+                bare, with no label and no wrapper, so nothing is visible or
+                focusable. See core/antispam.py.
+              {% endcomment %}
+              {{ form.website }}{{ form.ts }}
 
               <!-- Name -->
               <div>

@@ -316,7 +316,8 @@ class ContactTooFastRejectionTests(TestCase):
 
         token = first.context['form']['ts'].value()
         later = time.time() + MIN_DWELL_SECONDS + 1
-        with patch('pages.forms.time.time', return_value=later):
+        # The clock now lives in core.antispam, not pages.forms.
+        with patch('core.antispam.time.time', return_value=later):
             second = self.client.post(url, self.payload(token=token))
 
         self.assertEqual(second.status_code, 302)

@@ -1,4 +1,5 @@
 import json
+import time as time_module
 from contextlib import contextmanager
 from datetime import date, datetime, time
 from unittest.mock import patch
@@ -7,6 +8,9 @@ from zoneinfo import ZoneInfo
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+
+from django.core import mail
+from django.core.cache import cache
 
 from .models import TimeSlot, BookingRequest
 from .utils import today_in_booking_tz
@@ -33,6 +37,7 @@ class BookingFormTests(TestCase):
         )
 
     def test_booking_submit(self):
+        from .forms import make_form_token
         data = {
             'name': 'Test User',
             'email': 'test@example.com',
@@ -40,6 +45,8 @@ class BookingFormTests(TestCase):
             'requested_date': '2026-03-15',
             'requested_time': '09:00',
             'message': 'Looking forward to the call.',
+            'website': '',
+            'ts': make_form_token(issued_at=time_module.time() - 30),
         }
         response = self.client.post(reverse('booking:book'), data)
         self.assertEqual(response.status_code, 302)
@@ -177,3 +184,89 @@ class AdminTimestampDisplayTests(TestCase):
         html = self.client.get(
             reverse('admin:booking_bookingrequest_changelist')).content.decode()
         self.assertIn('10:30 a.m.', html)
+
+
+class BookingAntiSpamTests(TestCase):
+    """The booking form mails whatever address it is handed, twice.
+
+    `/book/` is linked from the header of every page and had no bot defence
+    at all -- which is precisely the shape of the contact form before the
+    November 2026 campaign got the sending mailbox restricted. Same two
+    signals, same asymmetry: refuse the conclusive one, store the rest.
+    """
+
+    BASE = {
+        'name': 'Ada Lovelace',
+        'email': 'ada@example.com',
+        'company': 'Analytical Engines',
+        'requested_date': '2026-12-02',
+        'requested_time': '10:00',
+        'visitor_timezone': 'America/New_York',
+        'message': 'Looking forward to it.',
+    }
+
+    @classmethod
+    def setUpTestData(cls):
+        TimeSlot.objects.create(day_of_week=2, start_time=time(10, 0),
+                                end_time=time(16, 0), is_active=True)
+
+    def setUp(self):
+        cache.clear()
+        mail.outbox = []
+
+    def payload(self, *, age_seconds=30, honeypot='', token=None, **over):
+        from .forms import make_form_token
+        data = dict(self.BASE)
+        data['website'] = honeypot
+        data['ts'] = token if token is not None else make_form_token(
+            issued_at=time_module.time() - age_seconds)
+        data.update(over)
+        return data
+
+    # ---------- a genuine booking still works ----------
+    def test_human_booking_is_clean_and_sends_both_emails(self):
+        r = self.client.post(reverse('booking:book'), self.payload())
+        self.assertEqual(r.status_code, 302)
+        b = BookingRequest.objects.get()
+        self.assertFalse(b.is_spam)
+        self.assertEqual(len(mail.outbox), 2, 'visitor acknowledgement + admin notice')
+
+    # ---------- the conclusive signal is refused outright ----------
+    def test_sub_three_second_booking_is_refused_and_stores_nothing(self):
+        r = self.client.post(reverse('booking:book'), self.payload(age_seconds=0.5))
+        self.assertEqual(r.status_code, 200)
+        self.assertFalse(BookingRequest.objects.exists())
+        self.assertEqual(len(mail.outbox), 0)
+
+    # ---------- recoverable signals are stored, never mailed ----------
+    def test_honeypot_booking_is_stored_but_never_emailed(self):
+        r = self.client.post(reverse('booking:book'),
+                             self.payload(honeypot='http://spam.example'))
+        self.assertEqual(r.status_code, 302, 'a bot must still see the success redirect')
+        b = BookingRequest.objects.get()
+        self.assertTrue(b.is_spam)
+        self.assertEqual(b.spam_reason, 'honeypot')
+        self.assertEqual(len(mail.outbox), 0,
+                         'no mail may leave for a flagged booking')
+
+    def test_missing_token_is_stored_but_never_emailed(self):
+        self.client.post(reverse('booking:book'), self.payload(token=''))
+        b = BookingRequest.objects.get()
+        self.assertTrue(b.is_spam)
+        self.assertEqual(b.spam_reason, 'no_token')
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_raw_post_with_no_antispam_fields_is_flagged(self):
+        """What a bot that never fetched the page would send."""
+        self.client.post(reverse('booking:book'), dict(self.BASE))
+        self.assertTrue(BookingRequest.objects.get().is_spam)
+        self.assertEqual(len(mail.outbox), 0)
+
+    # ---------- the decoy must be invisible ----------
+    def test_decoy_is_hidden_inline_not_via_stylesheet(self):
+        html = self.client.get(reverse('booking:book')).content.decode()
+        self.assertIn('name="website"', html)
+        row = [l for l in html.splitlines() if 'name="website"' in l][0]
+        self.assertIn('display:none', row.replace(' ', ''))
+        self.assertIn('tabindex="-1"', row)
+        self.assertIn('aria-hidden="true"', row)

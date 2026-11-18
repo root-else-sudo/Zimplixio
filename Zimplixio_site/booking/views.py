@@ -87,8 +87,12 @@ class BookCallView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        BookingEmailService.send_visitor_received(self.object)
-        BookingEmailService.send_admin_notification(self.object)
+        # Flagged requests are stored for review but never acknowledged by
+        # email — a bot-supplied address belongs to someone who never asked
+        # for a call, and mailing them damages the sending domain.
+        if not self.object.is_spam:
+            BookingEmailService.send_visitor_received(self.object)
+            BookingEmailService.send_admin_notification(self.object)
         return response
 
     @method_decorator(ratelimit(key='ip', rate='5/h', method='POST', block=False))

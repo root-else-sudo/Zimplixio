@@ -1,62 +1,34 @@
-import logging
-import time
-
 from django import forms
-from django.core import signing
+
+from core.antispam import (
+    MAX_DWELL_SECONDS,
+    MIN_DWELL_SECONDS,
+    REJECTION_MESSAGE,
+    AntiSpamFormMixin,
+)
+from core.antispam import make_form_token as _make_token
+from core.antispam import read_form_token as _read_token
 
 from .models import ContactSubmission
 
-logger = logging.getLogger(__name__)
-
-# A real person needs at least a few seconds to read the form and type into it.
-# Bots POST the moment they parse the page.
-MIN_DWELL_SECONDS = 3
-# Beyond this the token is stale — a tab left open for a day, or a replayed capture.
-MAX_DWELL_SECONDS = 60 * 60 * 24
-
+# Unique per form, so a token minted for the contact form cannot be replayed
+# against the booking form.
 _TOKEN_SALT = 'pages.contact.dwell'
 
-# Shown when a submission is refused outright. Deliberately says nothing about
-# why: a bot author reading the response must not learn which signal to tune.
-# A real visitor only needs to know to press Send again, and that works -- the
-# token their browser sends back has by then aged past MIN_DWELL_SECONDS.
-REJECTION_MESSAGE = (
-    'We could not process that submission. '
-    'Please try sending your message again.'
-)
-
-# Signals conclusive enough to throw the submission away rather than store it.
-# Only the dwell floor qualifies: a human cannot fill this form in under
-# MIN_DWELL_SECONDS, but the honeypot can be tripped by browser autofill and a
-# missing or stale token can mean a tab left open, so those stay recoverable.
-_REFUSED_REASONS = frozenset({'too_fast'})
-
-# Hidden with an inline style rather than a CSS class on purpose: static assets
-# carry no content hash here, Cloudflare serves main.css with max-age=14400 and
-# Safari caches it in memory indefinitely, so a visitor on a stale stylesheet
-# would SEE the decoy and fill it in. Inline styles ship with the (uncached) HTML.
-_HONEYPOT_STYLE = (
-    'position:absolute !important; left:-10000px !important; '
-    'width:1px !important; height:1px !important; overflow:hidden !important; '
-    'display:none !important;'
-)
+__all__ = [
+    'ContactForm', 'make_form_token', 'read_form_token',
+    'MIN_DWELL_SECONDS', 'MAX_DWELL_SECONDS', 'REJECTION_MESSAGE',
+]
 
 
 def make_form_token(issued_at=None):
-    """Signed proof of when this form was rendered."""
-    stamp = int(issued_at if issued_at is not None else time.time())
-    return signing.Signer(salt=_TOKEN_SALT).sign(str(stamp))
+    """Signed proof of when the contact form was rendered."""
+    return _make_token(_TOKEN_SALT, issued_at)
 
 
 def read_form_token(token):
-    """Seconds since the form was rendered, or None if missing/forged."""
-    if not token:
-        return None
-    try:
-        issued = int(signing.Signer(salt=_TOKEN_SALT).unsign(token))
-    except (signing.BadSignature, ValueError):
-        return None
-    return time.time() - issued
+    """Seconds since the contact form was rendered, or None if missing/forged."""
+    return _read_token(_TOKEN_SALT, token)
 
 
 _FIELD_CLASSES = (
@@ -65,22 +37,16 @@ _FIELD_CLASSES = (
 )
 
 
-class ContactForm(forms.ModelForm):
-    # Fields that must never be rendered by the template's normal field loop.
-    SPAM_FIELDS = ('website', 'ts')
+class ContactForm(AntiSpamFormMixin):
+    """Contact form, gated by the shared decoy + dwell-token signals.
 
-    # The decoy. Named to look like something worth filling in.
-    website = forms.CharField(
-        required=False,
-        label='',
-        widget=forms.TextInput(attrs={
-            'style': _HONEYPOT_STYLE,
-            'tabindex': '-1',
-            'autocomplete': 'off',
-            'aria-hidden': 'true',
-        }),
-    )
-    ts = forms.CharField(required=False, widget=forms.HiddenInput())
+    The behaviour — refuse a sub-3-second POST, flag everything else, never
+    email a flagged submission — lives in `core.antispam`. See that module and
+    `docs/GOTCHAS.md` for why the two signals are treated differently.
+    """
+
+    TOKEN_SALT = _TOKEN_SALT
+    LOG_LABEL = 'contact form'
 
     class Meta:
         model = ContactSubmission
@@ -104,61 +70,3 @@ class ContactForm(forms.ModelForm):
                 'rows': 5,
             }),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Stamp every freshly rendered (unbound) form.
-        if not self.is_bound:
-            self.fields['ts'].initial = make_form_token()
-
-    def _spam_reason(self):
-        """Why this submission looks automated, or '' if it looks human.
-
-        Order matters. Only the first signal found is returned, and that
-        decides whether the submission is refused (_REFUSED_REASONS) or
-        merely flagged and stored -- so conclusive signals are checked
-        FIRST. Checking the decoy first would mean a bot that trips both it
-        and the dwell floor gets stored instead of refused, which one line
-        in the bot's script would have been enough to exploit.
-        """
-        elapsed = read_form_token(self.data.get('ts'))
-
-        # Conclusive: no human completes this form in under three seconds.
-        if elapsed is not None and elapsed < MIN_DWELL_SECONDS:
-            return 'too_fast'
-
-        # Recoverable: browser autofill can fill the decoy, and a missing or
-        # day-old token can mean a tab left open rather than a bot. These are
-        # stored so a false positive can be found and rescued.
-        if self.cleaned_data.get('website'):
-            return 'honeypot'
-        if elapsed is None:
-            return 'no_token'
-        if elapsed > MAX_DWELL_SECONDS:
-            return 'stale_token'
-        return ''
-
-    def clean(self):
-        cleaned = super().clean()
-        reason = self._spam_reason()
-        if reason in _REFUSED_REASONS:
-            # No row is created: form_valid() never runs, so there is nothing
-            # to save and nothing to email.
-            logger.info('contact form refused (%s)', reason)
-            raise forms.ValidationError(REJECTION_MESSAGE, code=reason)
-        if reason:
-            # `is_spam`/`spam_reason` are not form fields, so construct_instance()
-            # in _post_clean() leaves them alone.
-            self.instance.is_spam = True
-            self.instance.spam_reason = reason
-            if self._errors:
-                # clean() runs even after field validation has already failed,
-                # so this submission will never reach form_valid() and never
-                # becomes a row. Logged distinctly, because refused and
-                # discarded submissions leave nothing behind -- the log is the
-                # only record, and it must not imply a row that is not there.
-                logger.info('contact form discarded (%s; invalid: %s)',
-                            reason, ','.join(sorted(self._errors)))
-            else:
-                logger.info('contact form flagged as spam (%s)', reason)
-        return cleaned

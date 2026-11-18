@@ -166,11 +166,18 @@ Served at `/showcase/ai-adoption-framework/` by `showcase`, using the custom `de
 
 **Double-booking gap**: `available_slots_view` filters confirmed times at read time, but there is no database constraint — two pending requests for the same slot can both be confirmed. Known and deferred.
 
+## Public Form Anti-Spam
+
+Both public forms that email the address they are handed — contact (`pages/forms.py`) and booking (`booking/forms.py`) — share `core/antispam.py`. **Any new public form that sends email must use `AntiSpamFormMixin` too**; an unprotected one is what got the sending mailbox restricted by Microsoft in Nov 2026.
+
+- **A submission has three possible fates, not two**: accepted (row + email), *flagged* (row written, `is_spam=True`, **no email**), or *refused* (`ValidationError`, **no row at all**). Only `too_fast` refuses; `honeypot`, `no_token` and `stale_token` flag-and-store. The order of checks in `spam_reason()` decides which, and is load-bearing — see `docs/GOTCHAS.md`
+- **Each form needs its own `TOKEN_SALT`**, so a token minted for one cannot be replayed against the other
+- **The view must gate the email on `is_spam`** — the mixin only sets the flag; `ContactView.form_valid()` and `BookCallView.form_valid()` each check it before sending
+
 ## Contact Form Pipeline
 
-`pages/forms.py` + `pages/services.py`. Three things here are easy to get wrong:
+`pages/services.py`. Two things here are easy to get wrong:
 
-- **A submission has three possible fates, not two**: accepted (row + acknowledgement email), *flagged* (row written, `is_spam=True`, **no email**), or *refused* (`ValidationError`, **no row at all**). Only `too_fast` refuses; `honeypot`, `no_token` and `stale_token` flag-and-store. The order of checks in `_spam_reason()` decides which, and is load-bearing — see `docs/GOTCHAS.md`
 - **There is deliberately no admin notification email**, unlike booking. `ContactView.form_valid()` sends only `ContactEmailService.send_visitor_received()`. This is a product decision, not an oversight — do not add a `send_admin_notification()` to match `BookingEmailService`
 - **`pages/services.py` has a `render_plaintext()` helper that `booking/services.py` lacks.** `strip_tags()` alone leaks `<style>` contents, leaves entities encoded and drops `<br>`, so booking's plain-text alternative is malformed. Known and consciously left alone — do not "fix" booking without being asked
 

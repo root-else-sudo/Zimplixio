@@ -11,8 +11,9 @@ class TimeSlotAdmin(admin.ModelAdmin):
 
 @admin.register(BookingRequest)
 class BookingRequestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'requested_date', 'requested_time', 'status', 'created_at']
-    list_filter = ['status', 'requested_date']
+    list_display = ['name', 'email', 'requested_date', 'requested_time', 'status',
+                    'is_spam', 'created_at']
+    list_filter = ['is_spam', 'status', 'requested_date']
     list_editable = ['status']
     search_fields = ['name', 'email', 'company']
 

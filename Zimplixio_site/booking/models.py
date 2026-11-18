@@ -77,6 +77,13 @@ class BookingRequest(models.Model):
     visitor_timezone = models.CharField(max_length=50, blank=True, default='')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    is_spam = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text='Set automatically by the booking form spam checks. '
+                  'Flagged requests are stored but never emailed.',
+    )
+    spam_reason = models.CharField(max_length=40, blank=True)
 
     objects = BookingRequestManager()
 

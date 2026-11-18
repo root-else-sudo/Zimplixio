@@ -37,7 +37,15 @@ from .utils import booking_tz
 UID_DOMAIN = 'zimplixio.com'
 
 PRODID = '-//Zimplixio//Booking//EN'
-SUMMARY = 'Discovery Call - Zimplixio'
+# The organizer is the brand; the host attendee is the person the visitor is
+# actually meeting. Keeping the two names distinct is what stops a guest list
+# reading 'Zimplixio, Zimplixio'.
+ORGANIZER_NAME = 'Zimplixio'
+# Used only when the visitor's name is somehow blank. Every real booking
+# gets their name in the title instead -- a calendar block reading just
+# "Discovery Call" tells neither side who the call is with, and on the
+# host's calendar every booking would look identical.
+SUMMARY_FALLBACK = 'Discovery Call - Zimplixio'
 
 # A cancellation has to outrank the request it supersedes, or clients ignore it.
 _SEQUENCE = {'REQUEST': 0, 'CANCEL': 1}
@@ -100,6 +108,15 @@ def event_uid(booking):
     return 'booking-%s@%s' % (booking.pk, UID_DOMAIN)
 
 
+def _summary(booking):
+    """The event title. Leads with the visitor's name, which is what survives
+    truncation in a narrow calendar block."""
+    name = (booking.name or '').strip()
+    if not name:
+        return SUMMARY_FALLBACK
+    return 'Discovery Call - %s & %s' % (name, ORGANIZER_NAME)
+
+
 def _description(booking, zoom_url):
     lines = ['Discovery call with %s.' % booking.name]
     if zoom_url:
@@ -121,6 +138,7 @@ def build_invite(booking, method='REQUEST'):
     duration = getattr(settings, 'BOOKING_DURATION_MINUTES', 30)
     organizer = settings.DEFAULT_FROM_EMAIL
     admin_email = getattr(settings, 'LEAD_NOTIFICATION_EMAIL', '') or ''
+    host_name = getattr(settings, 'BOOKING_HOST_NAME', '') or ORGANIZER_NAME
 
     start = _utc(booking.requested_date, booking.requested_time)
     end = start + timedelta(minutes=duration)
@@ -138,14 +156,14 @@ def build_invite(booking, method='REQUEST'):
         'DTSTAMP:%s' % _stamp(now),
         'DTSTART:%s' % _stamp(start),
         'DTEND:%s' % _stamp(end),
-        'SUMMARY:%s' % _escape(SUMMARY),
+        'SUMMARY:%s' % _escape(_summary(booking)),
         'DESCRIPTION:%s' % _escape(_description(booking, zoom_url)),
     ]
 
     if zoom_url:
         lines.append('LOCATION:%s' % _escape(zoom_url))
 
-    lines.append('ORGANIZER;CN=%s:mailto:%s' % (_quote_param('Zimplixio'), organizer))
+    lines.append('ORGANIZER;CN=%s:mailto:%s' % (_quote_param(ORGANIZER_NAME), organizer))
     lines.append(
         'ATTENDEE;CN=%s;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:%s'
         % (_quote_param(booking.name), booking.email)
@@ -154,7 +172,7 @@ def build_invite(booking, method='REQUEST'):
     if admin_email and admin_email != booking.email:
         lines.append(
             'ATTENDEE;CN=%s;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=FALSE:mailto:%s'
-            % (_quote_param('Zimplixio'), admin_email)
+            % (_quote_param(host_name), admin_email)
         )
 
     lines += [

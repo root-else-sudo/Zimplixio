@@ -389,6 +389,50 @@ class CalendarInviteTests(TestCase):
             ics = build_invite(self._booking())
         self.assertIn('mailto:joe@zimplixio.com', ics.replace('\r\n ', ''))
 
+    def test_host_and_organizer_have_distinct_names(self):
+        """Both carried CN=Zimplixio, so a guest list read 'Zimplixio, Zimplixio'."""
+        from django.conf import settings
+        from .calendar_invite import build_invite
+        self.assertEqual(getattr(settings, 'BOOKING_HOST_NAME', None), 'Joe Ugalde')
+        with self.settings(LEAD_NOTIFICATION_EMAIL='joe@zimplixio.com'):
+            unfolded = build_invite(self._booking()).replace('\r\n ', '')
+        host_line = [l for l in unfolded.split('\r\n')
+                     if l.startswith('ATTENDEE') and 'joe@zimplixio.com' in l][0]
+        self.assertIn('CN="Joe Ugalde"', host_line)
+        organizer = [l for l in unfolded.split('\r\n') if l.startswith('ORGANIZER')][0]
+        self.assertIn('CN="Zimplixio"', organizer)
+
+    # ---------- the title ----------
+    def test_title_names_the_visitor(self):
+        """A generic title tells neither side who the call is with."""
+        from .calendar_invite import build_invite
+        unfolded = build_invite(self._booking()).replace('\r\n ', '')
+        summary = [l for l in unfolded.split('\r\n') if l.startswith('SUMMARY')][0]
+        self.assertIn('Ada Lovelace', summary)
+        self.assertIn('Zimplixio', summary)
+
+    def test_title_survives_a_name_with_a_comma(self):
+        from .calendar_invite import build_invite
+        unfolded = build_invite(
+            self._booking(name='Lovelace, Ada')).replace('\r\n ', '')
+        summary = [l for l in unfolded.split('\r\n') if l.startswith('SUMMARY')][0]
+        self.assertIn('Lovelace\\, Ada', summary)
+
+    def test_title_falls_back_when_the_name_is_blank(self):
+        """Never ship a title with a dangling separator and no name."""
+        from .calendar_invite import build_invite
+        unfolded = build_invite(self._booking(name='')).replace('\r\n ', '')
+        summary = [l for l in unfolded.split('\r\n') if l.startswith('SUMMARY')][0]
+        self.assertEqual(summary, 'SUMMARY:Discovery Call - Zimplixio')
+
+    def test_visitor_attendee_carries_their_registered_name(self):
+        """It is what the host's calendar shows as the guest."""
+        from .calendar_invite import build_invite
+        unfolded = build_invite(self._booking()).replace('\r\n ', '')
+        visitor = [l for l in unfolded.split('\r\n')
+                   if l.startswith('ATTENDEE') and 'ada@example.com' in l][0]
+        self.assertIn('CN="Ada Lovelace"', visitor)
+
     def test_zoom_url_is_carried_into_the_event(self):
         from .calendar_invite import build_invite
         with self.settings(ZOOM_MEETING_URL='https://example.zoom.us/j/123'):

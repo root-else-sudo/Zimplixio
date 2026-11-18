@@ -120,6 +120,11 @@ BOOKING_TIMEZONE = 'America/New_York'
 # calendar invite, so the advertised duration and the booked block cannot
 # drift apart.
 BOOKING_DURATION_MINUTES = 30
+# Shown as the host's name on the calendar invitation's guest list. The
+# organizer is the Zimplixio brand (team@), the host is the person the
+# visitor is actually meeting -- they must differ, or the guest list
+# reads 'Zimplixio, Zimplixio'.
+BOOKING_HOST_NAME = 'Joe Ugalde'
 
 LOGGING = {
     'version': 1,
